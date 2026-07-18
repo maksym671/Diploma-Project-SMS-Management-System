@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Enrollments{% endblock %}
+{% block breadcrumb %}Enrollments{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Enrollments</h1>
+        <p class="page-subtitle">Manage student-course enrollments</p>
+    </div>
+    {% if user.is_admin %}
+    <a href="{% url 'enrollment_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        New Enrollment
+    </a>
+    {% endif %}
+</div>
+
+<!-- Filters -->
+<form method="get" class="filter-bar">
+    <div class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by student or course..." id="enrollment-search">
+    </div>
+    <select name="status" class="form-select" onchange="this.form.submit()" id="filter-enrollment-status">
+        <option value="">All Status</option>
+        <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
+        <option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>Completed</option>
+        <option value="dropped" {% if selected_status == 'dropped' %}selected{% endif %}>Dropped</option>
+    </select>
+    <button type="submit" class="btn btn-outline btn-sm">
+        <i class="bi bi-funnel"></i> Filter
+    </button>
+</form>
+
+<!-- Enrollments Table -->
+<div class="card">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Grade</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in enrollments %}
+                <tr>
+                    <td>
+                        <a href="{% url 'student_detail' enrollment.student.pk %}" class="table-name">
+                            {{ enrollment.student.full_name }}
+                        </a>
+                        <div class="table-sub">{{ enrollment.student.student_number }}</div>
+                    </td>
+                    <td>
+                        <a href="{% url 'course_detail' enrollment.course.pk %}">
+                            {{ enrollment.course.course_code }}
+                        </a>
+                        <div class="table-sub">{{ enrollment.course.course_name }}</div>
+                    </td>
+                    <td>{{ enrollment.course.semester }}</td>
+                    <td class="text-muted">{{ enrollment.enrollment_date|date:"M d, Y" }}</td>
+                    <td>
+                        <span class="badge badge-{{ enrollment.status }}">
+                            {{ enrollment.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if enrollment.grade %}
+                        <span class="badge badge-grade {{ enrollment.grade.letter_grade|lower }}">
+                            {{ enrollment.grade.grade_value }}
+                        </span>
+                        {% else %}
+                        <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            {% if user.is_admin %}
+                            <a href="{% url 'enrollment_update' enrollment.pk %}" class="btn-icon" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'enrollment_delete' enrollment.pk %}" class="btn-icon danger" title="Delete">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="bi bi-clipboard2-check"></i>
+                            <h5>No Enrollments Found</h5>
+                            <p>{% if query %}No results matching your search{% else %}Create a new enrollment to get started{% endif %}</p>
+                            {% if user.is_admin %}
+                            <a href="{% url 'enrollment_create' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-lg"></i> New Enrollment
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

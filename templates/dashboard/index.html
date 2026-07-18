@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="stats-grid">
+    <a href="{% url 'student_list' %}" class="stat-card blue animate-in">
+        <div class="stat-icon blue">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Total Students</div>
+            <div class="stat-value" data-target="{{ total_students }}">0</div>
+        </div>
+    </a>
+    <a href="{% url 'course_list' %}" class="stat-card teal animate-in">
+        <div class="stat-icon teal">
+            <i class="bi bi-book-fill"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Active Courses</div>
+            <div class="stat-value" data-target="{{ total_courses }}">0</div>
+        </div>
+    </a>
+    <a href="{% url 'enrollment_list' %}" class="stat-card violet animate-in">
+        <div class="stat-icon violet">
+            <i class="bi bi-clipboard2-check-fill"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Enrollments</div>
+            <div class="stat-value" data-target="{{ total_enrollments }}">0</div>
+        </div>
+    </a>
+    <a href="{% url 'grade_list' %}" class="stat-card amber animate-in">
+        <div class="stat-icon amber">
+            <i class="bi bi-award-fill"></i>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Average Grade</div>
+            <div class="stat-value" data-target="{{ avg_grade }}">0</div>
+        </div>
+    </a>
+</div>
+
+<!-- Charts -->
+<div class="charts-grid">
+    <div class="chart-card animate-in">
+        <h5><i class="bi bi-pie-chart-fill mr-1 text-blue"></i> Grade Distribution</h5>
+        <div class="chart-container">
+            <canvas id="gradeChart" data-grades='{{ grade_distribution|safe }}'></canvas>
+        </div>
+        <div id="gradeChartLegend" class="custom-chart-legend"></div>
+    </div>
+    <div class="chart-card animate-in">
+        <h5><i class="bi bi-bar-chart-fill mr-1 text-teal"></i> Enrollments by Course</h5>
+        <div class="chart-container">
+            <canvas id="enrollmentChart" data-labels='{{ course_labels|safe }}' data-values='{{ course_data|safe }}'></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="charts-grid">
+    <div class="chart-card animate-in">
+        <h5><i class="bi bi-diagram-3-fill mr-1 text-amber"></i> Students by Program</h5>
+        <div class="chart-container">
+            <canvas id="programChart" data-labels='{{ program_labels|safe }}' data-values='{{ program_data|safe }}'></canvas>
+        </div>
+        <div id="programChartLegend" class="custom-chart-legend"></div>
+    </div>
+
+    <!-- Recent Students -->
+    <div class="card animate-in">
+        <div class="card-header">
+            <h5><i class="bi bi-clock-history mr-1"></i> Recent Students</h5>
+            <a href="{% url 'student_list' %}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Program</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in recent_students %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'student_detail' student.pk %}" class="table-name">
+                                {{ student.full_name }}
+                            </a>
+                            <div class="table-sub">{{ student.student_number }}</div>
+                        </td>
+                        <td>{{ student.study_program }}</td>
+                        <td>
+                            {% if student.is_active %}
+                            <span class="badge badge-active">Active</span>
+                            {% else %}
+                            <span class="badge badge-inactive">Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-muted" style="text-align:center; padding:30px;">
+                            No students yet
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Enrollments -->
+<div class="card animate-in mt-2">
+    <div class="card-header">
+        <h5><i class="bi bi-clipboard2-check mr-1"></i> Recent Enrollments</h5>
+        <a href="{% url 'enrollment_list' %}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in recent_enrollments %}
+                <tr>
+                    <td>
+                        <a href="{% url 'student_detail' enrollment.student.pk %}" class="table-name">
+                            {{ enrollment.student.full_name }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'course_detail' enrollment.course.pk %}">
+                            {{ enrollment.course.course_code }}
+                        </a>
+                        <div class="table-sub">{{ enrollment.course.course_name }}</div>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ enrollment.status }}">
+                            {{ enrollment.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="text-muted">{{ enrollment.enrollment_date }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted" style="text-align:center; padding:30px;">
+                        No enrollments yet
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

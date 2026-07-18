@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumb %}Enrollments / {{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{{ title }}</h1>
+        <p class="page-subtitle">{% if enrollment %}Update enrollment status{% else %}Assign a student to a course{% endif %}</p>
+    </div>
+    <a href="{% url 'enrollment_list' %}" class="btn btn-outline">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <div class="card-body">
+        <form method="post" id="enrollment-form">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="alert alert-danger mb-3">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                {% if form.non_field_errors %}
+                    {{ form.non_field_errors.0 }}
+                {% else %}
+                    Please correct the errors below.
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label" for="id_student">Student *</label>
+                {{ form.student }}
+                {% if form.student.errors %}
+                <div class="form-text text-rose">{{ form.student.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_course">Course *</label>
+                {{ form.course }}
+                {% if form.course.errors %}
+                <div class="form-text text-rose">{{ form.course.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_status">Status</label>
+                {{ form.status }}
+            </div>
+
+            <div class="btn-group mt-2">
+                <button type="submit" class="btn btn-primary" id="submit-enrollment">
+                    <i class="bi bi-check-lg"></i>
+                    {% if enrollment %}Update Enrollment{% else %}Create Enrollment{% endif %}
+                </button>
+                <a href="{% url 'enrollment_list' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

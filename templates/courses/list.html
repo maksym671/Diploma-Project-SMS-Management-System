@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Courses{% endblock %}
+{% block breadcrumb %}Courses{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Courses</h1>
+        <p class="page-subtitle">Manage academic courses and their details</p>
+    </div>
+    {% if user.is_admin %}
+    <a href="{% url 'course_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        Add Course
+    </a>
+    {% endif %}
+</div>
+
+<!-- Filters -->
+<form method="get" class="filter-bar">
+    <div class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search courses..." id="course-search">
+    </div>
+    <select name="semester" class="form-select" onchange="this.form.submit()" id="filter-semester">
+        <option value="">All Semesters</option>
+        <option value="Fall" {% if selected_semester == 'Fall' %}selected{% endif %}>Fall</option>
+        <option value="Spring" {% if selected_semester == 'Spring' %}selected{% endif %}>Spring</option>
+        <option value="Summer" {% if selected_semester == 'Summer' %}selected{% endif %}>Summer</option>
+    </select>
+    <button type="submit" class="btn btn-outline btn-sm">
+        <i class="bi bi-funnel"></i> Filter
+    </button>
+</form>
+
+<!-- Courses Table -->
+<div class="card">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Code</th>
+                    <th>Semester</th>
+                    <th>Credits</th>
+                    <th>Teacher</th>
+                    <th>Enrolled</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>
+                        <a href="{% url 'course_detail' course.pk %}" class="table-name">
+                            {{ course.course_name }}
+                        </a>
+                    </td>
+                    <td><span class="badge badge-info">{{ course.course_code }}</span></td>
+                    <td>{{ course.semester }}</td>
+                    <td>{{ course.credits }}</td>
+                    <td>
+                        {% if course.teacher %}
+                            {{ course.teacher.get_full_name|default:course.teacher.username }}
+                        {% else %}
+                            <span class="text-muted">Unassigned</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="text-primary-c">{{ course.enrollment_count }}</span>
+                        <span class="text-muted">/ {{ course.max_students }}</span>
+                    </td>
+                    <td>
+                        {% if course.is_active %}
+                        <span class="badge badge-active">Active</span>
+                        {% else %}
+                        <span class="badge badge-inactive">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{% url 'course_detail' course.pk %}" class="btn-icon" title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if user.is_admin %}
+                            <a href="{% url 'course_update' course.pk %}" class="btn-icon" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'course_delete' course.pk %}" class="btn-icon danger" title="Delete">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="bi bi-book"></i>
+                            <h5>No Courses Found</h5>
+                            <p>{% if query %}No courses matching "{{ query }}"{% else %}Get started by creating your first course{% endif %}</p>
+                            {% if user.is_admin %}
+                            <a href="{% url 'course_create' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-lg"></i> Add Course
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

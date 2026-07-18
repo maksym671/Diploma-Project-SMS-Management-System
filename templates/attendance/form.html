@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumb %}Attendance / {{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{{ title }}</h1>
+        <p class="page-subtitle">{% if att %}Update attendance record{% else %}Record a new attendance entry{% endif %}</p>
+    </div>
+    <a href="{% url 'attendance_list' %}" class="btn btn-outline">
+        <i class="bi bi-arrow-left"></i> Back to Attendance
+    </a>
+</div>
+
+<div class="card" style="max-width: 640px;">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-3">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label">Enrollment *</label>
+                {{ form.enrollment }}
+                {% if form.enrollment.errors %}
+                <div class="form-text text-rose">{{ form.enrollment.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Date *</label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                    <div class="form-text text-rose">{{ form.date.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status *</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}
+                    <div class="form-text text-rose">{{ form.status.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Notes (Optional)</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}
+                <div class="form-text text-rose">{{ form.notes.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+
+            <div class="btn-group mt-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i> Save Record
+                </button>
+                {% if not att %}
+                <button type="submit" name="save_and_add_another" class="btn btn-outline">Save and Add Another</button>
+                {% endif %}
+                <a href="{% url 'attendance_list' %}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

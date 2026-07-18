@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.course_name }}{% endblock %}
+{% block breadcrumb %}Courses / {{ course.course_code }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="detail-header">
+        <div class="detail-avatar teal">
+            {{ course.course_code|truncatechars:2 }}
+        </div>
+        <div class="detail-info">
+            <h2>{{ course.course_name }}</h2>
+            <div class="detail-meta">
+                <span><i class="bi bi-hash"></i> {{ course.course_code }}</span>
+                <span><i class="bi bi-calendar3"></i> {{ course.semester }}</span>
+                <span><i class="bi bi-star"></i> {{ course.credits }} Credits</span>
+                <span>
+                    {% if course.is_active %}
+                    <span class="badge badge-active">Active</span>
+                    {% else %}
+                    <span class="badge badge-inactive">Inactive</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% if user.is_admin %}
+    <div class="btn-group">
+        <a href="{% url 'course_update' course.pk %}" class="btn btn-outline">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a href="{% url 'course_delete' course.pk %}" class="btn btn-danger btn-sm">
+            <i class="bi bi-trash3"></i> Delete
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Course Info -->
+<div class="card mb-3">
+    <div class="card-header">
+        <h5><i class="bi bi-info-circle mr-1"></i> Course Information</h5>
+    </div>
+    <div class="card-body">
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Course Code</div>
+                <div class="info-value">{{ course.course_code }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Semester</div>
+                <div class="info-value">{{ course.semester }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Credits</div>
+                <div class="info-value">{{ course.credits }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Teacher</div>
+                <div class="info-value">
+                    {% if course.teacher %}
+                        {{ course.teacher.get_full_name|default:course.teacher.username }}
+                    {% else %}
+                        Unassigned
+                    {% endif %}
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Enrolled / Max</div>
+                <div class="info-value">{{ course.enrolled_count }} / {{ course.max_students }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Available Seats</div>
+                <div class="info-value">{{ course.available_seats }}</div>
+            </div>
+        </div>
+        {% if course.description %}
+        <div class="info-item mt-2">
+            <div class="info-label">Description</div>
+            <div class="info-value">{{ course.description }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Enrolled Students -->
+<div class="card">
+    <div class="card-header">
+        <h5><i class="bi bi-people mr-1"></i> Enrolled Students ({{ enrollments.count }})</h5>
+    </div>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Student Number</th>
+                    <th>Program</th>
+                    <th>Status</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in enrollments %}
+                <tr>
+                    <td>
+                        <a href="{% url 'student_detail' enrollment.student.pk %}" class="table-name">
+                            {{ enrollment.student.full_name }}
+                        </a>
+                        <div class="table-sub">{{ enrollment.student.email }}</div>
+                    </td>
+                    <td>{{ enrollment.student.student_number }}</td>
+                    <td>{{ enrollment.student.study_program }}</td>
+                    <td>
+                        <span class="badge badge-{{ enrollment.status }}">
+                            {{ enrollment.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if enrollment.grade %}
+                        <span class="badge badge-grade {{ enrollment.grade.letter_grade|lower }}">
+                            {{ enrollment.grade.grade_value }} ({{ enrollment.grade.letter_grade }})
+                        </span>
+                        {% else %}
+                        <span class="text-muted">Not graded</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-muted" style="text-align:center; padding:30px;">
+                        No students enrolled in this course yet
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
