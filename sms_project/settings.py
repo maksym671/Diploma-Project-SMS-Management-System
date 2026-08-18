@@ -5,21 +5,69 @@ Student Management System — Diploma Project by Maksym Shpak
 
 from pathlib import Path
 import os
-import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+try:
+    import dj_database_url
+except ImportError:  # optional locally when Postgres driver is absent
+    dj_database_url = None
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-SECRET_KEY = 'django-insecure-bz**(q6vs8(m0y(fh87!w&j4omudh7r#dwiv)p_zn11wn#amib'
+def _load_dotenv(path: Path) -> None:
+    """Load KEY=VALUE pairs from a local .env file if present."""
+    if not path.exists():
+        return
+    for raw_line in path.read_text(encoding='utf-8').splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        key, value = line.split('=', 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key, value)
 
-DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+_load_dotenv(BASE_DIR / '.env')
 
 
-# Application definition
+def env(key, default=None):
+    return os.environ.get(key, default)
+
+
+def env_bool(key, default=False):
+    value = env(key)
+    if value is None:
+        return default
+    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
+# ---------------------------------------------------------------------------
+# Core
+# ---------------------------------------------------------------------------
+
+SECRET_KEY = env(
+    'SECRET_KEY',
+    'django-insecure-dev-only-change-me-before-production',
+)
+
+DEBUG = env_bool('DEBUG', True)
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in env('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+    if host.strip()
+]
+
+# Render / reverse-proxy hosts
+RENDER_EXTERNAL_HOSTNAME = env('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+
+# ---------------------------------------------------------------------------
+# Applications
+# ---------------------------------------------------------------------------
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,6 +83,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,7 +111,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'sms_project.wsgi.application'
 
 
+# ---------------------------------------------------------------------------
 # Database
+# ---------------------------------------------------------------------------
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -70,55 +122,146 @@ DATABASES = {
     }
 }
 
-# Если есть DATABASE_URL в переменных окружения (например, на Render), используем его
-database_url = os.environ.get("DATABASE_URL")
+database_url = env('DATABASE_URL')
 if database_url:
-    DATABASES['default'] = dj_database_url.parse(database_url)
+    if dj_database_url is None:
+        raise ImportError(
+            'DATABASE_URL is set but dj-database-url is not installed. '
+            'Run: pip install dj-database-url psycopg2-binary'
+        )
+    DATABASES['default'] = dj_database_url.parse(
+        database_url,
+        conn_max_age=600,
+        ssl_require=not DEBUG,
+    )
 
 
-# Password validation
+# ---------------------------------------------------------------------------
+# Auth / passwords
+# ---------------------------------------------------------------------------
+
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+AUTH_USER_MODEL = 'core.User'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
+
+# ---------------------------------------------------------------------------
 # Internationalization
+# ---------------------------------------------------------------------------
+
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('pl', 'Polski'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
 TIME_ZONE = 'Europe/Warsaw'
 USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# ---------------------------------------------------------------------------
+# Static files
+# ---------------------------------------------------------------------------
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+_static_backend = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    if not DEBUG
+    else 'whitenoise.storage.CompressedStaticFilesStorage'
+)
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': _static_backend,
+    },
+}
 
 
-# Custom User Model
-AUTH_USER_MODEL = 'core.User'
+# ---------------------------------------------------------------------------
+# Email (password reset)
+# ---------------------------------------------------------------------------
+# Local default: print emails to console.
+# Production: set EMAIL_BACKEND=smtp and SMTP_* / EMAIL_* env vars.
 
-# Login/Logout URLs
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/login/'
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', 'noreply@sms.local')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_SUBJECT_PREFIX = '[SMS] '
 
-# Default primary key field type
+email_backend = env('EMAIL_BACKEND', 'console' if DEBUG else 'smtp').lower()
+if email_backend in {'console', 'django.core.mail.backends.console.EmailBackend'}:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+elif email_backend in {'file', 'django.core.mail.backends.filebased.EmailBackend'}:
+    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+    EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = env('EMAIL_HOST', 'smtp.gmail.com')
+    EMAIL_PORT = int(env('EMAIL_PORT', '587'))
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
+    EMAIL_USE_SSL = env_bool('EMAIL_USE_SSL', False)
+
+# Public site URL used in password-reset emails
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in env('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+]
+
+
+# ---------------------------------------------------------------------------
+# Production security
+# ---------------------------------------------------------------------------
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', True)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(env('SECURE_HSTS_SECONDS', '31536000'))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = 'same-origin'
+    X_FRAME_OPTIONS = 'DENY'
+    if not CSRF_TRUSTED_ORIGINS and RENDER_EXTERNAL_HOSTNAME:
+        CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
+
+    if SECRET_KEY.startswith('django-insecure'):
+        raise ValueError(
+            'SECRET_KEY must be set via environment variable in production '
+            '(DEBUG=False).'
+        )
+
+
+# ---------------------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------------------
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Messages
 from django.contrib.messages import constants as message_constants
+
 MESSAGE_TAGS = {
     message_constants.DEBUG: 'secondary',
     message_constants.INFO: 'info',

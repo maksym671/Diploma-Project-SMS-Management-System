@@ -1,6 +1,6 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="{{ LANGUAGE_CODE }}" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,65 +40,65 @@
                 </div>
                 <div>
                     <div class="sidebar-title">SMS</div>
-                    <div class="sidebar-subtitle">Management System</div>
+                    <div class="sidebar-subtitle">{% trans "Management System" %}</div>
                 </div>
             </div>
 
             <nav class="sidebar-nav">
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title">Overview</div>
+                    <div class="sidebar-section-title">{% trans "Overview" %}</div>
                     <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                         <i class="bi bi-grid-1x2-fill"></i>
-                        <span>Dashboard</span>
+                        <span>{% trans "Dashboard" %}</span>
                     </a>
                 </div>
 
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title">Academic</div>
+                    <div class="sidebar-section-title">{% trans "Academic" %}</div>
                     <a href="{% url 'student_list' %}" class="sidebar-link {% if 'student' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-people-fill"></i>
-                        <span>Students</span>
+                        <span>{% trans "Students" %}</span>
                     </a>
                     <a href="{% url 'course_list' %}" class="sidebar-link {% if 'course' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-book-fill"></i>
-                        <span>Courses</span>
+                        <span>{% trans "Courses" %}</span>
                     </a>
                     {% if user.is_admin %}
                     <a href="{% url 'enrollment_list' %}" class="sidebar-link {% if 'enrollment' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-clipboard2-check-fill"></i>
-                        <span>Enrollments</span>
+                        <span>{% trans "Enrollments" %}</span>
                     </a>
                     {% endif %}
                     <a href="{% url 'grade_list' %}" class="sidebar-link {% if 'grade' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-award-fill"></i>
-                        <span>Grades</span>
+                        <span>{% trans "Grades" %}</span>
                     </a>
                     <a href="{% url 'attendance_list' %}" class="sidebar-link {% if 'attendance' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-calendar-check-fill"></i>
-                        <span>Attendance</span>
+                        <span>{% trans "Attendance" %}</span>
                     </a>
                 </div>
 
                 {% if user.is_teacher or user.is_admin %}
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title">Analytics</div>
+                    <div class="sidebar-section-title">{% trans "Analytics" %}</div>
                     <a href="#" class="sidebar-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                        <span>Reports</span>
+                        <span>{% trans "Reports" %}</span>
                     </a>
                     <ul class="dropdown-menu shadow border-0" style="background-color: var(--sidebar-bg);">
-                        <li><a class="dropdown-item" href="{% url 'export_students_csv' %}"><i class="bi bi-download me-2"></i>Export Students</a></li>
-                        <li><a class="dropdown-item" href="{% url 'export_grades_csv' %}"><i class="bi bi-download me-2"></i>Export Grades</a></li>
+                        <li><a class="dropdown-item" href="{% url 'export_students_csv' %}"><i class="bi bi-download me-2"></i>{% trans "Export Students" %}</a></li>
+                        <li><a class="dropdown-item" href="{% url 'export_grades_csv' %}"><i class="bi bi-download me-2"></i>{% trans "Export Grades" %}</a></li>
                     </ul>
                 </div>
                 {% endif %}
 
                 {% if user.is_admin %}
                 <div class="sidebar-section">
-                    <div class="sidebar-section-title">System</div>
+                    <div class="sidebar-section-title">{% trans "System" %}</div>
                     <a href="{% url 'admin:index' %}" class="sidebar-link" target="_blank">
                         <i class="bi bi-gear-fill"></i>
-                        <span>Admin Panel</span>
+                        <span>{% trans "Admin Panel" %}</span>
                     </a>
                 </div>
                 {% endif %}
@@ -130,14 +130,28 @@
                     <span class="current">{% block breadcrumb %}Dashboard{% endblock %}</span>
                 </div>
             </div>
-            <div class="navbar-right">
+            <div class="navbar-right d-flex align-items-center gap-3">
+                <form action="{% url 'set_language' %}" method="post" class="d-inline-flex align-items-center mb-0">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ redirect_to }}">
+                    <select name="language" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
                 <button class="btn-theme-toggle" id="theme-toggle" title="Toggle theme">
                     <i class="bi bi-moon-fill"></i>
                     <i class="bi bi-sun-fill"></i>
                 </button>
                 <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">
                     <i class="bi bi-box-arrow-right"></i>
-                    Logout
+                    {% trans "Logout" %}
                 </a>
             </div>
         </header>

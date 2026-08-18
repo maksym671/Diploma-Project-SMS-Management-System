@@ -1,0 +1,105 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>SMS Docs</title>
+<style>body{font-family:Georgia,serif;max-width:900px;margin:40px auto;padding:0 16px;line-height:1.4}table{border-collapse:collapse;width:100%;margin:16px 0} td{border:1px solid #333;padding:10px;vertical-align:top}td:first-child{width:28%;font-weight:700;background:#f7f7f7} h1,h2{margin-top:1.4em}</style></head><body>
+<p>School of Computer Science &amp; Technologies</p>
+<p>Field of study: Computer Science</p>
+<p>Maksym Shpak</p>
+<p>Design and Implementation of a Web-Based Student Management System for Educational Institutions</p>
+<p>Documentation for the diploma project</p>
+<p>prepared under the direction of</p>
+<p>[Supervisor / Promotor]</p>
+<p>Warsaw, 2026 r.</p>
+<h1>1. Basic information</h1>
+<table>
+<tr>
+<td>Project name</td>
+<td>Design and Implementation of a Web-Based Student Management System for Educational Institutions — Student Management System (SMS)</td>
+</tr>
+<tr>
+<td>Purpose of the project</td>
+<td>The project addresses a recurring problem in small and medium educational units: academic records for students, courses, grades and attendance are still often kept in spreadsheets or fragmented paper files. This leads to duplicated data, weak access control, and slow reporting for teachers and administrators. SMS centralises these processes in a single web application with role-based access (Administrator, Teacher, Student), structured CRUD workflows, dashboard analytics, CSV export, and password-reset via email. The system is implemented as a complete engineering deliverable — not only a conceptual design.</td>
+</tr>
+<tr>
+<td>Brief description of the project</td>
+<td>Student Management System is a full-stack Django web application that stores and manages academic data related to students, courses, enrolments, grades and attendance. Administrators maintain the institutional catalogue of students and courses; teachers manage grades and attendance for their own courses; students view personal academic information. The presentation layer uses Django templates with custom CSS and JavaScript; the application layer implements business rules and RBAC; the data layer uses a relational schema (SQLite locally, PostgreSQL in production via DATABASE_URL). The application is production-ready for deployment on platforms such as Render (Gunicorn + WhiteNoise + optional managed Postgres).</td>
+</tr>
+<tr>
+<td>Competitor analysis</td>
+<td>Microsoft Excel / Google Sheets: easy to start, but no relational integrity, no role-based permissions, and high risk of accidental edits. Moodle / Canvas: powerful LMS platforms with many modules, but heavy to deploy and operate for a small faculty office that only needs student-course-grade-attendance administration. Commercial university ERP suites: broad feature sets and high cost, often oversized for training centres or single departments. SMS differentiator: a lightweight, open academic engineering project focused on core administrative workflows, transparent Django architecture suitable for defence and further extension, zero proprietary licence fees, and explicit teacher-centred dashboards with JSON analytics API.</td>
+</tr>
+<tr>
+<td>List of technologies used</td>
+<td>Backend:<br>Python 3.10+, Django 6, Django Auth (session-based), Gunicorn, WhiteNoise, dj-database-url, PostgreSQL (production) / SQLite (development), SMTP email for password reset<br>Frontend:<br>Django Templates, HTML5, CSS custom properties, vanilla JavaScript, dashboard JSON endpoint (/api/dashboard/)<br>Infrastructure:<br>Render-ready build (build.sh: migrate + collectstatic), environment-based configuration (.env), HTTPS-oriented security settings when DEBUG=False, optional Mailtrap / Gmail SMTP for transactional mail</td>
+</tr>
+<tr>
+<td>Description of the technology stack and justification of selected technologies</td>
+<td>The stack follows a classic three-tier architecture: Browser (HTML/CSS/JS) → Django views &amp; forms (business logic, authentication, RBAC) → Relational database. Django was selected because it provides batteries-included authentication, CSRF protection, ORM migrations, and an admin site — essential for an academic records system delivered within an engineering diploma timeframe. Session authentication fits server-rendered pages better than JWT (no separate SPA). PostgreSQL is preferred in production for ACID transactions and concurrent multi-user access; SQLite keeps local development simple. WhiteNoise serves compressed static assets behind Gunicorn, which matches typical PaaS deployments without a separate Nginx container. SMTP-based password reset uses Django’s built-in auth views, avoiding custom token plumbing while remaining compatible with Mailtrap sandbox or real providers.</td>
+</tr>
+</table>
+<h1>2. Key issues related to the implementation of the project</h1>
+<h2>2.1 Role-Based Access Control (RBAC)</h2>
+<p>The custom User model extends AbstractUser with a role field (admin / teacher / student). View decorators enforce permissions: administrators manage all records; teachers see only students and grades related to their courses; students are blocked from institutional lists and redirected to their personal dashboard. This prevents privilege escalation while keeping URLs simple.</p>
+<p>Code snippet (decorator, simplified):</p>
+<p>def role_required(allowed_roles):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            if request.user.role not in allowed_roles:
+                return redirect(&#x27;dashboard&#x27;)
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator</p>
+<h2>2.2 Relational Academic Schema</h2>
+<p>The schema comprises six core models: User, Student, Course, Enrollment, Grade, Attendance. Enrolment links students and courses (many-to-many with status). Grade is one-to-one with Enrolment (scale 2.0–5.0 with letter mapping). Attendance is unique per (enrolment, date) to avoid duplicate daily marks. Foreign keys and unique constraints protect referential integrity at the database level.</p>
+<h2>2.3 Dashboard Analytics and REST JSON Endpoint</h2>
+<p>The HTML dashboard aggregates KPIs (students, courses, enrolments, average grade) and chart series (grade distribution, enrolments per course). Endpoint GET /api/dashboard/ returns the same metrics as JSON, scoped by role, so charts or future SPA clients can refresh data without reloading the page.</p>
+<p>Example response fields:</p>
+<p>{&#x27;role&#x27;: &#x27;teacher&#x27;, &#x27;total_students&#x27;: …, &#x27;grade_distribution&#x27;: {&#x27;A&#x27;: …}, &#x27;course_labels&#x27;: [...], &#x27;course_data&#x27;: [...]}</p>
+<h2>2.4 Password Reset via Email</h2>
+<p>Password recovery uses Django’s auth URLs under /accounts/ with custom email templates. In development, EMAIL_BACKEND=console prints messages to the terminal. In production, SMTP settings (Mailtrap, Gmail, SendGrid, etc.) send a signed reset link. Unknown emails still redirect (no user enumeration), matching Django defaults.</p>
+<h2>2.5 Production Configuration and Security Hardening</h2>
+<p>Configuration is driven by environment variables: SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASE_URL, EMAIL_*. When DEBUG=False the application enforces HTTPS redirects, secure cookies, HSTS, and refuses insecure default SECRET_KEY values. WhiteNoise serves hashed/compressed static files. This allows the same codebase to run locally on SQLite and on a hosted PostgreSQL instance without code changes.</p>
+<h1>3. Screenshots, visualizations, etc.</h1>
+<p>This section describes representative screens of the Student Management System. Replace the figure placeholders with actual captures from the running application before the final submission / defence.</p>
+<p>Fig. 1 — Login page: username/password form with link to password reset.</p>
+<p>Fig. 2 — Administrator / Teacher dashboard: KPI cards, grade distribution chart, recent enrolments.</p>
+<p>Fig. 3 — Student list with search and filters (program, active status).</p>
+<p>Fig. 4 — Course detail: enrolled students, capacity, teacher assignment.</p>
+<p>Fig. 5 — Grade entry form with validation (2.0–5.0) and comments.</p>
+<p>Fig. 6 — Attendance register with present / absent / late statuses.</p>
+<p>Fig. 7 — Password reset email (console or SMTP) containing the secure confirmation link.</p>
+<p>Fig. 8 — JSON response from GET /api/dashboard/ (browser or HTTP client).</p>
+<h1>4. Conclusions and development prospects</h1>
+<p>The primary goal — to design and implement a functional web-based Student Management System for educational administration — was achieved. The application covers authentication with RBAC, student and course administration, enrolments, grading, attendance, analytics dashboard, CSV export, password reset mail, and production-oriented configuration.</p>
+<p>All core objectives were met:</p>
+<p>Role-based access for Administrator, Teacher and Student</p>
+<p>Relational schema with integrity constraints for academic entities</p>
+<p>CRUD workflows with form validation and flash messages</p>
+<p>Dashboard KPIs and role-scoped REST endpoint /api/dashboard/</p>
+<p>Email-based password reset (console locally, SMTP in production)</p>
+<p>Automated test suite covering models, auth, API, CRUD and mail</p>
+<p>Deployment-ready settings (Gunicorn, WhiteNoise, Postgres via DATABASE_URL)</p>
+<p>The project demonstrates that a production-capable academic administration system can be delivered by a single developer within an engineering diploma timeframe, using a coherent Django monolith suitable for oral examination and further maintenance.</p>
+<p>Future development priorities:</p>
+<p>Multi-language UI (EN/PL) using Django i18n</p>
+<p>PDF report generation for transcripts and attendance sheets</p>
+<p>Calendar view for classes and attendance sessions</p>
+<p>REST API tokens for mobile clients</p>
+<p>LDAP / Google SSO for institutional login</p>
+<p>Soft-delete audit log for grade changes</p>
+<h1>5. Bibliography / Resources</h1>
+<p>Official Documentation</p>
+<p>[1] Django Software Foundation — Django Documentation — https://docs.djangoproject.com</p>
+<p>[2] Django Software Foundation — Django Authentication System — https://docs.djangoproject.com/en/stable/topics/auth/</p>
+<p>[3] Python Software Foundation — Python 3 Documentation — https://docs.python.org/3/</p>
+<p>[4] The PostgreSQL Global Development Group — PostgreSQL Documentation — https://www.postgresql.org/docs/</p>
+<p>[5] SQLite Consortium — SQLite Documentation — https://www.sqlite.org/docs.html</p>
+<p>[6] Whitenoise — WhiteNoise Documentation — https://whitenoise.readthedocs.io</p>
+<p>[7] Gunicorn — Gunicorn Documentation — https://docs.gunicorn.org</p>
+<p>[8] Render — Deploy Django — https://render.com/docs/deploy-django</p>
+<p>[9] MDN Web Docs — HTML / CSS / HTTP — https://developer.mozilla.org</p>
+<p>[10] OWASP Foundation — OWASP Top Ten — https://owasp.org/www-project-top-ten/</p>
+<p>[11] Jazzband — dj-database-url — https://github.com/jazzband/dj-database-url</p>
+<p>[12] Django Software Foundation — Sending email — https://docs.djangoproject.com/en/stable/topics/email/</p>
+<p>[13] Mailtrap — Email Testing for Developers — https://mailtrap.io</p>
+<p>[14] Bootstrap Icons — https://icons.getbootstrap.com</p>
+<p>[15] Uniwersytet VIZJA / AEH — study programme materials for Computer Science (engineering profile)</p>
+</body></html>

@@ -1,63 +1,71 @@
-# Система управления студентами (Student Management System)
+# Student Management System (SMS)
 
-Это дипломный проект: веб-приложение на базе Django для управления студентами, курсами, оценками и посещаемостью.
+Дипломный инженерный проект: веб-приложение на Django для управления студентами, курсами, оценками и посещаемостью.
 
-## Требования
+## Stack
 
-- Python 3.10+
-- Django 5.0+
+- Python 3.10+ / Django 6
+- SQLite (local) / PostgreSQL via `DATABASE_URL` (production)
+- Gunicorn + WhiteNoise
+- Session auth + RBAC (admin / teacher / student)
+- SMTP / console email for password reset
 
-## Установка и запуск
+## Quick start
 
-1. **Клонируйте репозиторий (если требуется)** или перейдите в папку с проектом:
-   ```bash
-   cd DiplomCode
-   ```
+```bash
+cd DiplomCode
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # optional
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
 
-2. **Создайте виртуальное окружение** (рекомендуется):
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # Для macOS/Linux
-   venv\Scripts\activate     # Для Windows
-   ```
+Open http://127.0.0.1:8000
 
-3. **Установите зависимости**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Tests
 
-4. **Примените миграции базы данных**:
-   ```bash
-   python manage.py migrate
-   ```
-
-5. **Создайте суперпользователя** (для доступа к админке):
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-6. **Запустите локальный сервер**:
-   ```bash
-   python manage.py runserver
-   ```
-
-7. Откройте браузер и перейдите по адресу: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-
-## Тестирование
-
-Для проверки логики приложения запустите автоматические тесты:
 ```bash
 python manage.py test
 ```
 
-## Структура проекта
+## Production notes
 
-- `core/` — основное приложение с моделями, представлениями и бизнес-логикой.
-- `sms_project/` — настройки Django-проекта.
-- `templates/` — HTML-шаблоны.
-- `static/` — статические файлы (CSS, JS, изображения).
+Set environment variables (see `.env.example`):
 
-## Основной функционал
-- Авторизация и регистрация пользователей.
-- Разделение ролей: Администратор, Преподаватель, Студент.
-- Учет курсов, зачислений, оценок и посещаемости.
+| Variable | Purpose |
+|----------|---------|
+| `SECRET_KEY` | Required when `DEBUG=False` |
+| `DEBUG` | `False` in production |
+| `ALLOWED_HOSTS` | Comma-separated hosts |
+| `DATABASE_URL` | Postgres connection string |
+| `EMAIL_BACKEND` | `console` or `smtp` |
+| `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | SMTP |
+| `CSRF_TRUSTED_ORIGINS` | e.g. `https://your-app.onrender.com` |
+
+`build.sh` runs `collectstatic` + `migrate` for PaaS deploy (e.g. Render).
+
+## Main features
+
+- Login / logout / profile
+- Password reset by email (`/accounts/password_reset/`)
+- Students, courses, enrolments, grades, attendance
+- Role-scoped dashboard + JSON API `GET /api/dashboard/`
+- CSV export for students and grades
+
+## Project layout
+
+- `core/` — models, views, forms, tests
+- `sms_project/` — settings, WSGI
+- `templates/` — HTML
+- `static/` — CSS / JS
+- `docs/` — diploma documentation DOCX
+- `scripts/generate_diploma_docs.py` — regenerate documentation
+
+## Documentation
+
+English diploma documentation (BloomTime-style structure):
+
+`docs/SMS_Diploma_Documentation_Shpak_Maksym.docx`

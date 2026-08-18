@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-18 13:50+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && "
+"(n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && "
+"n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: templates/auth/login.html:4
+msgid "Login"
+msgstr "Zaloguj się"
+
+#: templates/auth/login.html:13
+msgid "Welcome Back"
+msgstr "Witamy ponownie"
+
+#: templates/auth/login.html:14
+msgid "Sign in to Student Management System"
+msgstr "Zaloguj się do Systemu Zarządzania Studentami"
+
+#: templates/auth/login.html:19
+msgid "Invalid username or password. Please try again."
+msgstr "Nieprawidłowa nazwa użytkownika lub hasło. Spróbuj ponownie."
+
+#: templates/auth/login.html:26
+msgid "Username"
+msgstr "Nazwa użytkownika"
+
+#: templates/auth/login.html:30
+msgid "Password"
+msgstr "Hasło"
+
+#: templates/auth/login.html:35
+msgid "Sign In"
+msgstr "Zaloguj"
+
+#: templates/auth/login.html:38
+msgid "Forgot your password?"
+msgstr "Zapomniałeś hasła?"
+
+#: templates/base.html:43
+msgid "Management System"
+msgstr "System Zarządzania"
+
+#: templates/base.html:49
+msgid "Overview"
+msgstr "Przegląd"
+
+#: templates/base.html:52 templates/dashboard/index.html:4
+#: templates/dashboard/index.html:5
+msgid "Dashboard"
+msgstr "Panel Główny"
+
+#: templates/base.html:57
+msgid "Academic"
+msgstr "Akademickie"
+
+#: templates/base.html:60
+msgid "Students"
+msgstr "Studenci"
+
+#: templates/base.html:64
+msgid "Courses"
+msgstr "Kursy"
+
+#: templates/base.html:69 templates/dashboard/index.html:33
+msgid "Enrollments"
+msgstr "Zapisy"
+
+#: templates/base.html:74
+msgid "Grades"
+msgstr "Oceny"
+
+#: templates/base.html:78
+msgid "Attendance"
+msgstr "Obecność"
+
+#: templates/base.html:84
+msgid "Analytics"
+msgstr "Analityka"
+
+#: templates/base.html:87
+msgid "Reports"
+msgstr "Raporty"
+
+#: templates/base.html:90
+msgid "Export Students"
+msgstr "Eksportuj Studentów"
+
+#: templates/base.html:91
+msgid "Export Grades"
+msgstr "Eksportuj Oceny"
+
+#: templates/base.html:98
+msgid "System"
+msgstr "System"
+
+#: templates/base.html:101
+msgid "Admin Panel"
+msgstr "Panel Administratora"
+
+#: templates/base.html:154
+msgid "Logout"
+msgstr "Wyloguj"
+
+#: templates/dashboard/index.html:15
+msgid "Total Students"
+msgstr "Liczba Studentów"
+
+#: templates/dashboard/index.html:24
+msgid "Active Courses"
+msgstr "Aktywne Kursy"
+
+#: templates/dashboard/index.html:42
+msgid "Average Grade"
+msgstr "Średnia Ocen"
+
+#: templates/dashboard/index.html:51
+msgid "Grade Distribution"
+msgstr "Rozkład Ocen"
+
+#: templates/dashboard/index.html:58
+msgid "Enrollments by Course"
+msgstr "Zapisy na Kursy"

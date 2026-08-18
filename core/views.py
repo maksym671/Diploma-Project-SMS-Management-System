@@ -152,20 +152,67 @@ def dashboard(request):
 
 @login_required
 def api_dashboard_data(request):
-    """JSON endpoint for dashboard chart data."""
+    """JSON REST endpoint for dashboard chart / KPI data (role-scoped)."""
+    user = request.user
+
+    if user.is_student():
+        try:
+            student = user.student_profile
+        except Student.DoesNotExist:
+            return JsonResponse({'error': 'Student profile not found.'}, status=404)
+
+        grades = Grade.objects.filter(enrollment__student=student)
+        grade_distribution = {
+            'A': grades.filter(grade_value__gte=4.5).count(),
+            'B': grades.filter(grade_value__gte=4.0, grade_value__lt=4.5).count(),
+            'C': grades.filter(grade_value__gte=3.5, grade_value__lt=4.0).count(),
+            'D': grades.filter(grade_value__gte=3.0, grade_value__lt=3.5).count(),
+            'F': grades.filter(grade_value__lt=3.0).count(),
+        }
+        return JsonResponse({
+            'role': 'student',
+            'total_courses': student.enrollments.filter(status='active').count(),
+            'total_grades': grades.count(),
+            'avg_grade': student.average_grade or 0,
+            'grade_distribution': grade_distribution,
+        })
+
+    if user.is_teacher():
+        grade_qs = Grade.objects.filter(enrollment__course__teacher=user)
+        course_qs = Course.objects.filter(teacher=user, is_active=True)
+        student_count = Student.objects.filter(
+            enrollments__course__teacher=user, is_active=True
+        ).distinct().count()
+        enrollment_count = Enrollment.objects.filter(
+            course__teacher=user, status='active'
+        ).count()
+    else:
+        grade_qs = Grade.objects.all()
+        course_qs = Course.objects.filter(is_active=True)
+        student_count = Student.objects.filter(is_active=True).count()
+        enrollment_count = Enrollment.objects.filter(status='active').count()
+
     grade_distribution = {
-        'A': Grade.objects.filter(grade_value__gte=4.5).count(),
-        'B': Grade.objects.filter(grade_value__gte=4.0, grade_value__lt=4.5).count(),
-        'C': Grade.objects.filter(grade_value__gte=3.5, grade_value__lt=4.0).count(),
-        'D': Grade.objects.filter(grade_value__gte=3.0, grade_value__lt=3.5).count(),
-        'F': Grade.objects.filter(grade_value__lt=3.0).count(),
+        'A': grade_qs.filter(grade_value__gte=4.5).count(),
+        'B': grade_qs.filter(grade_value__gte=4.0, grade_value__lt=4.5).count(),
+        'C': grade_qs.filter(grade_value__gte=3.5, grade_value__lt=4.0).count(),
+        'D': grade_qs.filter(grade_value__gte=3.0, grade_value__lt=3.5).count(),
+        'F': grade_qs.filter(grade_value__lt=3.0).count(),
     }
 
-    course_stats = Course.objects.filter(is_active=True).annotate(
+    course_stats = course_qs.annotate(
         enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
     ).order_by('-enrollment_count')[:8]
 
+    avg_grade = grade_qs.aggregate(avg=Avg('grade_value'))['avg']
+
     return JsonResponse({
+        'role': user.role,
+        'total_students': student_count,
+        'total_courses': course_qs.count(),
+        'total_enrollments': enrollment_count,
+        'total_grades': grade_qs.count(),
+        'avg_grade': round(avg_grade, 2) if avg_grade else 0,
         'grade_distribution': grade_distribution,
         'course_labels': [c.course_code for c in course_stats],
         'course_data': [c.enrollment_count for c in course_stats],
