@@ -273,6 +273,16 @@ def student_list(request):
 def student_detail(request, pk):
     """View student details with enrollments and grades."""
     student = get_object_or_404(Student, pk=pk)
+    
+    if request.user.is_student():
+        try:
+            if request.user.student_profile.pk != student.pk:
+                messages.error(request, 'You can only view your own profile.')
+                return redirect('dashboard')
+        except Student.DoesNotExist:
+            messages.error(request, 'Student profile not found.')
+            return redirect('dashboard')
+
     enrollments = Enrollment.objects.filter(student=student).select_related('course', 'grade')
 
     context = {
@@ -370,7 +380,15 @@ def course_list(request):
 def course_detail(request, pk):
     """View course details with enrolled students."""
     course = get_object_or_404(Course, pk=pk)
-    enrollments = Enrollment.objects.filter(course=course).select_related('student', 'grade')
+    
+    if request.user.is_student():
+        try:
+            student = request.user.student_profile
+            enrollments = Enrollment.objects.filter(course=course, student=student).select_related('student', 'grade')
+        except Student.DoesNotExist:
+            enrollments = Enrollment.objects.none()
+    else:
+        enrollments = Enrollment.objects.filter(course=course).select_related('student', 'grade')
 
     context = {
         'course': course,

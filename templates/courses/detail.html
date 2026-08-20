@@ -87,7 +87,14 @@
 <!-- Enrolled Students -->
 <div class="card">
     <div class="card-header">
-        <h5><i class="bi bi-people mr-1"></i> Enrolled Students ({{ enrollments.count }})</h5>
+        <h5>
+            <i class="bi bi-people mr-1"></i> 
+            {% if user.is_student %}
+                Your Enrollment Status
+            {% else %}
+                Enrolled Students ({{ enrollments.count }})
+            {% endif %}
+        </h5>
     </div>
     <div class="table-container">
         <table class="data-table">
@@ -129,7 +136,11 @@
                 {% empty %}
                 <tr>
                     <td colspan="5" class="text-muted" style="text-align:center; padding:30px;">
-                        No students enrolled in this course yet
+                        {% if user.is_student %}
+                            You are not enrolled in this course.
+                        {% else %}
+                            No students enrolled in this course yet.
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
