@@ -131,7 +131,7 @@ if database_url:
         )
     DATABASES['default'] = dj_database_url.parse(
         database_url,
-        conn_max_age=600,
+        conn_max_age=0,
         ssl_require=not DEBUG,
     )
 
