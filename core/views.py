@@ -237,6 +237,12 @@ def student_list(request):
     else:
         students = Student.objects.all()
 
+    # Optimize queries by pre-calculating enrollment counts and average grades in the DB
+    students = students.annotate(
+        annotated_enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'), distinct=True),
+        annotated_average_grade=Avg('enrollments__grade__grade_value')
+    )
+
     if query:
         students = students.filter(
             Q(first_name__icontains=query) |
@@ -336,11 +342,11 @@ def course_list(request):
     semester = request.GET.get('semester', '')
 
     if request.user.is_teacher():
-        courses = Course.objects.filter(teacher=request.user).annotate(
+        courses = Course.objects.filter(teacher=request.user).select_related('teacher').annotate(
             enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
         )
     else:
-        courses = Course.objects.annotate(
+        courses = Course.objects.select_related('teacher').annotate(
             enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
         )
 

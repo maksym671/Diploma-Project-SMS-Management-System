@@ -68,12 +68,12 @@
                     <td>{{ student.study_program }}</td>
                     <td class="text-muted">{{ student.date_enrolled|date:"M d, Y" }}</td>
                     <td>
-                        <span class="badge badge-info">{{ student.enrollment_count }}</span>
+                        <span class="badge badge-info">{{ student.annotated_enrollment_count }}</span>
                     </td>
                     <td>
-                        {% if student.average_grade %}
-                        <span class="badge badge-grade {% if student.average_grade >= 4.5 %}a{% elif student.average_grade >= 4.0 %}b{% elif student.average_grade >= 3.5 %}c{% elif student.average_grade >= 3.0 %}d{% else %}f{% endif %}">
-                            {{ student.average_grade }}
+                        {% if student.annotated_average_grade %}
+                        <span class="badge badge-grade {% if student.annotated_average_grade >= 4.5 %}a{% elif student.annotated_average_grade >= 4.0 %}b{% elif student.annotated_average_grade >= 3.5 %}c{% elif student.annotated_average_grade >= 3.0 %}d{% else %}f{% endif %}">
+                            {{ student.annotated_average_grade|floatformat:2 }}
                         </span>
                         {% else %}
                         <span class="text-muted">—</span>
