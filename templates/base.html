@@ -25,6 +25,9 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     {% block extra_css %}{% endblock %}
+
+    <!-- Hotwire Turbo for instant page transitions -->
+    <script type="module" src="https://cdn.skypack.dev/@hotwired/turbo"></script>
 </head>
 <body>
     {% if user.is_authenticated %}

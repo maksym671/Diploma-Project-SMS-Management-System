@@ -2,13 +2,16 @@
    Student Management System — JavaScript
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
     initThemeToggle();
     initSidebar();
     initAlerts();
     initAnimatedCounters();
     initCharts();
-});
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('turbo:load', initApp);
 
 
 /* ─── Theme Toggle ──────────────────────────────────────────── */
