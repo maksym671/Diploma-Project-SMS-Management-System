@@ -9,7 +9,6 @@ class User(AbstractUser):
     ROLE_CHOICES = [
         ('admin', 'Administrator'),
         ('teacher', 'Teacher'),
-        ('student', 'Student'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='teacher')
     department = models.CharField(max_length=100, blank=True)
@@ -20,8 +19,6 @@ class User(AbstractUser):
     def is_teacher(self):
         return self.role == 'teacher'
 
-    def is_student(self):
-        return self.role == 'student'
 
     def __str__(self):
         return f"{self.get_full_name() or self.username} ({self.get_role_display()})"
@@ -29,7 +26,6 @@ class User(AbstractUser):
 
 class Student(models.Model):
     """Student record with personal and academic information."""
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='student_profile')
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)

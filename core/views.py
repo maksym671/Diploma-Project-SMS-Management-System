@@ -49,27 +49,6 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     """Main dashboard with statistics and analytics."""
-    if request.user.is_student():
-        try:
-            student = request.user.student_profile
-            total_courses = student.enrollments.filter(status='active').count()
-            total_grades = Grade.objects.filter(enrollment__student=student).count()
-            avg_grade = student.average_grade or 0
-            recent_enrollments = student.enrollments.select_related('course').order_by('-created_at')[:5]
-            
-            context = {
-                'student': student,
-                'total_courses': total_courses,
-                'total_grades': total_grades,
-                'avg_grade': avg_grade,
-                'recent_enrollments': recent_enrollments,
-                'is_student_dashboard': True,
-            }
-            return render(request, 'dashboard/index.html', context)
-        except Student.DoesNotExist:
-            messages.error(request, "Student profile not found.")
-            return render(request, 'dashboard/index.html', {'is_student_dashboard': True, 'error': True})
-
     if request.user.is_teacher():
         total_students = Student.objects.filter(enrollments__course__teacher=request.user, is_active=True).distinct().count()
         total_courses = Course.objects.filter(teacher=request.user, is_active=True).count()
@@ -155,28 +134,6 @@ def api_dashboard_data(request):
     """JSON REST endpoint for dashboard chart / KPI data (role-scoped)."""
     user = request.user
 
-    if user.is_student():
-        try:
-            student = user.student_profile
-        except Student.DoesNotExist:
-            return JsonResponse({'error': 'Student profile not found.'}, status=404)
-
-        grades = Grade.objects.filter(enrollment__student=student)
-        grade_distribution = {
-            'A': grades.filter(grade_value__gte=4.5).count(),
-            'B': grades.filter(grade_value__gte=4.0, grade_value__lt=4.5).count(),
-            'C': grades.filter(grade_value__gte=3.5, grade_value__lt=4.0).count(),
-            'D': grades.filter(grade_value__gte=3.0, grade_value__lt=3.5).count(),
-            'F': grades.filter(grade_value__lt=3.0).count(),
-        }
-        return JsonResponse({
-            'role': 'student',
-            'total_courses': student.enrollments.filter(status='active').count(),
-            'total_grades': grades.count(),
-            'avg_grade': student.average_grade or 0,
-            'grade_distribution': grade_distribution,
-        })
-
     if user.is_teacher():
         grade_qs = Grade.objects.filter(enrollment__course__teacher=user)
         course_qs = Course.objects.filter(teacher=user, is_active=True)
@@ -224,10 +181,6 @@ def api_dashboard_data(request):
 @login_required
 def student_list(request):
     """List all students with search and filtering."""
-    if request.user.is_student():
-        messages.error(request, 'You do not have permission to view all students.')
-        return redirect('dashboard')
-
     query = request.GET.get('q', '')
     program = request.GET.get('program', '')
     status = request.GET.get('status', '')
@@ -274,15 +227,6 @@ def student_detail(request, pk):
     """View student details with enrollments and grades."""
     student = get_object_or_404(Student, pk=pk)
     
-    if request.user.is_student():
-        try:
-            if request.user.student_profile.pk != student.pk:
-                messages.error(request, 'You can only view your own profile.')
-                return redirect('dashboard')
-        except Student.DoesNotExist:
-            messages.error(request, 'Student profile not found.')
-            return redirect('dashboard')
-
     enrollments = Enrollment.objects.filter(student=student).select_related('course', 'grade')
 
     context = {
@@ -344,10 +288,6 @@ def student_delete(request, pk):
 @login_required
 def course_list(request):
     """List all courses with search."""
-    if request.user.is_student():
-        messages.error(request, 'You do not have permission to view all courses.')
-        return redirect('dashboard')
-
     query = request.GET.get('q', '')
     semester = request.GET.get('semester', '')
 
@@ -380,15 +320,7 @@ def course_list(request):
 def course_detail(request, pk):
     """View course details with enrolled students."""
     course = get_object_or_404(Course, pk=pk)
-    
-    if request.user.is_student():
-        try:
-            student = request.user.student_profile
-            enrollments = Enrollment.objects.filter(course=course, student=student).select_related('student', 'grade')
-        except Student.DoesNotExist:
-            enrollments = Enrollment.objects.none()
-    else:
-        enrollments = Enrollment.objects.filter(course=course).select_related('student', 'grade')
+    enrollments = Enrollment.objects.filter(course=course).select_related('student', 'grade')
 
     context = {
         'course': course,
@@ -449,10 +381,7 @@ def course_delete(request, pk):
 @login_required
 def enrollment_list(request):
     """List all enrollments."""
-    if request.user.is_student():
-        messages.error(request, 'You do not have permission to view all enrollments.')
-        return redirect('dashboard')
-    elif request.user.is_teacher():
+    if request.user.is_teacher():
         messages.error(request, 'You do not have permission to manage enrollments. Please use the courses tab.')
         return redirect('dashboard')
     query = request.GET.get('q', '')
@@ -535,12 +464,7 @@ def grade_list(request):
         'enrollment__student', 'enrollment__course'
     )
 
-    if request.user.is_student():
-        try:
-            grades = grades.filter(enrollment__student=request.user.student_profile)
-        except Student.DoesNotExist:
-            grades = Grade.objects.none()
-    elif request.user.is_teacher():
+    if request.user.is_teacher():
         grades = grades.filter(enrollment__course__teacher=request.user)
 
     if query:
@@ -616,12 +540,7 @@ def attendance_list(request):
     """List attendance records."""
     records = Attendance.objects.select_related('enrollment__student', 'enrollment__course')
     
-    if request.user.is_student():
-        try:
-            records = records.filter(enrollment__student=request.user.student_profile)
-        except Student.DoesNotExist:
-            records = Attendance.objects.none()
-    elif request.user.is_teacher():
+    if request.user.is_teacher():
         records = records.filter(enrollment__course__teacher=request.user)
 
     query = request.GET.get('q', '')

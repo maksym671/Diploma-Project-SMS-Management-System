@@ -9,15 +9,11 @@ from core.models import User, Student, Course, Enrollment, Grade, Attendance
 
 class CoreModelTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            username='teststudent', password='password', role='student'
-        )
         self.teacher = User.objects.create_user(
             username='testteacher', password='password', role='teacher'
         )
 
         self.student = Student.objects.create(
-            user=self.user,
             first_name='Ivan',
             last_name='Ivanov',
             email='ivan@example.com',
@@ -88,7 +84,6 @@ class CoreModelTests(TestCase):
         admin = User.objects.create_user(username='admin1', password='x', role='admin')
         self.assertTrue(admin.is_admin())
         self.assertTrue(self.teacher.is_teacher())
-        self.assertTrue(self.user.is_student())
 
     def test_attendance_unique_per_day(self):
         Attendance.objects.create(
@@ -114,11 +109,7 @@ class AuthAndAccessTests(TestCase):
             username='teacher', password='pass12345', role='teacher',
             first_name='Anna', last_name='Nowak',
         )
-        self.student_user = User.objects.create_user(
-            username='student', password='pass12345', role='student'
-        )
         self.student = Student.objects.create(
-            user=self.student_user,
             first_name='Ola',
             last_name='Kowalska',
             email='ola@example.com',
@@ -148,12 +139,6 @@ class AuthAndAccessTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn('/login/', response.url)
 
-    def test_student_cannot_list_all_students(self):
-        self.client.login(username='student', password='pass12345')
-        response = self.client.get(reverse('student_list'))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('dashboard'))
-
     def test_teacher_can_open_dashboard(self):
         self.client.login(username='teacher', password='pass12345')
         response = self.client.get(reverse('dashboard'))
@@ -169,11 +154,7 @@ class DashboardApiTests(TestCase):
         self.teacher = User.objects.create_user(
             username='teacher', password='pass12345', role='teacher'
         )
-        self.student_user = User.objects.create_user(
-            username='student', password='pass12345', role='student'
-        )
         student = Student.objects.create(
-            user=self.student_user,
             first_name='Ola',
             last_name='Kowalska',
             email='ola@example.com',
@@ -214,13 +195,6 @@ class DashboardApiTests(TestCase):
         self.assertEqual(data['role'], 'teacher')
         self.assertEqual(data['total_courses'], 1)
 
-    def test_api_student_payload(self):
-        self.client.login(username='student', password='pass12345')
-        response = self.client.get(reverse('api_dashboard'))
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertEqual(data['role'], 'student')
-        self.assertEqual(float(data['avg_grade']), 4.7)
 
 
 @override_settings(
