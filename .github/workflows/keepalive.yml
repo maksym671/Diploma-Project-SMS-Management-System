@@ -1,11 +1,11 @@
 name: Keep Render Awake
 on:
   schedule:
-      - cron: "*/10 * * * *"
-        workflow_dispatch:
-        jobs:
-          ping:
+  - cron: "*/10 * * * *"
+workflow_dispatch:
+jobs:
+ping:
               runs-on: ubuntu-latest
-                  steps:
-                        - name: Ping Render Service
-                                run: curl -s https://edumanage.onrender.com/login/ || true
+steps:
+- name: Ping Render Service
+run: curl -s https://edumanage.onrender.com/login/ || true
