@@ -2,12 +2,10 @@ name: Keep Render Awake
 on:
   schedule:
       - cron: "*/10 * * * *"
-  workflow_dispatch:
-jobs:
-  ping:
-      runs-on: ubuntu-latest
-          steps:
-                - name: Ping Render Service
-                        run: |
-                          curl -s https://diploma-project-sms-management-system.onrender.com/health || true
-        
+        workflow_dispatch:
+        jobs:
+          ping:
+              runs-on: ubuntu-latest
+                  steps:
+                        - name: Ping Render Service
+                                run: curl -s https://diploma-project-sms-management-system.onrender.com/login/ || true
