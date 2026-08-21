@@ -26,8 +26,10 @@
 
     {% block extra_css %}{% endblock %}
 
-    <!-- Hotwire Turbo for instant page transitions -->
-    <script type="module" src="https://cdn.skypack.dev/@hotwired/turbo"></script>
+    <!-- Hotwire Turbo 8 for instant page transitions & prefetching -->
+    <meta name="turbo-prefetch" content="true">
+    <meta name="view-transition" content="same-origin">
+    <script type="module" src="https://esm.sh/@hotwired/turbo@8.0.4"></script>
 </head>
 <body>
     {% if user.is_authenticated %}

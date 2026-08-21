@@ -1589,3 +1589,14 @@ textarea.form-control {
         padding-top: 0 !important;
     }
 }
+
+/* ─── View Transitions (Turbo 8) ─────────────────────────────── */
+.sidebar {
+    view-transition-name: sidebar;
+}
+.top-navbar {
+    view-transition-name: top-navbar;
+}
+.main-content {
+    view-transition-name: main-content;
+}
