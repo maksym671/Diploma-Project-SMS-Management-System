@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Delete Grade{% endblock %}
-{% block breadcrumb %}Grades / Delete{% endblock %}
+{% block title %}{% trans "Delete Grade" %}{% endblock %}
+{% block breadcrumb %}{% trans "Grades" %} / {% trans "Delete" %}{% endblock %}
 
 {% block content %}
 <div class="confirm-card card">
@@ -9,18 +10,19 @@
         <div class="confirm-icon">
             <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
-        <h4>Delete Grade</h4>
+        <h4>{% trans "Delete Grade" %}</h4>
         <p>
-            Are you sure you want to delete the grade <strong>{{ grade.grade_value }}</strong>
-            for <strong>{{ grade.enrollment.student.full_name }}</strong>
-            in <strong>{{ grade.enrollment.course.course_name }}</strong>?
+            {% blocktrans with value=grade.grade_value student=grade.enrollment.student.full_name course=grade.enrollment.course.course_name %}
+            Are you sure you want to delete the grade <strong>{{ value }}</strong>
+            for <strong>{{ student }}</strong> in <strong>{{ course }}</strong>?
+            {% endblocktrans %}
         </p>
         <form method="post">
             {% csrf_token %}
             <div class="confirm-actions">
-                <a href="{% url 'grade_list' %}" class="btn btn-outline">Cancel</a>
+                <a href="{% url 'grade_list' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
                 <button type="submit" class="btn btn-danger" id="confirm-delete-grade">
-                    <i class="bi bi-trash3"></i> Delete Grade
+                    <i class="bi bi-trash3"></i> {% trans "Delete Grade" %}
                 </button>
             </div>
         </form>

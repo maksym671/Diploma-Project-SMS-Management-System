@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}My Profile{% endblock %}
-{% block breadcrumb %}Profile{% endblock %}
+{% block title %}{% trans "My Profile" %}{% endblock %}
+{% block breadcrumb %}{% trans "Profile" %}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">My Profile</h1>
-        <p class="page-subtitle">Update your personal information</p>
+        <h1 class="page-title">{% trans "My Profile" %}</h1>
+        <p class="page-subtitle">{% trans "Update your personal information" %}</p>
     </div>
 </div>
 
@@ -18,30 +19,30 @@
 
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label">First Name</label>
+                    <label class="form-label">{% trans "First Name" %}</label>
                     {{ form.first_name }}
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Last Name</label>
+                    <label class="form-label">{% trans "Last Name" %}</label>
                     {{ form.last_name }}
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Email Address</label>
+                <label class="form-label">{% trans "Email Address" %}</label>
                 {{ form.email }}
             </div>
 
             <div class="form-group" style="padding-top: 16px; border-top: 1px solid var(--border);">
-                <label class="form-label">Security</label>
+                <label class="form-label">{% trans "Security" %}</label>
                 <a href="{% url 'password_reset' %}" class="btn btn-outline btn-sm">
-                    <i class="bi bi-shield-lock"></i> Reset Password
+                    <i class="bi bi-shield-lock"></i> {% trans "Reset Password" %}
                 </a>
             </div>
 
             <div class="btn-group mt-2">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-lg"></i> Save Changes
+                    <i class="bi bi-check-lg"></i> {% trans "Save Changes" %}
                 </button>
             </div>
         </form>

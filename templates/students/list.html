@@ -1,18 +1,25 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Students{% endblock %}
-{% block breadcrumb %}Students{% endblock %}
+{% block title %}{% trans "Students" %}{% endblock %}
+{% block breadcrumb %}{% trans "Students" %}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">Students</h1>
-        <p class="page-subtitle">Manage student records and academic information</p>
+        <h1 class="page-title">{% trans "Students" %}</h1>
+        <p class="page-subtitle">
+            {% if user.is_admin %}
+            {% trans "Manage student records and academic information" %}
+            {% else %}
+            {% trans "Students enrolled in your courses" %}
+            {% endif %}
+        </p>
     </div>
     {% if user.is_admin %}
     <a href="{% url 'student_create' %}" class="btn btn-primary">
         <i class="bi bi-plus-lg"></i>
-        Add Student
+        {% trans "Add Student" %}
     </a>
     {% endif %}
 </div>
@@ -21,21 +28,21 @@
 <form method="get" class="filter-bar">
     <div class="search-bar">
         <i class="bi bi-search"></i>
-        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search students..." id="student-search">
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search students...' %}" id="student-search">
     </div>
     <select name="program" class="form-select" onchange="this.form.submit()" id="filter-program">
-        <option value="">All Programs</option>
+        <option value="">{% trans "All Programs" %}</option>
         {% for prog in programs %}
         <option value="{{ prog }}" {% if selected_program == prog %}selected{% endif %}>{{ prog }}</option>
         {% endfor %}
     </select>
     <select name="status" class="form-select" onchange="this.form.submit()" id="filter-status">
-        <option value="">All Status</option>
-        <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
-        <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>Inactive</option>
+        <option value="">{% trans "All Status" %}</option>
+        <option value="active" {% if selected_status == 'active' %}selected{% endif %}>{% trans "Active" %}</option>
+        <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>{% trans "Inactive" %}</option>
     </select>
     <button type="submit" class="btn btn-outline btn-sm">
-        <i class="bi bi-funnel"></i> Filter
+        <i class="bi bi-funnel"></i> {% trans "Filter" %}
     </button>
 </form>
 
@@ -45,14 +52,14 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Student</th>
-                    <th>Student Number</th>
-                    <th>Program</th>
-                    <th>Enrolled</th>
-                    <th>Courses</th>
-                    <th>Avg. Grade</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>{% trans "Student" %}</th>
+                    <th>{% trans "Student Number" %}</th>
+                    <th>{% trans "Program" %}</th>
+                    <th>{% trans "Enrolled" %}</th>
+                    <th>{% trans "Courses" %}</th>
+                    <th>{% trans "Avg. Grade" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,7 +73,7 @@
                     </td>
                     <td>{{ student.student_number }}</td>
                     <td>{{ student.study_program }}</td>
-                    <td class="text-muted">{{ student.date_enrolled|date:"M d, Y" }}</td>
+                    <td class="text-muted">{{ student.date_enrolled|date:"SHORT_DATE_FORMAT" }}</td>
                     <td>
                         <span class="badge badge-info">{{ student.annotated_enrollment_count }}</span>
                     </td>
@@ -81,21 +88,21 @@
                     </td>
                     <td>
                         {% if student.is_active %}
-                        <span class="badge badge-active">Active</span>
+                        <span class="badge badge-active">{% trans "Active" %}</span>
                         {% else %}
-                        <span class="badge badge-inactive">Inactive</span>
+                        <span class="badge badge-inactive">{% trans "Inactive" %}</span>
                         {% endif %}
                     </td>
                     <td>
                         <div class="btn-group">
-                            <a href="{% url 'student_detail' student.pk %}" class="btn-icon" title="View">
+                            <a href="{% url 'student_detail' student.pk %}" class="btn-icon" title="{% trans 'View' %}">
                                 <i class="bi bi-eye"></i>
                             </a>
                             {% if user.is_admin %}
-                            <a href="{% url 'student_update' student.pk %}" class="btn-icon" title="Edit">
+                            <a href="{% url 'student_update' student.pk %}" class="btn-icon" title="{% trans 'Edit' %}">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="{% url 'student_delete' student.pk %}" class="btn-icon danger" title="Delete">
+                            <a href="{% url 'student_delete' student.pk %}" class="btn-icon danger" title="{% trans 'Delete' %}">
                                 <i class="bi bi-trash3"></i>
                             </a>
                             {% endif %}
@@ -107,11 +114,19 @@
                     <td colspan="8">
                         <div class="empty-state">
                             <i class="bi bi-people"></i>
-                            <h5>No Students Found</h5>
-                            <p>{% if query %}No students matching "{{ query }}"{% else %}Get started by adding your first student{% endif %}</p>
+                            <h5>{% trans "No Students Found" %}</h5>
+                            <p>
+                                {% if query %}
+                                {% blocktrans %}No students matching "{{ query }}"{% endblocktrans %}
+                                {% elif user.is_admin %}
+                                {% trans "Get started by adding your first student" %}
+                                {% else %}
+                                {% trans "No students are enrolled in your courses yet" %}
+                                {% endif %}
+                            </p>
                             {% if user.is_admin %}
                             <a href="{% url 'student_create' %}" class="btn btn-primary">
-                                <i class="bi bi-plus-lg"></i> Add Student
+                                <i class="bi bi-plus-lg"></i> {% trans "Add Student" %}
                             </a>
                             {% endif %}
                         </div>
@@ -121,5 +136,6 @@
             </tbody>
         </table>
     </div>
+    {% include "partials/pagination.html" %}
 </div>
 {% endblock %}

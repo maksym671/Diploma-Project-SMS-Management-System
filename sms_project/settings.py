@@ -101,6 +101,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -129,10 +130,14 @@ if database_url:
             'DATABASE_URL is set but dj-database-url is not installed. '
             'Run: pip install dj-database-url psycopg2-binary'
         )
+    # TLS is mandatory for the managed Postgres we deploy against, but passing
+    # sslmode to any other backend (e.g. a SQLite URL used to rehearse the
+    # production build locally) raises a connection error.
+    is_postgres = database_url.startswith(('postgres://', 'postgresql://'))
     DATABASES['default'] = dj_database_url.parse(
         database_url,
         conn_max_age=0,
-        ssl_require=not DEBUG,
+        ssl_require=is_postgres and not DEBUG,
     )
 
 

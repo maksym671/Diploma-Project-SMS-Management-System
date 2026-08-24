@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ course.course_name }}{% endblock %}
-{% block breadcrumb %}Courses / {{ course.course_code }}{% endblock %}
+{% block breadcrumb %}{% trans "Courses" %} / {{ course.course_code }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
@@ -14,12 +15,12 @@
             <div class="detail-meta">
                 <span><i class="bi bi-hash"></i> {{ course.course_code }}</span>
                 <span><i class="bi bi-calendar3"></i> {{ course.semester }}</span>
-                <span><i class="bi bi-star"></i> {{ course.credits }} Credits</span>
+                <span><i class="bi bi-star"></i> {{ course.credits }} {% trans "Credits" %}</span>
                 <span>
                     {% if course.is_active %}
-                    <span class="badge badge-active">Active</span>
+                    <span class="badge badge-active">{% trans "Active" %}</span>
                     {% else %}
-                    <span class="badge badge-inactive">Inactive</span>
+                    <span class="badge badge-inactive">{% trans "Inactive" %}</span>
                     {% endif %}
                 </span>
             </div>
@@ -28,10 +29,10 @@
     {% if user.is_admin %}
     <div class="btn-group">
         <a href="{% url 'course_update' course.pk %}" class="btn btn-outline">
-            <i class="bi bi-pencil"></i> Edit
+            <i class="bi bi-pencil"></i> {% trans "Edit" %}
         </a>
         <a href="{% url 'course_delete' course.pk %}" class="btn btn-danger btn-sm">
-            <i class="bi bi-trash3"></i> Delete
+            <i class="bi bi-trash3"></i> {% trans "Delete" %}
         </a>
     </div>
     {% endif %}
@@ -40,44 +41,44 @@
 <!-- Course Info -->
 <div class="card mb-3">
     <div class="card-header">
-        <h5><i class="bi bi-info-circle mr-1"></i> Course Information</h5>
+        <h5><i class="bi bi-info-circle mr-1"></i> {% trans "Course Information" %}</h5>
     </div>
     <div class="card-body">
         <div class="info-grid">
             <div class="info-item">
-                <div class="info-label">Course Code</div>
+                <div class="info-label">{% trans "Course Code" %}</div>
                 <div class="info-value">{{ course.course_code }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Semester</div>
+                <div class="info-label">{% trans "Semester" %}</div>
                 <div class="info-value">{{ course.semester }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Credits</div>
+                <div class="info-label">{% trans "Credits" %}</div>
                 <div class="info-value">{{ course.credits }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Teacher</div>
+                <div class="info-label">{% trans "Teacher" %}</div>
                 <div class="info-value">
                     {% if course.teacher %}
                         {{ course.teacher.get_full_name|default:course.teacher.username }}
                     {% else %}
-                        Unassigned
+                        {% trans "Unassigned" %}
                     {% endif %}
                 </div>
             </div>
             <div class="info-item">
-                <div class="info-label">Enrolled / Max</div>
+                <div class="info-label">{% trans "Enrolled / Max" %}</div>
                 <div class="info-value">{{ course.enrolled_count }} / {{ course.max_students }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Available Seats</div>
+                <div class="info-label">{% trans "Available Seats" %}</div>
                 <div class="info-value">{{ course.available_seats }}</div>
             </div>
         </div>
         {% if course.description %}
         <div class="info-item mt-2">
-            <div class="info-label">Description</div>
+            <div class="info-label">{% trans "Description" %}</div>
             <div class="info-value">{{ course.description }}</div>
         </div>
         {% endif %}
@@ -88,23 +89,19 @@
 <div class="card">
     <div class="card-header">
         <h5>
-            <i class="bi bi-people mr-1"></i> 
-            {% if user.is_student %}
-                Your Enrollment Status
-            {% else %}
-                Enrolled Students ({{ enrollments.count }})
-            {% endif %}
+            <i class="bi bi-people mr-1"></i>
+            {% blocktrans with count=enrollments.count %}Enrolled Students ({{ count }}){% endblocktrans %}
         </h5>
     </div>
     <div class="table-container">
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Student</th>
-                    <th>Student Number</th>
-                    <th>Program</th>
-                    <th>Status</th>
-                    <th>Grade</th>
+                    <th>{% trans "Student" %}</th>
+                    <th>{% trans "Student Number" %}</th>
+                    <th>{% trans "Program" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Grade" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,18 +126,14 @@
                             {{ enrollment.grade.grade_value }} ({{ enrollment.grade.letter_grade }})
                         </span>
                         {% else %}
-                        <span class="text-muted">Not graded</span>
+                        <span class="text-muted">{% trans "Not graded" %}</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
                     <td colspan="5" class="text-muted" style="text-align:center; padding:30px;">
-                        {% if user.is_student %}
-                            You are not enrolled in this course.
-                        {% else %}
-                            No students enrolled in this course yet.
-                        {% endif %}
+                        {% trans "No students enrolled in this course yet." %}
                     </td>
                 </tr>
                 {% endfor %}

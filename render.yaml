@@ -1,0 +1,47 @@
+# Render Blueprint: describes the whole deployment as code.
+# Create the service from this file via Render Dashboard -> New -> Blueprint.
+services:
+  - type: web
+    name: diploma-project-sms-management-system
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: ./build.sh
+    startCommand: gunicorn sms_project.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /login/
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+
+      # Generated once by Render and kept for the life of the service.
+      - key: SECRET_KEY
+        generateValue: true
+
+      - key: DEBUG
+        value: "False"
+
+      # RENDER_EXTERNAL_HOSTNAME is injected automatically and appended to
+      # ALLOWED_HOSTS in settings.py, so only extra custom domains go here.
+      - key: ALLOWED_HOSTS
+        sync: false
+
+      # Required once a custom domain is attached, e.g.
+      # https://sms.example.me,https://sms-student-management.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+
+      # Postgres connection string (Neon free tier — it does not expire,
+      # unlike Render's own free database).
+      - key: DATABASE_URL
+        sync: false
+
+      # Replaces the published demo password on the admin account. Set it in
+      # the dashboard so it never reaches the repository.
+      - key: DJANGO_ADMIN_PASSWORD
+        sync: false
+
+      # Password reset: "console" writes mail to the logs, "smtp" really sends.
+      - key: EMAIL_BACKEND
+        value: console
+      - key: DEFAULT_FROM_EMAIL
+        value: Student Management System <noreply@sms.local>

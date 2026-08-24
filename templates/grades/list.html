@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Grades{% endblock %}
-{% block breadcrumb %}Grades{% endblock %}
+{% block title %}{% trans "Grades" %}{% endblock %}
+{% block breadcrumb %}{% trans "Grades" %}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">Grades</h1>
+        <h1 class="page-title">{% trans "Grades" %}</h1>
         <p class="page-subtitle">
-            {% if user.is_teacher %}View and manage grades for your courses{% else %}Manage academic grades and results{% endif %}
+            {% if user.is_teacher %}{% trans "View and manage grades for your courses" %}{% else %}{% trans "Manage academic grades and results" %}{% endif %}
         </p>
     </div>
     <a href="{% url 'grade_create' %}" class="btn btn-primary">
         <i class="bi bi-plus-lg"></i>
-        Assign Grade
+        {% trans "Assign Grade" %}
     </a>
 </div>
 
@@ -21,10 +22,10 @@
 <form method="get" class="filter-bar">
     <div class="search-bar">
         <i class="bi bi-search"></i>
-        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by student or course..." id="grade-search">
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search by student or course...' %}" id="grade-search">
     </div>
     <button type="submit" class="btn btn-outline btn-sm">
-        <i class="bi bi-funnel"></i> Filter
+        <i class="bi bi-funnel"></i> {% trans "Filter" %}
     </button>
 </form>
 
@@ -34,13 +35,14 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Student</th>
-                    <th>Course</th>
-                    <th>Grade</th>
-                    <th>Letter</th>
-                    <th>Date Assigned</th>
-                    <th>Comments</th>
-                    <th>Actions</th>
+                    <th>{% trans "Student" %}</th>
+                    <th>{% trans "Course" %}</th>
+                    <th>{% trans "Grade" %}</th>
+                    <th>{% trans "Letter" %}</th>
+                    <th>{% trans "Date Assigned" %}</th>
+                    <th>{% trans "Assigned By" %}</th>
+                    <th>{% trans "Comments" %}</th>
+                    <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +70,14 @@
                             {{ grade.letter_grade }}
                         </strong>
                     </td>
-                    <td class="text-muted">{{ grade.date_assigned|date:"M d, Y" }}</td>
+                    <td class="text-muted">{{ grade.date_assigned|date:"SHORT_DATE_FORMAT" }}</td>
+                    <td class="text-muted">
+                        {% if grade.assigned_by %}
+                            {{ grade.assigned_by.get_full_name|default:grade.assigned_by.username }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
                     <td class="text-muted">
                         {% if grade.comments %}
                             {{ grade.comments|truncatechars:40 }}
@@ -78,26 +87,24 @@
                     </td>
                     <td>
                         <div class="btn-group">
-                            <a href="{% url 'grade_update' grade.pk %}" class="btn-icon" title="Edit">
+                            <a href="{% url 'grade_update' grade.pk %}" class="btn-icon" title="{% trans 'Edit' %}">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            {% if user.is_admin %}
-                            <a href="{% url 'grade_delete' grade.pk %}" class="btn-icon danger" title="Delete">
+                            <a href="{% url 'grade_delete' grade.pk %}" class="btn-icon danger" title="{% trans 'Delete' %}">
                                 <i class="bi bi-trash3"></i>
                             </a>
-                            {% endif %}
                         </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7">
+                    <td colspan="8">
                         <div class="empty-state">
                             <i class="bi bi-award"></i>
-                            <h5>No Grades Found</h5>
-                            <p>{% if query %}No results matching your search{% else %}Assign grades to student enrollments{% endif %}</p>
+                            <h5>{% trans "No Grades Found" %}</h5>
+                            <p>{% if query %}{% trans "No results matching your search" %}{% else %}{% trans "Assign grades to student enrollments" %}{% endif %}</p>
                             <a href="{% url 'grade_create' %}" class="btn btn-primary">
-                                <i class="bi bi-plus-lg"></i> Assign Grade
+                                <i class="bi bi-plus-lg"></i> {% trans "Assign Grade" %}
                             </a>
                         </div>
                     </td>
@@ -106,5 +113,6 @@
             </tbody>
         </table>
     </div>
+    {% include "partials/pagination.html" %}
 </div>
 {% endblock %}

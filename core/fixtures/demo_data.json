@@ -1,0 +1,2460 @@
+[
+  {
+    "model": "core.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$JlVbNg0yGa7V2RDwV3MP5a$r+u3m4EHjJscq2oILxKu69AYZ7g/Vubs47yuSh2/Q4Y=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "Super",
+      "last_name": "Administrator",
+      "email": "admin@sms.edu",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-06-18T19:57:45.290Z",
+      "role": "admin",
+      "department": "Administration",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$qOnqHqmFWqa3jxs61HQ0sG$lrSK+JkbrqZtLaHEgswXYa0UZ16nGFg0cRhTa+zTAqQ=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "teacher",
+      "first_name": "James",
+      "last_name": "Wilson",
+      "email": "j.wilson@sms.edu",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-18T19:57:45Z",
+      "role": "teacher",
+      "department": "Computer Science",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$afJzD2GyVH2AfwosmAVHAv$IHhy+soS5uBb3RlPn/Jn0eU4Sum7330Inf2LS/LJZGg=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "prof.martinez",
+      "first_name": "Elena",
+      "last_name": "Martinez",
+      "email": "e.martinez@sms.edu",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-18T19:57:45.895Z",
+      "role": "teacher",
+      "department": "Mathematics",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$1H8czci17yprIgtwvmTl5m$sLE2Zt6YjPzg9XYGE2EM9ObRch+Bi5bMUsPmmBsx9FQ=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "prof.chen",
+      "first_name": "Wei",
+      "last_name": "Chen",
+      "email": "w.chen@sms.edu",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-18T19:57:46.202Z",
+      "role": "teacher",
+      "department": "Physics",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$OvpJlQw1cPMwmdO8QbUOth$HGPf55Hhok0WYflus3kVW98ebQKpU35jYSbnAu9GtF4=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "teacher1",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-06-26T06:07:47.223Z",
+      "role": "teacher",
+      "department": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 1,
+    "fields": {
+      "first_name": "Alexander",
+      "last_name": "Kowalski",
+      "email": "a.kowalski@student.edu",
+      "student_number": "STU-2024-001",
+      "study_program": "Computer Science",
+      "date_enrolled": "2024-09-26",
+      "phone": "+48 512 345 678",
+      "address": "ul. Akademicka 100, Warsaw, Poland",
+      "date_of_birth": "2001-03-27",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.511Z",
+      "updated_at": "2026-06-18T19:57:46.511Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 2,
+    "fields": {
+      "first_name": "Maria",
+      "last_name": "Nowak",
+      "email": "m.nowak@student.edu",
+      "student_number": "STU-2024-002",
+      "study_program": "Computer Science",
+      "date_enrolled": "2024-12-18",
+      "phone": "+48 523 456 789",
+      "address": "ul. Akademicka 89, Warsaw, Poland",
+      "date_of_birth": "2004-04-10",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.512Z",
+      "updated_at": "2026-06-18T19:57:46.512Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 3,
+    "fields": {
+      "first_name": "Jan",
+      "last_name": "Wiśniewski",
+      "email": "j.wisniewski@student.edu",
+      "student_number": "STU-2024-003",
+      "study_program": "Mathematics",
+      "date_enrolled": "2025-03-12",
+      "phone": "+48 534 567 890",
+      "address": "ul. Akademicka 45, Warsaw, Poland",
+      "date_of_birth": "2004-05-02",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.512Z",
+      "updated_at": "2026-06-18T19:57:46.512Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 4,
+    "fields": {
+      "first_name": "Anna",
+      "last_name": "Wójcik",
+      "email": "a.wojcik@student.edu",
+      "student_number": "STU-2024-004",
+      "study_program": "Physics",
+      "date_enrolled": "2024-11-29",
+      "phone": "+48 545 678 901",
+      "address": "ul. Akademicka 86, Warsaw, Poland",
+      "date_of_birth": "2000-08-18",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.513Z",
+      "updated_at": "2026-06-18T19:57:46.513Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 5,
+    "fields": {
+      "first_name": "Piotr",
+      "last_name": "Kamiński",
+      "email": "p.kaminski@student.edu",
+      "student_number": "STU-2024-005",
+      "study_program": "Computer Science",
+      "date_enrolled": "2024-11-09",
+      "phone": "+48 556 789 012",
+      "address": "ul. Akademicka 12, Warsaw, Poland",
+      "date_of_birth": "2001-04-03",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.514Z",
+      "updated_at": "2026-06-18T19:57:46.514Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 6,
+    "fields": {
+      "first_name": "Katarzyna",
+      "last_name": "Lewandowska",
+      "email": "k.lewandowska@student.edu",
+      "student_number": "STU-2024-006",
+      "study_program": "Mathematics",
+      "date_enrolled": "2025-03-21",
+      "phone": "+48 567 890 123",
+      "address": "ul. Akademicka 2, Warsaw, Poland",
+      "date_of_birth": "2005-01-13",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.515Z",
+      "updated_at": "2026-06-18T19:57:46.515Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 7,
+    "fields": {
+      "first_name": "Tomasz",
+      "last_name": "Zieliński",
+      "email": "t.zielinski@student.edu",
+      "student_number": "STU-2024-007",
+      "study_program": "Computer Science",
+      "date_enrolled": "2025-07-11",
+      "phone": "+48 578 901 234",
+      "address": "ul. Akademicka 17, Warsaw, Poland",
+      "date_of_birth": "2000-06-20",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.515Z",
+      "updated_at": "2026-06-18T19:57:46.515Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 8,
+    "fields": {
+      "first_name": "Magdalena",
+      "last_name": "Szymańska",
+      "email": "m.szymanska@student.edu",
+      "student_number": "STU-2024-008",
+      "study_program": "Physics",
+      "date_enrolled": "2025-01-12",
+      "phone": "+48 589 012 345",
+      "address": "ul. Akademicka 77, Warsaw, Poland",
+      "date_of_birth": "1998-02-05",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.516Z",
+      "updated_at": "2026-06-18T19:57:46.516Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 9,
+    "fields": {
+      "first_name": "Michał",
+      "last_name": "Woźniak",
+      "email": "m.wozniak@student.edu",
+      "student_number": "STU-2024-009",
+      "study_program": "Computer Science",
+      "date_enrolled": "2025-06-16",
+      "phone": "+48 590 123 456",
+      "address": "ul. Akademicka 82, Warsaw, Poland",
+      "date_of_birth": "2002-06-05",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.517Z",
+      "updated_at": "2026-06-18T19:57:46.517Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 10,
+    "fields": {
+      "first_name": "Agnieszka",
+      "last_name": "Dąbrowska",
+      "email": "a.dabrowska@student.edu",
+      "student_number": "STU-2024-010",
+      "study_program": "Mathematics",
+      "date_enrolled": "2024-10-04",
+      "phone": "+48 601 234 567",
+      "address": "ul. Akademicka 43, Warsaw, Poland",
+      "date_of_birth": "2000-10-11",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.518Z",
+      "updated_at": "2026-06-18T19:57:46.518Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 11,
+    "fields": {
+      "first_name": "Krzysztof",
+      "last_name": "Kozłowski",
+      "email": "k.kozlowski@student.edu",
+      "student_number": "STU-2024-011",
+      "study_program": "Computer Science",
+      "date_enrolled": "2024-10-14",
+      "phone": "+48 612 345 678",
+      "address": "ul. Akademicka 97, Warsaw, Poland",
+      "date_of_birth": "1999-11-20",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.518Z",
+      "updated_at": "2026-06-18T19:57:46.518Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 12,
+    "fields": {
+      "first_name": "Monika",
+      "last_name": "Jankowska",
+      "email": "m.jankowska@student.edu",
+      "student_number": "STU-2024-012",
+      "study_program": "Physics",
+      "date_enrolled": "2025-01-18",
+      "phone": "+48 623 456 789",
+      "address": "ul. Akademicka 93, Warsaw, Poland",
+      "date_of_birth": "1999-11-24",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.519Z",
+      "updated_at": "2026-06-18T19:57:46.519Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 13,
+    "fields": {
+      "first_name": "Adam",
+      "last_name": "Mazur",
+      "email": "a.mazur@student.edu",
+      "student_number": "STU-2025-001",
+      "study_program": "Computer Science",
+      "date_enrolled": "2025-04-21",
+      "phone": "+48 634 567 890",
+      "address": "ul. Akademicka 91, Warsaw, Poland",
+      "date_of_birth": "2005-04-02",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.520Z",
+      "updated_at": "2026-06-18T19:57:46.520Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 14,
+    "fields": {
+      "first_name": "Ewa",
+      "last_name": "Krawczyk",
+      "email": "e.krawczyk@student.edu",
+      "student_number": "STU-2025-002",
+      "study_program": "Mathematics",
+      "date_enrolled": "2025-07-27",
+      "phone": "+48 645 678 901",
+      "address": "ul. Akademicka 18, Warsaw, Poland",
+      "date_of_birth": "2001-02-08",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.521Z",
+      "updated_at": "2026-06-18T19:57:46.521Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 15,
+    "fields": {
+      "first_name": "Łukasz",
+      "last_name": "Piotrowicz",
+      "email": "l.piotrowicz@student.edu",
+      "student_number": "STU-2025-003",
+      "study_program": "Computer Science",
+      "date_enrolled": "2024-12-16",
+      "phone": "+48 656 789 012",
+      "address": "ul. Akademicka 91, Warsaw, Poland",
+      "date_of_birth": "2003-01-13",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.521Z",
+      "updated_at": "2026-06-18T19:57:46.521Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 16,
+    "fields": {
+      "first_name": "Natalia",
+      "last_name": "Grabowska",
+      "email": "n.grabowska@student.edu",
+      "student_number": "STU-2025-004",
+      "study_program": "Physics",
+      "date_enrolled": "2024-12-26",
+      "phone": "+48 667 890 123",
+      "address": "ul. Akademicka 2, Warsaw, Poland",
+      "date_of_birth": "2005-05-11",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.522Z",
+      "updated_at": "2026-06-18T19:57:46.522Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 17,
+    "fields": {
+      "first_name": "Paweł",
+      "last_name": "Pawlak",
+      "email": "p.pawlak@student.edu",
+      "student_number": "STU-2025-005",
+      "study_program": "Computer Science",
+      "date_enrolled": "2025-06-17",
+      "phone": "+48 678 901 234",
+      "address": "ul. Akademicka 59, Warsaw, Poland",
+      "date_of_birth": "2005-11-06",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.523Z",
+      "updated_at": "2026-06-18T19:57:46.523Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 18,
+    "fields": {
+      "first_name": "Joanna",
+      "last_name": "Michalska",
+      "email": "j.michalska@student.edu",
+      "student_number": "STU-2025-006",
+      "study_program": "Mathematics",
+      "date_enrolled": "2024-12-12",
+      "phone": "+48 689 012 345",
+      "address": "ul. Akademicka 54, Warsaw, Poland",
+      "date_of_birth": "2001-01-22",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.524Z",
+      "updated_at": "2026-06-18T19:57:46.524Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 19,
+    "fields": {
+      "first_name": "Daniel",
+      "last_name": "Król",
+      "email": "d.krol@student.edu",
+      "student_number": "STU-2025-007",
+      "study_program": "Computer Science",
+      "date_enrolled": "2025-03-13",
+      "phone": "+48 690 123 456",
+      "address": "ul. Akademicka 65, Warsaw, Poland",
+      "date_of_birth": "1998-06-03",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.525Z",
+      "updated_at": "2026-06-18T19:57:46.525Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 20,
+    "fields": {
+      "first_name": "Aleksandra",
+      "last_name": "Wieczorek",
+      "email": "a.wieczorek@student.edu",
+      "student_number": "STU-2025-008",
+      "study_program": "Physics",
+      "date_enrolled": "2025-07-09",
+      "phone": "+48 701 234 567",
+      "address": "ul. Akademicka 69, Warsaw, Poland",
+      "date_of_birth": "2004-03-23",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.525Z",
+      "updated_at": "2026-06-18T19:57:46.525Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 21,
+    "fields": {
+      "first_name": "Marcin",
+      "last_name": "Jabłoński",
+      "email": "m.jablonski@student.edu",
+      "student_number": "STU-2025-009",
+      "study_program": "Mathematics",
+      "date_enrolled": "2025-03-23",
+      "phone": "+48 712 345 678",
+      "address": "ul. Akademicka 22, Warsaw, Poland",
+      "date_of_birth": "2003-02-23",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.526Z",
+      "updated_at": "2026-06-18T19:57:46.526Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 22,
+    "fields": {
+      "first_name": "Karolina",
+      "last_name": "Stępień",
+      "email": "k.stepien@student.edu",
+      "student_number": "STU-2025-010",
+      "study_program": "Computer Science",
+      "date_enrolled": "2025-06-02",
+      "phone": "+48 723 456 789",
+      "address": "ul. Akademicka 67, Warsaw, Poland",
+      "date_of_birth": "1998-01-02",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.527Z",
+      "updated_at": "2026-06-18T19:57:46.527Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 23,
+    "fields": {
+      "first_name": "Robert",
+      "last_name": "Adamczyk",
+      "email": "r.adamczyk@student.edu",
+      "student_number": "STU-2025-011",
+      "study_program": "Physics",
+      "date_enrolled": "2025-08-26",
+      "phone": "+48 734 567 890",
+      "address": "ul. Akademicka 59, Warsaw, Poland",
+      "date_of_birth": "2001-04-10",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.527Z",
+      "updated_at": "2026-06-18T19:57:46.527Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 24,
+    "fields": {
+      "first_name": "Paulina",
+      "last_name": "Dudek",
+      "email": "p.dudek@student.edu",
+      "student_number": "STU-2025-012",
+      "study_program": "Computer Science",
+      "date_enrolled": "2025-01-10",
+      "phone": "+48 745 678 901",
+      "address": "ul. Akademicka 77, Warsaw, Poland",
+      "date_of_birth": "2001-09-20",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.528Z",
+      "updated_at": "2026-06-18T19:57:46.528Z"
+    }
+  },
+  {
+    "model": "core.student",
+    "pk": 25,
+    "fields": {
+      "first_name": "Jakub",
+      "last_name": "Zawadzki",
+      "email": "j.zawadzki@student.edu",
+      "student_number": "STU-2025-013",
+      "study_program": "Mathematics",
+      "date_enrolled": "2024-11-25",
+      "phone": "+48 756 789 012",
+      "address": "ul. Akademicka 68, Warsaw, Poland",
+      "date_of_birth": "1998-06-24",
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.529Z",
+      "updated_at": "2026-06-26T05:14:28.030Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 1,
+    "fields": {
+      "course_name": "Introduction to Computer Science",
+      "course_code": "CS101",
+      "semester": "Fall",
+      "credits": 5,
+      "description": "Fundamental concepts of computer science including algorithms, data structures, and programming basics.",
+      "teacher": [
+        "teacher"
+      ],
+      "max_students": 40,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.503Z",
+      "updated_at": "2026-06-18T20:27:44.150Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 2,
+    "fields": {
+      "course_name": "Database Systems",
+      "course_code": "CS201",
+      "semester": "Spring",
+      "credits": 5,
+      "description": "Design and implementation of relational databases, SQL, normalization, and transaction management.",
+      "teacher": [
+        "teacher"
+      ],
+      "max_students": 35,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.504Z",
+      "updated_at": "2026-06-18T19:57:46.504Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 3,
+    "fields": {
+      "course_name": "Web Development",
+      "course_code": "CS301",
+      "semester": "Fall",
+      "credits": 5,
+      "description": "Modern web technologies including HTML5, CSS3, JavaScript, and server-side programming.",
+      "teacher": [
+        "teacher"
+      ],
+      "max_students": 30,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.505Z",
+      "updated_at": "2026-06-18T19:57:46.505Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 4,
+    "fields": {
+      "course_name": "Calculus I",
+      "course_code": "MATH101",
+      "semester": "Fall",
+      "credits": 6,
+      "description": "Limits, derivatives, and integrals of single-variable functions.",
+      "teacher": [
+        "prof.martinez"
+      ],
+      "max_students": 45,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.506Z",
+      "updated_at": "2026-06-18T19:57:46.506Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 5,
+    "fields": {
+      "course_name": "Linear Algebra",
+      "course_code": "MATH201",
+      "semester": "Spring",
+      "credits": 5,
+      "description": "Vectors, matrices, linear transformations, eigenvalues and eigenvectors.",
+      "teacher": [
+        "prof.martinez"
+      ],
+      "max_students": 40,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.507Z",
+      "updated_at": "2026-06-18T19:57:46.507Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 6,
+    "fields": {
+      "course_name": "Physics I — Mechanics",
+      "course_code": "PHY101",
+      "semester": "Fall",
+      "credits": 6,
+      "description": "Classical mechanics, Newton's laws, energy, momentum, and rotational motion.",
+      "teacher": [
+        "prof.chen"
+      ],
+      "max_students": 35,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.508Z",
+      "updated_at": "2026-06-18T19:57:46.508Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 7,
+    "fields": {
+      "course_name": "Data Structures & Algorithms",
+      "course_code": "CS202",
+      "semester": "Spring",
+      "credits": 6,
+      "description": "Advanced data structures, algorithm design, complexity analysis, sorting and searching.",
+      "teacher": [
+        "teacher"
+      ],
+      "max_students": 30,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.509Z",
+      "updated_at": "2026-06-18T19:57:46.509Z"
+    }
+  },
+  {
+    "model": "core.course",
+    "pk": 8,
+    "fields": {
+      "course_name": "Statistics & Probability",
+      "course_code": "MATH301",
+      "semester": "Summer",
+      "credits": 4,
+      "description": "Probability theory, random variables, statistical inference, and hypothesis testing.",
+      "teacher": [
+        "prof.martinez"
+      ],
+      "max_students": 35,
+      "is_active": true,
+      "created_at": "2026-06-18T19:57:46.510Z",
+      "updated_at": "2026-06-18T19:57:46.510Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 1,
+    "fields": {
+      "student": 1,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.530Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 2,
+    "fields": {
+      "student": 1,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.531Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 3,
+    "fields": {
+      "student": 1,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.532Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 4,
+    "fields": {
+      "student": 1,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.533Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 5,
+    "fields": {
+      "student": 1,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.534Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 6,
+    "fields": {
+      "student": 2,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.535Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 7,
+    "fields": {
+      "student": 2,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.535Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 8,
+    "fields": {
+      "student": 2,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.536Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 9,
+    "fields": {
+      "student": 3,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.537Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 10,
+    "fields": {
+      "student": 3,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.537Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 11,
+    "fields": {
+      "student": 3,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.538Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 12,
+    "fields": {
+      "student": 3,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.539Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 13,
+    "fields": {
+      "student": 4,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.540Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 14,
+    "fields": {
+      "student": 4,
+      "course": 2,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.541Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 15,
+    "fields": {
+      "student": 4,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.541Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 16,
+    "fields": {
+      "student": 4,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.542Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 17,
+    "fields": {
+      "student": 4,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.543Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 18,
+    "fields": {
+      "student": 5,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.544Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 19,
+    "fields": {
+      "student": 5,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.544Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 20,
+    "fields": {
+      "student": 5,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.545Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 21,
+    "fields": {
+      "student": 6,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.546Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 22,
+    "fields": {
+      "student": 6,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.546Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 23,
+    "fields": {
+      "student": 6,
+      "course": 2,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.547Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 24,
+    "fields": {
+      "student": 7,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.548Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 25,
+    "fields": {
+      "student": 7,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.549Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 26,
+    "fields": {
+      "student": 7,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.550Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 27,
+    "fields": {
+      "student": 7,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.551Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 28,
+    "fields": {
+      "student": 8,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.552Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 29,
+    "fields": {
+      "student": 8,
+      "course": 1,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.552Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 30,
+    "fields": {
+      "student": 8,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.553Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 31,
+    "fields": {
+      "student": 8,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.554Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 32,
+    "fields": {
+      "student": 9,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.554Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 33,
+    "fields": {
+      "student": 9,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.555Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 34,
+    "fields": {
+      "student": 10,
+      "course": 1,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.556Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 35,
+    "fields": {
+      "student": 10,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.557Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 36,
+    "fields": {
+      "student": 10,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.558Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 37,
+    "fields": {
+      "student": 11,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.558Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 38,
+    "fields": {
+      "student": 11,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.559Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 39,
+    "fields": {
+      "student": 11,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.560Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 40,
+    "fields": {
+      "student": 12,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.561Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 41,
+    "fields": {
+      "student": 12,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.562Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 42,
+    "fields": {
+      "student": 12,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.563Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 43,
+    "fields": {
+      "student": 12,
+      "course": 2,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.563Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 44,
+    "fields": {
+      "student": 13,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.564Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 45,
+    "fields": {
+      "student": 13,
+      "course": 2,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.565Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 46,
+    "fields": {
+      "student": 14,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.565Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 47,
+    "fields": {
+      "student": 14,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.566Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 48,
+    "fields": {
+      "student": 15,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.567Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 49,
+    "fields": {
+      "student": 15,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.567Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 50,
+    "fields": {
+      "student": 15,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.568Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 51,
+    "fields": {
+      "student": 15,
+      "course": 1,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.569Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 52,
+    "fields": {
+      "student": 15,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.569Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 53,
+    "fields": {
+      "student": 16,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.570Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 54,
+    "fields": {
+      "student": 16,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.571Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 55,
+    "fields": {
+      "student": 16,
+      "course": 1,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.571Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 56,
+    "fields": {
+      "student": 16,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.572Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 57,
+    "fields": {
+      "student": 17,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.573Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 58,
+    "fields": {
+      "student": 17,
+      "course": 2,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.573Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 59,
+    "fields": {
+      "student": 17,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.574Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 60,
+    "fields": {
+      "student": 17,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.575Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 61,
+    "fields": {
+      "student": 17,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.576Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 62,
+    "fields": {
+      "student": 18,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.577Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 63,
+    "fields": {
+      "student": 18,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.578Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 64,
+    "fields": {
+      "student": 19,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.579Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 65,
+    "fields": {
+      "student": 19,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.580Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 66,
+    "fields": {
+      "student": 20,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.581Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 67,
+    "fields": {
+      "student": 20,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.582Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 68,
+    "fields": {
+      "student": 21,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.582Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 69,
+    "fields": {
+      "student": 21,
+      "course": 1,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.583Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 70,
+    "fields": {
+      "student": 21,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.584Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 71,
+    "fields": {
+      "student": 22,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.585Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 72,
+    "fields": {
+      "student": 22,
+      "course": 1,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.585Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 73,
+    "fields": {
+      "student": 22,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.586Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 74,
+    "fields": {
+      "student": 22,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.587Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 75,
+    "fields": {
+      "student": 22,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.587Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 76,
+    "fields": {
+      "student": 23,
+      "course": 3,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.588Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 77,
+    "fields": {
+      "student": 23,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.589Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 78,
+    "fields": {
+      "student": 23,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.589Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 79,
+    "fields": {
+      "student": 23,
+      "course": 4,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.590Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 80,
+    "fields": {
+      "student": 24,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.591Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 81,
+    "fields": {
+      "student": 24,
+      "course": 7,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.592Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 82,
+    "fields": {
+      "student": 24,
+      "course": 2,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.593Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 83,
+    "fields": {
+      "student": 24,
+      "course": 6,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.594Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 84,
+    "fields": {
+      "student": 24,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "completed",
+      "created_at": "2026-06-18T19:57:46.594Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 85,
+    "fields": {
+      "student": 25,
+      "course": 8,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.595Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 86,
+    "fields": {
+      "student": 25,
+      "course": 1,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.596Z"
+    }
+  },
+  {
+    "model": "core.enrollment",
+    "pk": 87,
+    "fields": {
+      "student": 25,
+      "course": 2,
+      "enrollment_date": "2026-06-18",
+      "status": "active",
+      "created_at": "2026-06-18T19:57:46.597Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 1,
+    "fields": {
+      "enrollment": 2,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Good work throughout the semester.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.599Z",
+      "updated_at": "2026-06-18T19:57:46.599Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 2,
+    "fields": {
+      "enrollment": 7,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.600Z",
+      "updated_at": "2026-06-18T19:57:46.600Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 3,
+    "fields": {
+      "enrollment": 8,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Satisfactory overall performance.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.600Z",
+      "updated_at": "2026-06-18T19:57:46.600Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 4,
+    "fields": {
+      "enrollment": 9,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Good work throughout the semester.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.601Z",
+      "updated_at": "2026-06-18T19:57:46.601Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 5,
+    "fields": {
+      "enrollment": 16,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.602Z",
+      "updated_at": "2026-06-18T19:57:46.602Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 6,
+    "fields": {
+      "enrollment": 18,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.602Z",
+      "updated_at": "2026-06-18T19:57:46.602Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 7,
+    "fields": {
+      "enrollment": 22,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Satisfactory overall performance.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.603Z",
+      "updated_at": "2026-06-18T19:57:46.603Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 8,
+    "fields": {
+      "enrollment": 28,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.603Z",
+      "updated_at": "2026-06-18T19:57:46.603Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 9,
+    "fields": {
+      "enrollment": 32,
+      "grade_value": "5.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Excellent performance on the final exam.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.604Z",
+      "updated_at": "2026-06-18T19:57:46.604Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 10,
+    "fields": {
+      "enrollment": 34,
+      "grade_value": "3.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Consistent participation in class discussions.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.604Z",
+      "updated_at": "2026-06-18T19:57:46.604Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 11,
+    "fields": {
+      "enrollment": 35,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.605Z",
+      "updated_at": "2026-06-18T19:57:46.605Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 12,
+    "fields": {
+      "enrollment": 37,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Satisfactory overall performance.",
+      "assigned_by": [
+        "prof.chen"
+      ],
+      "created_at": "2026-06-18T19:57:46.606Z",
+      "updated_at": "2026-06-18T19:57:46.606Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 13,
+    "fields": {
+      "enrollment": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-06-18",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.607Z",
+      "updated_at": "2026-06-18T19:57:46.607Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 14,
+    "fields": {
+      "enrollment": 43,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.608Z",
+      "updated_at": "2026-06-18T19:57:46.608Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 15,
+    "fields": {
+      "enrollment": 46,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Needs improvement in practical assignments.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.609Z",
+      "updated_at": "2026-06-18T19:57:46.609Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 16,
+    "fields": {
+      "enrollment": 47,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.610Z",
+      "updated_at": "2026-06-18T19:57:46.610Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 17,
+    "fields": {
+      "enrollment": 48,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Needs improvement in practical assignments.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.610Z",
+      "updated_at": "2026-06-18T19:57:46.610Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 18,
+    "fields": {
+      "enrollment": 51,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.611Z",
+      "updated_at": "2026-06-18T19:57:46.611Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 19,
+    "fields": {
+      "enrollment": 56,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.612Z",
+      "updated_at": "2026-06-18T19:57:46.612Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 20,
+    "fields": {
+      "enrollment": 58,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.612Z",
+      "updated_at": "2026-06-18T19:57:46.612Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 21,
+    "fields": {
+      "enrollment": 59,
+      "grade_value": "5.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Excellent performance on the final exam.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.613Z",
+      "updated_at": "2026-06-18T19:57:46.613Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 22,
+    "fields": {
+      "enrollment": 60,
+      "grade_value": "3.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.613Z",
+      "updated_at": "2026-06-18T19:57:46.613Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 23,
+    "fields": {
+      "enrollment": 61,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Satisfactory overall performance.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.614Z",
+      "updated_at": "2026-06-18T19:57:46.614Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 24,
+    "fields": {
+      "enrollment": 62,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.615Z",
+      "updated_at": "2026-06-18T19:57:46.615Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 25,
+    "fields": {
+      "enrollment": 64,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Excellent performance on the final exam.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.615Z",
+      "updated_at": "2026-06-18T19:57:46.615Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 26,
+    "fields": {
+      "enrollment": 66,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.616Z",
+      "updated_at": "2026-06-18T19:57:46.616Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 27,
+    "fields": {
+      "enrollment": 67,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Good work throughout the semester.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.616Z",
+      "updated_at": "2026-06-18T19:57:46.616Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 28,
+    "fields": {
+      "enrollment": 68,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.617Z",
+      "updated_at": "2026-06-18T19:57:46.617Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 29,
+    "fields": {
+      "enrollment": 69,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.618Z",
+      "updated_at": "2026-06-18T19:57:46.618Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 30,
+    "fields": {
+      "enrollment": 72,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.618Z",
+      "updated_at": "2026-06-18T19:57:46.618Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 31,
+    "fields": {
+      "enrollment": 73,
+      "grade_value": "5.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Outstanding project work.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.619Z",
+      "updated_at": "2026-06-18T19:57:46.619Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 32,
+    "fields": {
+      "enrollment": 74,
+      "grade_value": "5.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Excellent performance on the final exam.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.619Z",
+      "updated_at": "2026-06-18T19:57:46.619Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 33,
+    "fields": {
+      "enrollment": 76,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Needs improvement in practical assignments.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.620Z",
+      "updated_at": "2026-06-18T19:57:46.620Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 34,
+    "fields": {
+      "enrollment": 80,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Strong analytical skills demonstrated.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.620Z",
+      "updated_at": "2026-06-18T19:57:46.620Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 35,
+    "fields": {
+      "enrollment": 82,
+      "grade_value": "5.0",
+      "date_assigned": "2026-06-18",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.621Z",
+      "updated_at": "2026-06-18T19:57:46.621Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 36,
+    "fields": {
+      "enrollment": 84,
+      "grade_value": "2.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Good work throughout the semester.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.622Z",
+      "updated_at": "2026-06-18T19:57:46.622Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 37,
+    "fields": {
+      "enrollment": 1,
+      "grade_value": "3.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.623Z",
+      "updated_at": "2026-06-18T19:57:46.623Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 38,
+    "fields": {
+      "enrollment": 3,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.chen"
+      ],
+      "created_at": "2026-06-18T19:57:46.623Z",
+      "updated_at": "2026-06-18T19:57:46.623Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 39,
+    "fields": {
+      "enrollment": 4,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.624Z",
+      "updated_at": "2026-06-18T19:57:46.624Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 40,
+    "fields": {
+      "enrollment": 5,
+      "grade_value": "2.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.625Z",
+      "updated_at": "2026-06-18T19:57:46.625Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 41,
+    "fields": {
+      "enrollment": 6,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.chen"
+      ],
+      "created_at": "2026-06-18T19:57:46.625Z",
+      "updated_at": "2026-06-18T19:57:46.625Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 42,
+    "fields": {
+      "enrollment": 10,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.626Z",
+      "updated_at": "2026-06-18T19:57:46.626Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 43,
+    "fields": {
+      "enrollment": 11,
+      "grade_value": "3.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.627Z",
+      "updated_at": "2026-06-18T19:57:46.627Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 44,
+    "fields": {
+      "enrollment": 12,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.chen"
+      ],
+      "created_at": "2026-06-18T19:57:46.627Z",
+      "updated_at": "2026-06-18T19:57:46.627Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 45,
+    "fields": {
+      "enrollment": 13,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.chen"
+      ],
+      "created_at": "2026-06-18T19:57:46.628Z",
+      "updated_at": "2026-06-18T19:57:46.628Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 46,
+    "fields": {
+      "enrollment": 14,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.629Z",
+      "updated_at": "2026-06-18T19:57:46.629Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 47,
+    "fields": {
+      "enrollment": 15,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.630Z",
+      "updated_at": "2026-06-18T19:57:46.630Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 48,
+    "fields": {
+      "enrollment": 17,
+      "grade_value": "5.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.631Z",
+      "updated_at": "2026-06-18T19:57:46.631Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 49,
+    "fields": {
+      "enrollment": 19,
+      "grade_value": "3.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.632Z",
+      "updated_at": "2026-06-18T19:57:46.632Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 50,
+    "fields": {
+      "enrollment": 20,
+      "grade_value": "4.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.chen"
+      ],
+      "created_at": "2026-06-18T19:57:46.632Z",
+      "updated_at": "2026-06-18T19:57:46.632Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 51,
+    "fields": {
+      "enrollment": 21,
+      "grade_value": "3.0",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.633Z",
+      "updated_at": "2026-06-18T19:57:46.633Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 52,
+    "fields": {
+      "enrollment": 23,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-06-18T19:57:46.634Z",
+      "updated_at": "2026-06-18T19:57:46.634Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 53,
+    "fields": {
+      "enrollment": 24,
+      "grade_value": "4.5",
+      "date_assigned": "2026-06-18",
+      "comments": "Midterm assessment.",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-06-18T19:57:46.635Z",
+      "updated_at": "2026-06-18T19:57:46.635Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 1,
+    "fields": {
+      "enrollment": 85,
+      "date": "2026-06-22",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-06-22T02:45:34.014Z",
+      "updated_at": "2026-06-22T02:45:34.014Z"
+    }
+  }
+]

@@ -1,4 +1,5 @@
 {% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" data-theme="light">
 <head>
@@ -15,11 +16,10 @@
         })();
     </script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Self-hosted vendor assets: the UI renders fully offline -->
+    <link rel="stylesheet" href="{% static 'vendor/fonts/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -32,7 +32,7 @@
     <!-- Hotwire Turbo 8 for instant page transitions & prefetching -->
     <meta name="turbo-prefetch" content="true">
     <meta name="view-transition" content="same-origin">
-    <script type="module" src="https://esm.sh/@hotwired/turbo@8.0.4"></script>
+    <script src="{% static 'vendor/turbo/turbo.es2017-umd.js' %}"></script>
 </head>
 <body>
     {% if user.is_authenticated %}
@@ -71,12 +71,10 @@
                         <i class="bi bi-book-fill"></i>
                         <span>{% trans "Courses" %}</span>
                     </a>
-                    {% if user.is_admin %}
                     <a href="{% url 'enrollment_list' %}" class="sidebar-link {% if 'enrollment' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-clipboard2-check-fill"></i>
                         <span>{% trans "Enrollments" %}</span>
                     </a>
-                    {% endif %}
                     <a href="{% url 'grade_list' %}" class="sidebar-link {% if 'grade' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-award-fill"></i>
                         <span>{% trans "Grades" %}</span>
@@ -141,13 +139,13 @@
             <div class="navbar-right d-flex align-items-center gap-3">
                 <form action="{% url 'set_language' %}" method="post" class="d-inline-flex align-items-center mb-0">
                     {% csrf_token %}
-                    <input name="next" type="hidden" value="{{ redirect_to }}">
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
                     <select name="language" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
-                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_current_language as CURRENT_LANGUAGE %}
                         {% get_available_languages as LANGUAGES %}
                         {% get_language_info_list for LANGUAGES as languages %}
                         {% for language in languages %}
-                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                            <option value="{{ language.code }}"{% if language.code == CURRENT_LANGUAGE %} selected{% endif %}>
                                 {{ language.name_local }}
                             </option>
                         {% endfor %}
@@ -157,10 +155,13 @@
                     <i class="bi bi-moon-fill"></i>
                     <i class="bi bi-sun-fill"></i>
                 </button>
-                <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">
-                    <i class="bi bi-box-arrow-right"></i>
-                    {% trans "Logout" %}
-                </a>
+                <form action="{% url 'logout' %}" method="post" class="mb-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline btn-sm">
+                        <i class="bi bi-box-arrow-right"></i>
+                        {% trans "Logout" %}
+                    </button>
+                </form>
             </div>
         </header>
 
@@ -187,10 +188,10 @@
     {% endif %}
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
 
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="{% static 'vendor/chartjs/chart.umd.min.js' %}"></script>
 
     <!-- Custom JS -->
     <script src="{% static 'js/main.js' %}"></script>

@@ -1,16 +1,17 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ title }}{% endblock %}
-{% block breadcrumb %}Enrollments / {{ title }}{% endblock %}
+{% block breadcrumb %}{% trans "Enrollments" %} / {{ title }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
         <h1 class="page-title">{{ title }}</h1>
-        <p class="page-subtitle">{% if enrollment %}Update enrollment status{% else %}Assign a student to a course{% endif %}</p>
+        <p class="page-subtitle">{% if enrollment %}{% trans "Update enrollment status" %}{% else %}{% trans "Assign a student to a course" %}{% endif %}</p>
     </div>
     <a href="{% url 'enrollment_list' %}" class="btn btn-outline">
-        <i class="bi bi-arrow-left"></i> Back to List
+        <i class="bi bi-arrow-left"></i> {% trans "Back to List" %}
     </a>
 </div>
 
@@ -25,13 +26,13 @@
                 {% if form.non_field_errors %}
                     {{ form.non_field_errors.0 }}
                 {% else %}
-                    Please correct the errors below.
+                    {% trans "Please correct the errors below." %}
                 {% endif %}
             </div>
             {% endif %}
 
             <div class="form-group">
-                <label class="form-label" for="id_student">Student *</label>
+                <label class="form-label" for="id_student">{% trans "Student" %} *</label>
                 {{ form.student }}
                 {% if form.student.errors %}
                 <div class="form-text text-rose">{{ form.student.errors.0 }}</div>
@@ -39,24 +40,25 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="id_course">Course *</label>
+                <label class="form-label" for="id_course">{% trans "Course" %} *</label>
                 {{ form.course }}
                 {% if form.course.errors %}
                 <div class="form-text text-rose">{{ form.course.errors.0 }}</div>
                 {% endif %}
+                <div class="form-text">{% trans "A course cannot take more active enrollments than its capacity" %}</div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="id_status">Status</label>
+                <label class="form-label" for="id_status">{% trans "Status" %}</label>
                 {{ form.status }}
             </div>
 
             <div class="btn-group mt-2">
                 <button type="submit" class="btn btn-primary" id="submit-enrollment">
                     <i class="bi bi-check-lg"></i>
-                    {% if enrollment %}Update Enrollment{% else %}Create Enrollment{% endif %}
+                    {% if enrollment %}{% trans "Update Enrollment" %}{% else %}{% trans "Create Enrollment" %}{% endif %}
                 </button>
-                <a href="{% url 'enrollment_list' %}" class="btn btn-outline">Cancel</a>
+                <a href="{% url 'enrollment_list' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
             </div>
         </form>
     </div>

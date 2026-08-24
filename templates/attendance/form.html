@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}{{ title }}{% endblock %}
-{% block breadcrumb %}Attendance / {{ title }}{% endblock %}
+{% block breadcrumb %}{% trans "Attendance" %} / {{ title }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
         <h1 class="page-title">{{ title }}</h1>
-        <p class="page-subtitle">{% if att %}Update attendance record{% else %}Record a new attendance entry{% endif %}</p>
+        <p class="page-subtitle">{% if att %}{% trans "Update attendance record" %}{% else %}{% trans "Record a new attendance entry" %}{% endif %}</p>
     </div>
     <a href="{% url 'attendance_list' %}" class="btn btn-outline">
-        <i class="bi bi-arrow-left"></i> Back to Attendance
+        <i class="bi bi-arrow-left"></i> {% trans "Back to Attendance" %}
     </a>
 </div>
 
@@ -29,7 +30,7 @@
             {% endif %}
 
             <div class="form-group">
-                <label class="form-label">Enrollment *</label>
+                <label class="form-label">{% trans "Enrollment" %} *</label>
                 {{ form.enrollment }}
                 {% if form.enrollment.errors %}
                 <div class="form-text text-rose">{{ form.enrollment.errors|join:", " }}</div>
@@ -38,14 +39,14 @@
 
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label">Date *</label>
+                    <label class="form-label">{% trans "Date" %} *</label>
                     {{ form.date }}
                     {% if form.date.errors %}
                     <div class="form-text text-rose">{{ form.date.errors|join:", " }}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Status *</label>
+                    <label class="form-label">{% trans "Status" %} *</label>
                     {{ form.status }}
                     {% if form.status.errors %}
                     <div class="form-text text-rose">{{ form.status.errors|join:", " }}</div>
@@ -54,7 +55,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Notes (Optional)</label>
+                <label class="form-label">{% trans "Notes (Optional)" %}</label>
                 {{ form.notes }}
                 {% if form.notes.errors %}
                 <div class="form-text text-rose">{{ form.notes.errors|join:", " }}</div>
@@ -63,12 +64,12 @@
 
             <div class="btn-group mt-2">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-check-lg"></i> Save Record
+                    <i class="bi bi-check-lg"></i> {% trans "Save Record" %}
                 </button>
                 {% if not att %}
-                <button type="submit" name="save_and_add_another" class="btn btn-outline">Save and Add Another</button>
+                <button type="submit" name="save_and_add_another" class="btn btn-outline">{% trans "Save and Add Another" %}</button>
                 {% endif %}
-                <a href="{% url 'attendance_list' %}" class="btn btn-outline">Cancel</a>
+                <a href="{% url 'attendance_list' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
             </div>
         </form>
     </div>

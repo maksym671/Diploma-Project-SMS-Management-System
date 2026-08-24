@@ -1,16 +1,17 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ title }}{% endblock %}
-{% block breadcrumb %}Students / {{ title }}{% endblock %}
+{% block breadcrumb %}{% trans "Students" %} / {{ title }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
         <h1 class="page-title">{{ title }}</h1>
-        <p class="page-subtitle">{% if student %}Update student information{% else %}Fill in the student details below{% endif %}</p>
+        <p class="page-subtitle">{% if student %}{% trans "Update student information" %}{% else %}{% trans "Fill in the student details below" %}{% endif %}</p>
     </div>
     <a href="{% url 'student_list' %}" class="btn btn-outline">
-        <i class="bi bi-arrow-left"></i> Back to List
+        <i class="bi bi-arrow-left"></i> {% trans "Back to List" %}
     </a>
 </div>
 
@@ -22,79 +23,79 @@
             {% if form.errors %}
             <div class="alert alert-danger mb-3">
                 <i class="bi bi-exclamation-triangle-fill"></i>
-                Please correct the errors below.
+                {% trans "Please correct the errors below." %}
             </div>
             {% endif %}
 
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label" for="id_first_name">First Name *</label>
+                    <label class="form-label" for="id_first_name">{% trans "First Name" %} *</label>
                     {{ form.first_name }}
                     {% if form.first_name.errors %}
                     <div class="form-text text-rose">{{ form.first_name.errors.0 }}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="id_last_name">Last Name *</label>
+                    <label class="form-label" for="id_last_name">{% trans "Last Name" %} *</label>
                     {{ form.last_name }}
                     {% if form.last_name.errors %}
                     <div class="form-text text-rose">{{ form.last_name.errors.0 }}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="id_email">Email Address *</label>
+                    <label class="form-label" for="id_email">{% trans "Email Address" %} *</label>
                     {{ form.email }}
                     {% if form.email.errors %}
                     <div class="form-text text-rose">{{ form.email.errors.0 }}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="id_student_number">Student Number *</label>
+                    <label class="form-label" for="id_student_number">{% trans "Student Number" %} *</label>
                     {{ form.student_number }}
                     {% if form.student_number.errors %}
                     <div class="form-text text-rose">{{ form.student_number.errors.0 }}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="id_study_program">Study Program *</label>
+                    <label class="form-label" for="id_study_program">{% trans "Study Program" %} *</label>
                     {{ form.study_program }}
                     {% if form.study_program.errors %}
                     <div class="form-text text-rose">{{ form.study_program.errors.0 }}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="id_date_enrolled">Date Enrolled *</label>
+                    <label class="form-label" for="id_date_enrolled">{% trans "Date Enrolled" %} *</label>
                     {{ form.date_enrolled }}
                     {% if form.date_enrolled.errors %}
                     <div class="form-text text-rose">{{ form.date_enrolled.errors.0 }}</div>
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="id_phone">Phone</label>
+                    <label class="form-label" for="id_phone">{% trans "Phone" %}</label>
                     {{ form.phone }}
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="id_date_of_birth">Date of Birth</label>
+                    <label class="form-label" for="id_date_of_birth">{% trans "Date of Birth" %}</label>
                     {{ form.date_of_birth }}
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="id_address">Address</label>
+                <label class="form-label" for="id_address">{% trans "Address" %}</label>
                 {{ form.address }}
             </div>
 
             <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
                 {{ form.is_active }}
-                <label class="form-label" for="id_is_active" style="margin: 0;">Active Student</label>
+                <label class="form-label" for="id_is_active" style="margin: 0;">{% trans "Active Student" %}</label>
             </div>
 
             <div class="btn-group mt-2">
                 <button type="submit" class="btn btn-primary" id="submit-student">
                     <i class="bi bi-check-lg"></i>
-                    {% if student %}Update Student{% else %}Create Student{% endif %}
+                    {% if student %}{% trans "Update Student" %}{% else %}{% trans "Create Student" %}{% endif %}
                 </button>
-                <a href="{% url 'student_list' %}" class="btn btn-outline">Cancel</a>
+                <a href="{% url 'student_list' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
             </div>
         </form>
     </div>

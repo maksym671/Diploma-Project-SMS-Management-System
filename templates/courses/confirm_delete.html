@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Delete Course{% endblock %}
-{% block breadcrumb %}Courses / Delete{% endblock %}
+{% block title %}{% trans "Delete Course" %}{% endblock %}
+{% block breadcrumb %}{% trans "Courses" %} / {% trans "Delete" %}{% endblock %}
 
 {% block content %}
 <div class="confirm-card card">
@@ -9,18 +10,20 @@
         <div class="confirm-icon">
             <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
-        <h4>Delete Course</h4>
+        <h4>{% trans "Delete Course" %}</h4>
         <p>
-            Are you sure you want to delete <strong>{{ course.course_name }}</strong>
-            ({{ course.course_code }})? This will also remove all enrollments and grades for this course.
+            {% blocktrans with name=course.course_name code=course.course_code %}
+            Are you sure you want to delete <strong>{{ name }}</strong> ({{ code }})?
+            This will also remove all enrollments and grades for this course.
             This action cannot be undone.
+            {% endblocktrans %}
         </p>
         <form method="post">
             {% csrf_token %}
             <div class="confirm-actions">
-                <a href="{% url 'course_detail' course.pk %}" class="btn btn-outline">Cancel</a>
+                <a href="{% url 'course_detail' course.pk %}" class="btn btn-outline">{% trans "Cancel" %}</a>
                 <button type="submit" class="btn btn-danger" id="confirm-delete-course">
-                    <i class="bi bi-trash3"></i> Delete Course
+                    <i class="bi bi-trash3"></i> {% trans "Delete Course" %}
                 </button>
             </div>
         </form>

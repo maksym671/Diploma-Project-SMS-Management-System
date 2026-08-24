@@ -1,18 +1,41 @@
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Count, Avg, Q
 from django.http import JsonResponse, HttpResponse
-from django.utils import timezone
-from datetime import timedelta
+from django.utils.translation import gettext as _
+from django.views.decorators.http import require_POST
 import csv
 
-from .models import Student, Course, Enrollment, Grade, User, Attendance
+from .models import Student, Course, Enrollment, Grade, Attendance
 from .forms import LoginForm, StudentForm, CourseForm, EnrollmentForm, GradeForm, AttendanceForm, ProfileForm
 from .decorators import admin_required, teacher_or_admin_required
+
+
+PAGE_SIZE = 20
+
+
+def paginate(request, queryset, per_page=PAGE_SIZE):
+    """Return a page of `queryset` based on the ?page= query parameter."""
+    return Paginator(queryset, per_page).get_page(request.GET.get('page'))
+
+
+def visible_students(user):
+    """Students the user may access: teachers only see their own course rosters."""
+    if user.is_teacher():
+        return Student.objects.filter(enrollments__course__teacher=user).distinct()
+    return Student.objects.all()
+
+
+def visible_courses(user):
+    """Courses the user may access: teachers only see courses they teach."""
+    if user.is_teacher():
+        return Course.objects.filter(teacher=user)
+    return Course.objects.all()
 
 
 # ─── Authentication ─────────────────────────────────────────────────
@@ -27,20 +50,24 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, f'Welcome back, {user.get_full_name() or user.username}!')
+            messages.success(
+                request,
+                _('Welcome back, %(name)s!') % {'name': user.get_full_name() or user.username},
+            )
             return redirect('dashboard')
         else:
-            messages.error(request, 'Invalid username or password.')
+            messages.error(request, _('Invalid username or password.'))
     else:
         form = LoginForm()
 
     return render(request, 'auth/login.html', {'form': form})
 
 
+@require_POST
 def logout_view(request):
-    """Log the user out."""
+    """Log the user out. POST only, so link prefetching cannot end a session."""
     logout(request)
-    messages.info(request, 'You have been logged out.')
+    messages.info(request, _('You have been logged out.'))
     return redirect('login')
 
 
@@ -169,7 +196,7 @@ def api_dashboard_data(request):
         'total_courses': course_qs.count(),
         'total_enrollments': enrollment_count,
         'total_grades': grade_qs.count(),
-        'avg_grade': round(avg_grade, 2) if avg_grade else 0,
+        'avg_grade': float(round(avg_grade, 2)) if avg_grade else 0,
         'grade_distribution': grade_distribution,
         'course_labels': [c.course_code for c in course_stats],
         'course_data': [c.enrollment_count for c in course_stats],
@@ -185,16 +212,15 @@ def student_list(request):
     program = request.GET.get('program', '')
     status = request.GET.get('status', '')
 
-    if request.user.is_teacher():
-        students = Student.objects.filter(enrollments__course__teacher=request.user).distinct()
-    else:
-        students = Student.objects.all()
+    students = visible_students(request.user)
 
-    # Optimize queries by pre-calculating enrollment counts and average grades in the DB
+    # Optimize queries by pre-calculating enrollment counts and average grades in the DB.
+    # annotate() adds a GROUP BY, which drops the implicit Meta ordering that
+    # pagination needs, so the sort order is restated explicitly.
     students = students.annotate(
         annotated_enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'), distinct=True),
         annotated_average_grade=Avg('enrollments__grade__grade_value')
-    )
+    ).order_by('last_name', 'first_name')
 
     if query:
         students = students.filter(
@@ -210,10 +236,15 @@ def student_list(request):
     elif status == 'inactive':
         students = students.filter(is_active=False)
 
-    programs = Student.objects.values_list('study_program', flat=True).distinct()
+    programs = visible_students(request.user).values_list(
+        'study_program', flat=True
+    ).distinct().order_by('study_program')
+
+    page_obj = paginate(request, students)
 
     context = {
-        'students': students,
+        'students': page_obj,
+        'page_obj': page_obj,
         'query': query,
         'programs': programs,
         'selected_program': program,
@@ -225,9 +256,12 @@ def student_list(request):
 @login_required
 def student_detail(request, pk):
     """View student details with enrollments and grades."""
-    student = get_object_or_404(Student, pk=pk)
-    
+    student = get_object_or_404(visible_students(request.user), pk=pk)
+
     enrollments = Enrollment.objects.filter(student=student).select_related('course', 'grade')
+    # A teacher only sees the part of the record that belongs to their own courses.
+    if request.user.is_teacher():
+        enrollments = enrollments.filter(course__teacher=request.user)
 
     context = {
         'student': student,
@@ -244,12 +278,15 @@ def student_create(request):
         form = StudentForm(request.POST)
         if form.is_valid():
             student = form.save()
-            messages.success(request, f'Student "{student.full_name}" has been created successfully.')
+            messages.success(
+                request,
+                _('Student "%(name)s" has been created successfully.') % {'name': student.full_name},
+            )
             return redirect('student_detail', pk=student.pk)
     else:
         form = StudentForm()
 
-    return render(request, 'students/form.html', {'form': form, 'title': 'Add New Student'})
+    return render(request, 'students/form.html', {'form': form, 'title': _('Add New Student')})
 
 
 @login_required
@@ -261,12 +298,15 @@ def student_update(request, pk):
         form = StudentForm(request.POST, instance=student)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Student "{student.full_name}" has been updated.')
+            messages.success(
+                request,
+                _('Student "%(name)s" has been updated.') % {'name': student.full_name},
+            )
             return redirect('student_detail', pk=pk)
     else:
         form = StudentForm(instance=student)
 
-    return render(request, 'students/form.html', {'form': form, 'title': 'Edit Student', 'student': student})
+    return render(request, 'students/form.html', {'form': form, 'title': _('Edit Student'), 'student': student})
 
 
 @login_required
@@ -277,7 +317,7 @@ def student_delete(request, pk):
     if request.method == 'POST':
         name = student.full_name
         student.delete()
-        messages.success(request, f'Student "{name}" has been deleted.')
+        messages.success(request, _('Student "%(name)s" has been deleted.') % {'name': name})
         return redirect('student_list')
 
     return render(request, 'students/confirm_delete.html', {'student': student})
@@ -291,14 +331,9 @@ def course_list(request):
     query = request.GET.get('q', '')
     semester = request.GET.get('semester', '')
 
-    if request.user.is_teacher():
-        courses = Course.objects.filter(teacher=request.user).select_related('teacher').annotate(
-            enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
-        )
-    else:
-        courses = Course.objects.select_related('teacher').annotate(
-            enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
-        )
+    courses = visible_courses(request.user).select_related('teacher').annotate(
+        enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
+    ).order_by('course_code')
 
     if query:
         courses = courses.filter(
@@ -308,8 +343,11 @@ def course_list(request):
     if semester:
         courses = courses.filter(semester=semester)
 
+    page_obj = paginate(request, courses)
+
     context = {
-        'courses': courses,
+        'courses': page_obj,
+        'page_obj': page_obj,
         'query': query,
         'selected_semester': semester,
     }
@@ -319,7 +357,7 @@ def course_list(request):
 @login_required
 def course_detail(request, pk):
     """View course details with enrolled students."""
-    course = get_object_or_404(Course, pk=pk)
+    course = get_object_or_404(visible_courses(request.user), pk=pk)
     enrollments = Enrollment.objects.filter(course=course).select_related('student', 'grade')
 
     context = {
@@ -337,12 +375,15 @@ def course_create(request):
         form = CourseForm(request.POST)
         if form.is_valid():
             course = form.save()
-            messages.success(request, f'Course "{course.course_name}" has been created.')
+            messages.success(
+                request,
+                _('Course "%(name)s" has been created.') % {'name': course.course_name},
+            )
             return redirect('course_detail', pk=course.pk)
     else:
         form = CourseForm()
 
-    return render(request, 'courses/form.html', {'form': form, 'title': 'Add New Course'})
+    return render(request, 'courses/form.html', {'form': form, 'title': _('Add New Course')})
 
 
 @login_required
@@ -354,12 +395,15 @@ def course_update(request, pk):
         form = CourseForm(request.POST, instance=course)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Course "{course.course_name}" has been updated.')
+            messages.success(
+                request,
+                _('Course "%(name)s" has been updated.') % {'name': course.course_name},
+            )
             return redirect('course_detail', pk=pk)
     else:
         form = CourseForm(instance=course)
 
-    return render(request, 'courses/form.html', {'form': form, 'title': 'Edit Course', 'course': course})
+    return render(request, 'courses/form.html', {'form': form, 'title': _('Edit Course'), 'course': course})
 
 
 @login_required
@@ -370,7 +414,7 @@ def course_delete(request, pk):
     if request.method == 'POST':
         name = course.course_name
         course.delete()
-        messages.success(request, f'Course "{name}" has been deleted.')
+        messages.success(request, _('Course "%(name)s" has been deleted.') % {'name': name})
         return redirect('course_list')
 
     return render(request, 'courses/confirm_delete.html', {'course': course})
@@ -380,14 +424,14 @@ def course_delete(request, pk):
 
 @login_required
 def enrollment_list(request):
-    """List all enrollments."""
-    if request.user.is_teacher():
-        messages.error(request, 'You do not have permission to manage enrollments. Please use the courses tab.')
-        return redirect('dashboard')
+    """List enrollments. Teachers get a read-only view of their own courses."""
     query = request.GET.get('q', '')
     status = request.GET.get('status', '')
 
     enrollments = Enrollment.objects.select_related('student', 'course', 'grade')
+
+    if request.user.is_teacher():
+        enrollments = enrollments.filter(course__teacher=request.user)
 
     if query:
         enrollments = enrollments.filter(
@@ -399,8 +443,11 @@ def enrollment_list(request):
     if status:
         enrollments = enrollments.filter(status=status)
 
+    page_obj = paginate(request, enrollments)
+
     context = {
-        'enrollments': enrollments,
+        'enrollments': page_obj,
+        'page_obj': page_obj,
         'query': query,
         'selected_status': status,
     }
@@ -415,12 +462,18 @@ def enrollment_create(request):
         form = EnrollmentForm(request.POST)
         if form.is_valid():
             enrollment = form.save()
-            messages.success(request, f'{enrollment.student.full_name} enrolled in {enrollment.course.course_code}.')
+            messages.success(
+                request,
+                _('%(student)s enrolled in %(course)s.') % {
+                    'student': enrollment.student.full_name,
+                    'course': enrollment.course.course_code,
+                },
+            )
             return redirect('enrollment_list')
     else:
         form = EnrollmentForm()
 
-    return render(request, 'enrollments/form.html', {'form': form, 'title': 'New Enrollment'})
+    return render(request, 'enrollments/form.html', {'form': form, 'title': _('New Enrollment')})
 
 
 @login_required
@@ -432,12 +485,12 @@ def enrollment_update(request, pk):
         form = EnrollmentForm(request.POST, instance=enrollment)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Enrollment updated successfully.')
+            messages.success(request, _('Enrollment updated successfully.'))
             return redirect('enrollment_list')
     else:
         form = EnrollmentForm(instance=enrollment)
 
-    return render(request, 'enrollments/form.html', {'form': form, 'title': 'Edit Enrollment', 'enrollment': enrollment})
+    return render(request, 'enrollments/form.html', {'form': form, 'title': _('Edit Enrollment'), 'enrollment': enrollment})
 
 
 @login_required
@@ -447,7 +500,7 @@ def enrollment_delete(request, pk):
     enrollment = get_object_or_404(Enrollment, pk=pk)
     if request.method == 'POST':
         enrollment.delete()
-        messages.success(request, 'Enrollment has been removed.')
+        messages.success(request, _('Enrollment has been removed.'))
         return redirect('enrollment_list')
 
     return render(request, 'enrollments/confirm_delete.html', {'enrollment': enrollment})
@@ -461,7 +514,7 @@ def grade_list(request):
     query = request.GET.get('q', '')
 
     grades = Grade.objects.select_related(
-        'enrollment__student', 'enrollment__course'
+        'enrollment__student', 'enrollment__course', 'assigned_by'
     )
 
     if request.user.is_teacher():
@@ -474,8 +527,11 @@ def grade_list(request):
             Q(enrollment__course__course_code__icontains=query)
         )
 
+    page_obj = paginate(request, grades)
+
     context = {
-        'grades': grades,
+        'grades': page_obj,
+        'page_obj': page_obj,
         'query': query,
     }
     return render(request, 'grades/list.html', context)
@@ -488,13 +544,18 @@ def grade_create(request):
     if request.method == 'POST':
         form = GradeForm(request.POST, user=request.user)
         if form.is_valid():
-            grade = form.save()
-            messages.success(request, f'Grade {grade.grade_value} assigned successfully.')
+            grade = form.save(commit=False)
+            grade.assigned_by = request.user
+            grade.save()
+            messages.success(
+                request,
+                _('Grade %(value)s assigned successfully.') % {'value': grade.grade_value},
+            )
             return redirect('grade_list')
     else:
         form = GradeForm(user=request.user)
 
-    return render(request, 'grades/form.html', {'form': form, 'title': 'Assign Grade'})
+    return render(request, 'grades/form.html', {'form': form, 'title': _('Assign Grade')})
 
 
 @login_required
@@ -505,29 +566,36 @@ def grade_update(request, pk):
 
     # Teachers can only edit grades for their own courses
     if request.user.is_teacher() and grade.enrollment.course.teacher != request.user:
-        messages.error(request, 'You can only edit grades for your own courses.')
+        messages.error(request, _('You can only edit grades for your own courses.'))
         return redirect('grade_list')
 
     if request.method == 'POST':
         form = GradeForm(request.POST, instance=grade, user=request.user)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Grade updated successfully.')
+            updated = form.save(commit=False)
+            updated.assigned_by = request.user
+            updated.save()
+            messages.success(request, _('Grade updated successfully.'))
             return redirect('grade_list')
     else:
         form = GradeForm(instance=grade, user=request.user)
 
-    return render(request, 'grades/form.html', {'form': form, 'title': 'Edit Grade', 'grade': grade})
+    return render(request, 'grades/form.html', {'form': form, 'title': _('Edit Grade'), 'grade': grade})
 
 
 @login_required
-@admin_required
+@teacher_or_admin_required
 def grade_delete(request, pk):
-    """Delete a grade."""
+    """Delete a grade. Teachers may only delete grades for their own courses."""
     grade = get_object_or_404(Grade, pk=pk)
+
+    if request.user.is_teacher() and grade.enrollment.course.teacher != request.user:
+        messages.error(request, _('You can only delete grades for your own courses.'))
+        return redirect('grade_list')
+
     if request.method == 'POST':
         grade.delete()
-        messages.success(request, 'Grade has been deleted.')
+        messages.success(request, _('Grade has been deleted.'))
         return redirect('grade_list')
 
     return render(request, 'grades/confirm_delete.html', {'grade': grade})
@@ -551,8 +619,11 @@ def attendance_list(request):
             Q(enrollment__course__course_code__icontains=query)
         )
 
+    page_obj = paginate(request, records)
+
     context = {
-        'records': records,
+        'records': page_obj,
+        'page_obj': page_obj,
         'query': query,
     }
     return render(request, 'attendance/list.html', context)
@@ -566,14 +637,17 @@ def attendance_create(request):
         form = AttendanceForm(request.POST, user=request.user)
         if form.is_valid():
             att = form.save()
-            messages.success(request, f'Attendance marked for {att.enrollment.student.full_name}.')
+            messages.success(
+                request,
+                _('Attendance marked for %(name)s.') % {'name': att.enrollment.student.full_name},
+            )
             if 'save_and_add_another' in request.POST:
                 return redirect('attendance_create')
             return redirect('attendance_list')
     else:
         form = AttendanceForm(user=request.user)
     
-    return render(request, 'attendance/form.html', {'form': form, 'title': 'Mark Attendance'})
+    return render(request, 'attendance/form.html', {'form': form, 'title': _('Mark Attendance')})
 
 
 @login_required
@@ -581,27 +655,33 @@ def attendance_create(request):
 def attendance_update(request, pk):
     att = get_object_or_404(Attendance, pk=pk)
     if request.user.is_teacher() and att.enrollment.course.teacher != request.user:
-        messages.error(request, 'You can only edit attendance for your own courses.')
+        messages.error(request, _('You can only edit attendance for your own courses.'))
         return redirect('attendance_list')
         
     if request.method == 'POST':
         form = AttendanceForm(request.POST, instance=att, user=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Attendance updated.')
+            messages.success(request, _('Attendance updated.'))
             return redirect('attendance_list')
     else:
         form = AttendanceForm(instance=att, user=request.user)
-    return render(request, 'attendance/form.html', {'form': form, 'title': 'Edit Attendance', 'att': att})
+    return render(request, 'attendance/form.html', {'form': form, 'title': _('Edit Attendance'), 'att': att})
 
 
 @login_required
-@admin_required
+@teacher_or_admin_required
 def attendance_delete(request, pk):
+    """Delete an attendance record, scoped to the teacher's own courses."""
     att = get_object_or_404(Attendance, pk=pk)
+
+    if request.user.is_teacher() and att.enrollment.course.teacher != request.user:
+        messages.error(request, _('You can only delete attendance for your own courses.'))
+        return redirect('attendance_list')
+
     if request.method == 'POST':
         att.delete()
-        messages.success(request, 'Attendance record deleted.')
+        messages.success(request, _('Attendance record deleted.'))
         return redirect('attendance_list')
     return render(request, 'attendance/confirm_delete.html', {'att': att})
 
@@ -615,9 +695,7 @@ def profile_view(request):
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Profile updated successfully.')
-            # Update password if requested (we'll rely on the standard password reset emails, 
-            # but for basic names/emails we use this form).
+            messages.success(request, _('Profile updated successfully.'))
             return redirect('profile')
     else:
         form = ProfileForm(instance=request.user)
@@ -626,20 +704,26 @@ def profile_view(request):
 
 # ─── Reports ──────────────────────────────────────────────────────────
 
+def _csv_response(filename):
+    """CSV response with a UTF-8 BOM so Excel renders accented names correctly."""
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response.write('\ufeff')
+    return response
+
+
 @login_required
 @teacher_or_admin_required
 def export_students_csv(request):
-    """Export students list to CSV."""
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="students_report.csv"'
-    
+    """Export students list to CSV (scoped to the user's own roster)."""
+    response = _csv_response('students_report.csv')
+
     writer = csv.writer(response)
     writer.writerow(['Student Number', 'First Name', 'Last Name', 'Email', 'Program', 'Status', 'Enrollment Date'])
-    
-    students = Student.objects.all()
-    for s in students:
+
+    for s in visible_students(request.user):
         writer.writerow([
-            s.student_number, s.first_name, s.last_name, s.email, 
+            s.student_number, s.first_name, s.last_name, s.email,
             s.study_program, 'Active' if s.is_active else 'Inactive', s.date_enrolled
         ])
     return response
@@ -648,20 +732,26 @@ def export_students_csv(request):
 @login_required
 @teacher_or_admin_required
 def export_grades_csv(request):
-    """Export grades list to CSV."""
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="grades_report.csv"'
-    
+    """Export grades list to CSV (scoped to the user's own courses)."""
+    response = _csv_response('grades_report.csv')
+
     writer = csv.writer(response)
-    writer.writerow(['Student', 'Course Code', 'Course Name', 'Grade', 'Letter', 'Date Assigned'])
-    
-    grades = Grade.objects.select_related('enrollment__student', 'enrollment__course')
+    writer.writerow([
+        'Student', 'Course Code', 'Course Name', 'Grade', 'Letter',
+        'Date Assigned', 'Assigned By',
+    ])
+
+    grades = Grade.objects.select_related(
+        'enrollment__student', 'enrollment__course', 'assigned_by'
+    )
     if request.user.is_teacher():
         grades = grades.filter(enrollment__course__teacher=request.user)
-        
+
     for g in grades:
+        assigned_by = g.assigned_by
         writer.writerow([
-            g.enrollment.student.full_name, g.enrollment.course.course_code, 
-            g.enrollment.course.course_name, g.grade_value, g.letter_grade, g.date_assigned
+            g.enrollment.student.full_name, g.enrollment.course.course_code,
+            g.enrollment.course.course_name, g.grade_value, g.letter_grade, g.date_assigned,
+            (assigned_by.get_full_name() or assigned_by.username) if assigned_by else '',
         ])
     return response

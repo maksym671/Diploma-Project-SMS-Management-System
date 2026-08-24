@@ -2,16 +2,36 @@
    Student Management System — JavaScript
    ============================================================ */
 
+/* Turbo fires `turbo:load` on the initial load too, so guard against running
+   twice against the same DOM: duplicate listeners and re-created charts on an
+   already-used canvas throw "Canvas is already in use". */
+let appInitialized = false;
+
 function initApp() {
+    if (appInitialized) return;
+    appInitialized = true;
+
     initThemeToggle();
     initSidebar();
     initAlerts();
     initAnimatedCounters();
-    initCharts();
+
+    // Chart.js measures axis labels once, at draw time. Drawing before the web
+    // fonts arrive measures the fallback font and clips wider labels, so wait
+    // for the real fonts first.
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(initCharts);
+    } else {
+        initCharts();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
 document.addEventListener('turbo:load', initApp);
+document.addEventListener('turbo:before-render', () => {
+    appInitialized = false;
+    destroyCharts();
+});
 
 
 /* ─── Theme Toggle ──────────────────────────────────────────── */
@@ -78,6 +98,9 @@ function initAlerts() {
 /* ─── Animated Counters ─────────────────────────────────────── */
 function initAnimatedCounters() {
     const counters = document.querySelectorAll('.stat-value[data-target]');
+    // data-target is always written with a dot (see the unlocalize filter),
+    // while the displayed number follows the interface language.
+    const locale = document.documentElement.lang || 'en';
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -85,6 +108,9 @@ function initAnimatedCounters() {
                 const counter = entry.target;
                 const target = parseFloat(counter.dataset.target);
                 const isFloat = target % 1 !== 0;
+                const format = new Intl.NumberFormat(locale, isFloat
+                    ? { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                    : { maximumFractionDigits: 0 });
                 const duration = 1200;
                 const startTime = performance.now();
 
@@ -95,11 +121,7 @@ function initAnimatedCounters() {
                     const eased = 1 - Math.pow(1 - progress, 3);
                     const current = target * eased;
 
-                    if (isFloat) {
-                        counter.textContent = current.toFixed(2);
-                    } else {
-                        counter.textContent = Math.round(current).toLocaleString();
-                    }
+                    counter.textContent = format.format(current);
 
                     if (progress < 1) {
                         requestAnimationFrame(updateCounter);
@@ -164,7 +186,25 @@ const htmlLegendPlugin = {
 
 
 /* ─── Charts (Chart.js) ─────────────────────────────────────── */
+const chartInstances = [];
+
+function destroyCharts() {
+    while (chartInstances.length) {
+        chartInstances.pop().destroy();
+    }
+}
+
+function createChart(canvas, config) {
+    const existing = typeof Chart.getChart === 'function' ? Chart.getChart(canvas) : null;
+    if (existing) existing.destroy();
+
+    const chart = new Chart(canvas, config);
+    chartInstances.push(chart);
+    return chart;
+}
+
 function initCharts() {
+    if (typeof Chart === 'undefined') return;
     initGradeDistributionChart();
     initCourseEnrollmentChart();
     initProgramChart();
@@ -177,7 +217,7 @@ function initGradeDistributionChart() {
 
     const data = JSON.parse(canvas.dataset.grades || '{}');
 
-    new Chart(canvas, {
+    createChart(canvas, {
         type: 'doughnut',
         data: {
             labels: ['A (4.5-5.0)', 'B (4.0-4.5)', 'C (3.5-4.0)', 'D (3.0-3.5)', 'F (<3.0)'],
@@ -231,7 +271,7 @@ function initCourseEnrollmentChart() {
     const labels = JSON.parse(canvas.dataset.labels || '[]');
     const values = JSON.parse(canvas.dataset.values || '[]');
 
-    new Chart(canvas, {
+    createChart(canvas, {
         type: 'bar',
         data: {
             labels: labels,
@@ -250,10 +290,8 @@ function initCourseEnrollmentChart() {
             maintainAspectRatio: false,
             scales: {
                 x: {
-                    grid: {
-                        color: getCSSVar('--chart-grid'),
-                        drawBorder: false,
-                    },
+                    // Course codes are categories, so vertical rules add noise.
+                    grid: { display: false },
                     ticks: {
                         color: getCSSVar('--chart-tick'),
                         font: { family: 'Inter', size: 11 },
@@ -305,8 +343,10 @@ function initProgramChart() {
         getCSSVar('--chart-6'),
     ];
 
-    new Chart(canvas, {
-        type: 'polarArea',
+    // Horizontal bars: programme names need the room, and bar length is read
+    // far more accurately than the slice area of a pie or polar chart.
+    createChart(canvas, {
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [{
@@ -314,24 +354,37 @@ function initProgramChart() {
                 backgroundColor: colors.slice(0, labels.length),
                 borderColor: 'transparent',
                 borderWidth: 0,
+                borderRadius: 4,
+                borderSkipped: false,
             }]
         },
         options: {
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                r: {
-                    grid: { color: getCSSVar('--chart-grid') },
-                    ticks: { display: false },
+                x: {
+                    beginAtZero: true,
+                    grid: {
+                        color: getCSSVar('--chart-grid'),
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        color: getCSSVar('--chart-tick'),
+                        font: { family: 'Inter', size: 11 },
+                        precision: 0,
+                    }
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: {
+                        color: getCSSVar('--chart-tick'),
+                        font: { family: 'Inter', size: 12 },
+                    }
                 }
             },
             plugins: {
-                legend: {
-                    display: false,
-                },
-                htmlLegend: {
-                    containerID: 'programChartLegend'
-                },
+                legend: { display: false },
                 tooltip: {
                     backgroundColor: getCSSVar('--chart-tooltip-bg'),
                     titleColor: getCSSVar('--chart-tooltip-title'),
@@ -341,7 +394,6 @@ function initProgramChart() {
                     cornerRadius: 6,
                 }
             }
-        },
-        plugins: [htmlLegendPlugin]
+        }
     });
 }

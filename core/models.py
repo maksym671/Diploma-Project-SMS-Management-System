@@ -2,13 +2,14 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
     """Custom user model with role-based access control."""
     ROLE_CHOICES = [
-        ('admin', 'Administrator'),
-        ('teacher', 'Teacher'),
+        ('admin', _('Administrator')),
+        ('teacher', _('Teacher')),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='teacher')
     department = models.CharField(max_length=100, blank=True)
@@ -101,9 +102,9 @@ class Course(models.Model):
 class Enrollment(models.Model):
     """Many-to-many relationship between Student and Course."""
     STATUS_CHOICES = [
-        ('active', 'Active'),
-        ('completed', 'Completed'),
-        ('dropped', 'Dropped'),
+        ('active', _('Active')),
+        ('completed', _('Completed')),
+        ('dropped', _('Dropped')),
     ]
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
@@ -125,10 +126,15 @@ class Grade(models.Model):
     grade_value = models.DecimalField(
         max_digits=3, decimal_places=1,
         validators=[MinValueValidator(2.0), MaxValueValidator(5.0)],
-        help_text="Grade from 2.0 (fail) to 5.0 (excellent)"
+        help_text=_('Grade from 2.0 (fail) to 5.0 (excellent)')
     )
     date_assigned = models.DateField(auto_now_add=True)
     comments = models.TextField(blank=True)
+    assigned_by = models.ForeignKey(
+        'User', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='grades_assigned',
+        help_text=_('Account that last saved this grade'),
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -156,9 +162,9 @@ class Grade(models.Model):
 class Attendance(models.Model):
     """Attendance tracking for students in a specific course."""
     STATUS_CHOICES = [
-        ('present', 'Present'),
-        ('absent', 'Absent'),
-        ('late', 'Late'),
+        ('present', _('Present')),
+        ('absent', _('Absent')),
+        ('late', _('Late')),
     ]
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE, related_name='attendance_records')
     date = models.DateField(default=timezone.now)

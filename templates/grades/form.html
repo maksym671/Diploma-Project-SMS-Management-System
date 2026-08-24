@@ -1,16 +1,17 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block title %}{{ title }}{% endblock %}
-{% block breadcrumb %}Grades / {{ title }}{% endblock %}
+{% block breadcrumb %}{% trans "Grades" %} / {{ title }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
         <h1 class="page-title">{{ title }}</h1>
-        <p class="page-subtitle">{% if grade %}Update grade information{% else %}Select an enrollment and assign a grade{% endif %}</p>
+        <p class="page-subtitle">{% if grade %}{% trans "Update grade information" %}{% else %}{% trans "Select an enrollment and assign a grade" %}{% endif %}</p>
     </div>
     <a href="{% url 'grade_list' %}" class="btn btn-outline">
-        <i class="bi bi-arrow-left"></i> Back to List
+        <i class="bi bi-arrow-left"></i> {% trans "Back to List" %}
     </a>
 </div>
 
@@ -22,41 +23,41 @@
             {% if form.errors %}
             <div class="alert alert-danger mb-3">
                 <i class="bi bi-exclamation-triangle-fill"></i>
-                Please correct the errors below.
+                {% trans "Please correct the errors below." %}
             </div>
             {% endif %}
 
             <div class="form-group">
-                <label class="form-label" for="id_enrollment">Enrollment *</label>
+                <label class="form-label" for="id_enrollment">{% trans "Enrollment" %} *</label>
                 {{ form.enrollment }}
                 {% if form.enrollment.errors %}
                 <div class="form-text text-rose">{{ form.enrollment.errors.0 }}</div>
                 {% endif %}
-                <div class="form-text">Only enrollments without grades are shown</div>
+                <div class="form-text">{% trans "Only enrollments without grades are shown" %}</div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="id_grade_value">Grade Value * (2.0 – 5.0)</label>
+                <label class="form-label" for="id_grade_value">{% trans "Grade Value" %} * (2.0 – 5.0)</label>
                 {{ form.grade_value }}
                 {% if form.grade_value.errors %}
                 <div class="form-text text-rose">{{ form.grade_value.errors.0 }}</div>
                 {% endif %}
                 <div class="form-text">
-                    Scale: 5.0 = Excellent (A) | 4.5 = Very Good (B) | 4.0 = Good (B) | 3.5 = Satisfactory (C) | 3.0 = Pass (D) | &lt;3.0 = Fail (F)
+                    {% trans "Scale: 5.0 = Excellent (A) | 4.5 = Very Good (B) | 4.0 = Good (B) | 3.5 = Satisfactory (C) | 3.0 = Pass (D) | &lt;3.0 = Fail (F)" %}
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="id_comments">Comments</label>
+                <label class="form-label" for="id_comments">{% trans "Comments" %}</label>
                 {{ form.comments }}
             </div>
 
             <div class="btn-group mt-2">
                 <button type="submit" class="btn btn-primary" id="submit-grade">
                     <i class="bi bi-check-lg"></i>
-                    {% if grade %}Update Grade{% else %}Assign Grade{% endif %}
+                    {% if grade %}{% trans "Update Grade" %}{% else %}{% trans "Assign Grade" %}{% endif %}
                 </button>
-                <a href="{% url 'grade_list' %}" class="btn btn-outline">Cancel</a>
+                <a href="{% url 'grade_list' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
             </div>
         </form>
     </div>
