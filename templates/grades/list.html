@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n sms_extras %}
 
 {% block title %}{% trans "Grades" %}{% endblock %}
 {% block breadcrumb %}{% trans "Grades" %}{% endblock %}
@@ -37,8 +37,10 @@
                 <tr>
                     <th>{% trans "Student" %}</th>
                     <th>{% trans "Course" %}</th>
+                    <th>{% trans "Component" %}</th>
                     <th>{% trans "Grade" %}</th>
                     <th>{% trans "Letter" %}</th>
+                    <th>{% trans "Course Mark" %}</th>
                     <th>{% trans "Date Assigned" %}</th>
                     <th>{% trans "Assigned By" %}</th>
                     <th>{% trans "Comments" %}</th>
@@ -49,16 +51,18 @@
                 {% for grade in grades %}
                 <tr>
                     <td>
-                        <a href="{% url 'student_detail' grade.enrollment.student.pk %}" class="table-name">
-                            {{ grade.enrollment.student.full_name }}
-                        </a>
-                        <div class="table-sub">{{ grade.enrollment.student.student_number }}</div>
+                        {% url 'student_detail' grade.enrollment.student.pk as student_url %}
+                        {% include "partials/person_cell.html" with name=grade.enrollment.student.full_name sub=grade.enrollment.student.student_number url=student_url %}
                     </td>
                     <td>
                         <a href="{% url 'course_detail' grade.enrollment.course.pk %}">
                             {{ grade.enrollment.course.course_code }}
                         </a>
-                        <div class="table-sub">{{ grade.enrollment.course.course_name }}</div>
+                        <div class="table-sub">{{ grade.enrollment.course.course_name|trans_db }}</div>
+                    </td>
+                    <td>
+                        <div class="table-name">{{ grade.get_kind_display }}</div>
+                        <div class="table-sub">{% blocktrans with weight=grade.weight %}{{ weight }}% of the course{% endblocktrans %}</div>
                     </td>
                     <td>
                         <span class="badge badge-grade {{ grade.letter_grade|lower }}">
@@ -70,12 +74,18 @@
                             {{ grade.letter_grade }}
                         </strong>
                     </td>
+                    <td>
+                        {% with mark=grade.enrollment.final_grade %}
+                        <span class="badge badge-grade {{ grade.enrollment.final_letter|lower }}">{{ mark }}</span>
+                        {% endwith %}
+                    </td>
                     <td class="text-muted">{{ grade.date_assigned|date:"SHORT_DATE_FORMAT" }}</td>
-                    <td class="text-muted">
+                    <td>
                         {% if grade.assigned_by %}
-                            {{ grade.assigned_by.get_full_name|default:grade.assigned_by.username }}
+                            {% firstof grade.assigned_by.get_full_name grade.assigned_by.username as assignee_name %}
+                            {% include "partials/person_cell.html" with name=assignee_name %}
                         {% else %}
-                            —
+                            <span class="text-muted">—</span>
                         {% endif %}
                     </td>
                     <td class="text-muted">
@@ -98,7 +108,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8">
+                    <td colspan="10">
                         <div class="empty-state">
                             <i class="bi bi-award"></i>
                             <h5>{% trans "No Grades Found" %}</h5>

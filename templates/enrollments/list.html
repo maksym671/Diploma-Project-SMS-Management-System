@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n sms_extras %}
 
 {% block title %}{% trans "Enrollments" %}{% endblock %}
 {% block breadcrumb %}{% trans "Enrollments" %}{% endblock %}
@@ -60,18 +60,16 @@
                 {% for enrollment in enrollments %}
                 <tr>
                     <td>
-                        <a href="{% url 'student_detail' enrollment.student.pk %}" class="table-name">
-                            {{ enrollment.student.full_name }}
-                        </a>
-                        <div class="table-sub">{{ enrollment.student.student_number }}</div>
+                        {% url 'student_detail' enrollment.student.pk as student_url %}
+                        {% include "partials/person_cell.html" with name=enrollment.student.full_name sub=enrollment.student.student_number url=student_url %}
                     </td>
                     <td>
                         <a href="{% url 'course_detail' enrollment.course.pk %}">
                             {{ enrollment.course.course_code }}
                         </a>
-                        <div class="table-sub">{{ enrollment.course.course_name }}</div>
+                        <div class="table-sub">{{ enrollment.course.course_name|trans_db }}</div>
                     </td>
-                    <td>{{ enrollment.course.semester }}</td>
+                    <td>{{ enrollment.course.get_semester_display }}</td>
                     <td class="text-muted">{{ enrollment.enrollment_date|date:"SHORT_DATE_FORMAT" }}</td>
                     <td>
                         <span class="badge badge-{{ enrollment.status }}">
@@ -79,10 +77,13 @@
                         </span>
                     </td>
                     <td>
-                        {% if enrollment.grade %}
-                        <span class="badge badge-grade {{ enrollment.grade.letter_grade|lower }}">
-                            {{ enrollment.grade.grade_value }}
+                        {% if enrollment.final_grade %}
+                        <span class="badge badge-grade {{ enrollment.final_letter|lower }}">
+                            {{ enrollment.final_grade }}
                         </span>
+                        <div class="table-sub">
+                            {% blocktrans count counter=enrollment.grades.all|length %}{{ counter }} component{% plural %}{{ counter }} components{% endblocktrans %}
+                        </div>
                         {% else %}
                         <span class="text-muted">—</span>
                         {% endif %}
@@ -102,7 +103,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7">
+                    <td colspan="{% if user.is_admin %}7{% else %}6{% endif %}">
                         <div class="empty-state">
                             <i class="bi bi-clipboard2-check"></i>
                             <h5>{% trans "No Enrollments Found" %}</h5>

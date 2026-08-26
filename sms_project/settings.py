@@ -216,6 +216,12 @@ if email_backend in {'console', 'django.core.mail.backends.console.EmailBackend'
 elif email_backend in {'file', 'django.core.mail.backends.filebased.EmailBackend'}:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+elif email_backend in {'brevo', 'core.mail.BrevoAPIBackend'}:
+    # Delivery over HTTPS. Hosts that firewall outbound SMTP (Render's free
+    # plan among them) let this through, because it is an ordinary API call
+    # on port 443.
+    EMAIL_BACKEND = 'core.mail.BrevoAPIBackend'
+    BREVO_API_KEY = env('BREVO_API_KEY', '')
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = env('EMAIL_HOST', 'smtp.gmail.com')

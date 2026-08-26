@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load i18n sms_extras %}
+
+{% block title %}{% trans "Mark Class Attendance" %}{% endblock %}
+{% block breadcrumb %}{% trans "Attendance" %} / {% trans "Mark Class" %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{% trans "Mark Class Attendance" %}</h1>
+        <p class="page-subtitle">{% trans "Pick a course and a date, then mark the whole group at once." %}</p>
+    </div>
+    <a href="{% url 'attendance_list' %}" class="btn btn-outline">
+        <i class="bi bi-list-ul"></i> {% trans "All Records" %}
+    </a>
+</div>
+
+<!-- Course + date picker -->
+<form method="get" class="filter-bar">
+    <select name="course" class="form-select" onchange="this.form.submit()" id="bulk-course">
+        <option value="">{% trans "Select a course…" %}</option>
+        {% for c in courses %}
+        <option value="{{ c.pk }}" {% if course and course.pk == c.pk %}selected{% endif %}>
+            {{ c.course_code }} — {{ c.course_name|trans_db }}
+        </option>
+        {% endfor %}
+    </select>
+    <input type="date" name="date" value="{{ selected_date|date:'Y-m-d' }}" class="form-control" id="bulk-date">
+    <button type="submit" class="btn btn-outline btn-sm">
+        <i class="bi bi-arrow-repeat"></i> {% trans "Load Group" %}
+    </button>
+</form>
+
+{% if not course %}
+<div class="card">
+    <div class="empty-state">
+        <i class="bi bi-calendar-check"></i>
+        <h5>{% trans "Choose a course to begin" %}</h5>
+        <p>{% trans "The roster for that course loads here, ready to mark." %}</p>
+    </div>
+</div>
+{% elif not roster %}
+<div class="card">
+    <div class="empty-state">
+        <i class="bi bi-people"></i>
+        <h5>{% trans "No active students on this course" %}</h5>
+        <p>{% trans "Only active enrolments can be marked." %}</p>
+    </div>
+</div>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="course" value="{{ course.pk }}">
+    <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+
+    <div class="card">
+        <div class="card-header">
+            <h5>
+                <i class="bi bi-people mr-1"></i>
+                {% blocktrans with code=course.course_code count=roster|length %}{{ code }} — {{ count }} students{% endblocktrans %}
+            </h5>
+            <div class="bulk-actions">
+                <span class="bulk-actions-label">{% trans "Set all:" %}</span>
+                {% for value, label in statuses %}
+                <button type="button" class="btn btn-outline btn-sm" data-set-all="{{ value }}">{{ label }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>{% trans "Student" %}</th>
+                        <th>{% trans "Student Number" %}</th>
+                        <th class="text-right">{% trans "Attendance" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in roster %}
+                    <tr>
+                        <td>
+                            {% url 'student_detail' row.student.pk as student_url %}
+                            {% include "partials/person_cell.html" with name=row.student.full_name url=student_url %}
+                        </td>
+                        <td class="text-muted">{{ row.student.student_number }}</td>
+                        <td>
+                            <div class="status-picker">
+                                {% for value, label in statuses %}
+                                <label class="status-option status-{{ value }}">
+                                    <input type="radio" name="status_{{ row.enrollment.pk }}"
+                                           value="{{ value }}" {% if row.status == value %}checked{% endif %}>
+                                    <span>{{ label }}</span>
+                                </label>
+                                {% endfor %}
+                                <label class="status-option status-none">
+                                    <input type="radio" name="status_{{ row.enrollment.pk }}"
+                                           value="none" {% if not row.status %}checked{% endif %}>
+                                    <span>{% trans "Not marked" %}</span>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2-all"></i> {% trans "Save Attendance" %}
+            </button>
+        </div>
+    </div>
+</form>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    /* "Set all" fills the column in one click; Turbo re-runs this per visit. */
+    document.querySelectorAll('[data-set-all]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var value = button.dataset.setAll;
+            document.querySelectorAll('.status-picker input[value="' + value + '"]')
+                .forEach(function (input) { input.checked = true; });
+        });
+    });
+</script>
+{% endblock %}

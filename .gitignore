@@ -34,3 +34,7 @@ staticfiles/
 .vscode/
 .idea/
 .codegraph/
+
+# Scratch left behind by the screenshot capture used for the defence deck
+docs/.chrome-profile/
+node_modules/

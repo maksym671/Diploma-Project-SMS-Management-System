@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n sms_extras %}
 
 {% block title %}{% trans "Courses" %}{% endblock %}
 {% block breadcrumb %}{% trans "Courses" %}{% endblock %}
@@ -62,15 +62,16 @@
                 <tr>
                     <td>
                         <a href="{% url 'course_detail' course.pk %}" class="table-name">
-                            {{ course.course_name }}
+                            {{ course.course_name|trans_db }}
                         </a>
                     </td>
                     <td><span class="badge badge-info">{{ course.course_code }}</span></td>
-                    <td>{{ course.semester }}</td>
+                    <td>{{ course.get_semester_display }}</td>
                     <td>{{ course.credits }}</td>
                     <td>
                         {% if course.teacher %}
-                            {{ course.teacher.get_full_name|default:course.teacher.username }}
+                            {% firstof course.teacher.get_full_name course.teacher.username as teacher_name %}
+                            {% include "partials/person_cell.html" with name=teacher_name %}
                         {% else %}
                             <span class="text-muted">{% trans "Unassigned" %}</span>
                         {% endif %}

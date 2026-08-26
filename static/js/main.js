@@ -2,6 +2,18 @@
    Student Management System — JavaScript
    ============================================================ */
 
+/* Turbo re-evaluates every <script> in the <body> on each visit, in the same
+   global scope. Top-level `let`/`const` would therefore throw
+   "Identifier has already been declared" on the second page, aborting this
+   whole file. An IIFE keeps the declarations local, and the flag below makes
+   the document-level listeners register exactly once — `document` survives
+   Turbo visits, so the handlers registered here keep firing afterwards. */
+(function () {
+    'use strict';
+
+    if (window.__smsAppLoaded) return;
+    window.__smsAppLoaded = true;
+
 /* Turbo fires `turbo:load` on the initial load too, so guard against running
    twice against the same DOM: duplicate listeners and re-created charts on an
    already-used canvas throw "Canvas is already in use". */
@@ -276,7 +288,7 @@ function initCourseEnrollmentChart() {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Active Enrollments',
+                label: canvas.dataset.seriesLabel || 'Active Enrollments',
                 data: values,
                 backgroundColor: getCSSVar('--chart-1'),
                 borderColor: getCSSVar('--accent'),
@@ -397,3 +409,5 @@ function initProgramChart() {
         }
     });
 }
+
+})();

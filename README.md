@@ -27,23 +27,33 @@ python manage.py runserver
 
 Open http://127.0.0.1:8000
 
+## Local development note
+
+`runserver` answers `/static/` itself, before any middleware, and sends only a
+`Last-Modified` header — no `ETag`, no `Cache-Control`. Browsers therefore keep
+editing `style.css` or `main.js` and reload to no visible effect. Hard-reload
+(Cmd/Ctrl + Shift + R) after changing a static file. Production is unaffected:
+`collectstatic` writes hashed filenames, so a changed file gets a new URL.
+
 ## Tests
 
 ```bash
 python manage.py test
 ```
 
-45 tests cover models, authentication, role-based access and data isolation,
-pagination, the dashboard JSON API, password-reset email, enrolment capacity
-rules, grade authorship, Polish localisation, the deployment seed step, and a
-smoke render of every page for both roles.
+84 tests cover models, authentication, role-based access and data isolation,
+pagination, the dashboard JSON API, the full password-reset cycle (including a
+dead mail server and the language of the message), enrolment capacity rules,
+weighted grade components, bulk attendance marking, grade authorship, the mail
+deployment checks, Polish localisation, the deployment seed step, and a smoke
+render of every page for both roles.
 
 `.github/workflows/ci.yml` runs the same suite on every push, plus a check for
 missing migrations and `manage.py check --deploy` against production settings.
 
 ## Translations
 
-The interface is fully translated into Polish (239 messages, 0 untranslated).
+The interface is fully translated into Polish (308 messages, 0 untranslated).
 
 ```bash
 python manage.py makemessages -l pl --ignore=.venv --ignore=staticfiles
@@ -93,6 +103,35 @@ Demo accounts shipped in the fixture use the password `demo1234`. Set
 `DJANGO_ADMIN_PASSWORD` on the platform to give the `admin` account a private
 password without committing it.
 
+### Password-reset email
+
+`EMAIL_BACKEND=console` only writes the message to the platform log, so nobody
+receives a reset link. For real delivery set `EMAIL_BACKEND=smtp` together with
+`EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` and a `DEFAULT_FROM_EMAIL`
+that belongs to the SMTP account. Keep the two secrets in the platform
+dashboard, never in the repository.
+
+`manage.py check --deploy` names whichever piece is missing (`mail.W001`–`W004`)
+and CI fails on it, so a half-configured mailer cannot reach production
+unnoticed. Verify a live deployment from the platform shell with:
+
+```bash
+python manage.py sendtestemail you@example.com
+```
+
+If the mail server is unreachable at runtime the reset page still renders its
+normal confirmation and the SMTP error goes to the log, so a broken mailer
+never turns into a 500 for the visitor.
+
+### Free-plan sleep
+
+Render's free plan stops the service after ~15 minutes without traffic, and the
+next visitor waits ~30 s for it to boot. `.github/workflows/keepalive.yml` pings
+it every 5 minutes to avoid that, but GitHub's scheduler is best-effort and
+disables scheduled workflows after 60 days of repository inactivity. For a
+demonstration that must not stall, add an external monitor (UptimeRobot's free
+plan checks every 5 minutes) or run the service on a plan that never sleeps.
+
 Rehearse the production build locally before pushing:
 
 ```bash
@@ -103,11 +142,24 @@ export DATABASE_URL="sqlite:////tmp/prod_rehearsal.sqlite3"
 gunicorn sms_project.wsgi:application --bind 127.0.0.1:8877
 ```
 
+## Who it is for
+
+The system is the **teaching-staff portal**. Accounts belong to lecturers and
+administrators, who keep the course rosters, enter grades and record
+attendance. Students are records in the system, not users — there is no
+student login, by design.
+
 ## Main features
 
 - Login / logout / profile
 - Password reset by email (`/accounts/password_reset/`)
 - Students, courses, enrolments, grades, attendance
+- **Grades by component** — a course mark is built from several weighted
+  parts (coursework, midterm, final exam, retake) rather than a single number;
+  `Enrollment.final_grade` is their weighted mean, and the components of one
+  course may not exceed 100 % between them
+- **Mark a whole class at once** (`/attendance/mark/`) — pick a course and a
+  date, mark the group on one screen, save in a single request
 - Role-scoped dashboard + JSON API `GET /api/dashboard/`
 - CSV export for students and grades
 - Paginated lists (20 rows per page) with search and filters
@@ -121,7 +173,7 @@ everything, a teacher only sees what belongs to their own courses.**
 |------------|---------------|---------|
 | Create / edit / delete students and courses | yes | no |
 | Create / edit / delete enrolments | yes | no |
-| Assign, edit and delete grades; mark attendance | yes | own courses only |
+| Assign, edit and delete grade components; mark attendance (single or whole class) | yes | own courses only |
 | Browse students, courses, enrolments, grades, attendance | all records | own courses only (read-only where editing is not allowed) |
 | CSV export | all records | own courses only |
 

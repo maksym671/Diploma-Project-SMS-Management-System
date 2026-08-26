@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Student Management System 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-24 15:58+0200\n"
+"POT-Creation-Date: 2026-08-26 21:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Maksym Shpak\n"
 "Language-Team: Polish\n"
@@ -32,12 +32,12 @@ msgstr "Nazwa użytkownika"
 msgid "Password"
 msgstr "Hasło"
 
-#: core/forms.py:38 templates/profile/index.html:22
+#: core/forms.py:38 core/views.py:872 templates/profile/index.html:22
 #: templates/students/form.html:32
 msgid "First Name"
 msgstr "Imię"
 
-#: core/forms.py:39 templates/profile/index.html:26
+#: core/forms.py:39 core/views.py:872 templates/profile/index.html:26
 #: templates/students/form.html:39
 msgid "Last Name"
 msgstr "Nazwisko"
@@ -65,7 +65,7 @@ msgstr "Numer telefonu"
 msgid "Address"
 msgstr "Adres"
 
-#: core/forms.py:60 templates/courses/form.html:32
+#: core/forms.py:60 core/views.py:892 templates/courses/form.html:32
 msgid "Course Name"
 msgstr "Nazwa kursu"
 
@@ -88,218 +88,512 @@ msgid ""
 "another enrollment first."
 msgstr "%(code)s jest pełny (%(seats)s miejsc). Zwiększ limit kursu lub usuń najpierw inny zapis."
 
-#: core/forms.py:126
+#: core/forms.py:131
 msgid "Optional comments..."
 msgstr "Komentarz (opcjonalnie)..."
 
-#: core/forms.py:151
+#: core/forms.py:156
+#, python-format
+msgid ""
+"The components of %(code)s already use %(used)s%% of the course weight, so "
+"this one can be at most %(free)s%%."
+msgstr "Składowe kursu %(code)s zajmują już %(used)s%% wagi, więc ta może mieć najwyżej %(free)s%%."
+
+#: core/forms.py:177
 msgid "Optional notes..."
 msgstr "Notatka (opcjonalnie)..."
 
-#: core/models.py:11
+#: core/i18n_catalog.py:9
+msgid "Computer Science"
+msgstr "Informatyka"
+
+#: core/i18n_catalog.py:10
+msgid "Mathematics"
+msgstr "Matematyka"
+
+#: core/i18n_catalog.py:11
+msgid "Physics"
+msgstr "Fizyka"
+
+#: core/i18n_catalog.py:14 core/models.py:101 templates/courses/list.html:35
+msgid "Fall"
+msgstr "Jesienny"
+
+#: core/i18n_catalog.py:15 core/models.py:102 templates/courses/list.html:36
+msgid "Spring"
+msgstr "Wiosenny"
+
+#: core/i18n_catalog.py:16 core/models.py:103 templates/courses/list.html:37
+msgid "Summer"
+msgstr "Letni"
+
+#: core/i18n_catalog.py:19
+msgid "Administration"
+msgstr "Administracja"
+
+#: core/i18n_catalog.py:22
+msgid "Introduction to Computer Science"
+msgstr "Wstęp do informatyki"
+
+#: core/i18n_catalog.py:23
+msgid "Database Systems"
+msgstr "Systemy baz danych"
+
+#: core/i18n_catalog.py:24
+msgid "Web Development"
+msgstr "Tworzenie aplikacji webowych"
+
+#: core/i18n_catalog.py:25
+msgid "Calculus I"
+msgstr "Analiza matematyczna I"
+
+#: core/i18n_catalog.py:26
+msgid "Linear Algebra"
+msgstr "Algebra liniowa"
+
+#: core/i18n_catalog.py:27
+msgid "Physics I — Mechanics"
+msgstr "Fizyka I — Mechanika"
+
+#: core/i18n_catalog.py:28
+msgid "Data Structures & Algorithms"
+msgstr "Struktury danych i algorytmy"
+
+#: core/i18n_catalog.py:29
+msgid "Statistics & Probability"
+msgstr "Statystyka i rachunek prawdopodobieństwa"
+
+#: core/i18n_catalog.py:32
+msgid ""
+"Fundamental concepts of computer science including algorithms, data "
+"structures, and programming basics."
+msgstr "Podstawy informatyki: algorytmy, struktury danych i wstęp do programowania."
+
+#: core/i18n_catalog.py:33
+msgid ""
+"Design and implementation of relational databases, SQL, normalization, and "
+"transaction management."
+msgstr "Projektowanie i implementacja relacyjnych baz danych, SQL, normalizacja i transakcje."
+
+#: core/i18n_catalog.py:34
+msgid ""
+"Modern web technologies including HTML5, CSS3, JavaScript, and server-side "
+"programming."
+msgstr "Nowoczesne technologie webowe: HTML5, CSS3, JavaScript oraz programowanie po stronie serwera."
+
+#: core/i18n_catalog.py:35
+msgid "Limits, derivatives, and integrals of single-variable functions."
+msgstr "Granice, pochodne i całki funkcji jednej zmiennej."
+
+#: core/i18n_catalog.py:36
+msgid ""
+"Vectors, matrices, linear transformations, eigenvalues and eigenvectors."
+msgstr "Wektory, macierze, przekształcenia liniowe, wartości i wektory własne."
+
+#: core/i18n_catalog.py:37
+msgid ""
+"Classical mechanics, Newton's laws, energy, momentum, and rotational motion."
+msgstr "Mechanika klasyczna, prawa Newtona, energia, pęd i ruch obrotowy."
+
+#: core/i18n_catalog.py:38
+msgid ""
+"Advanced data structures, algorithm design, complexity analysis, sorting and "
+"searching."
+msgstr "Zaawansowane struktury danych, projektowanie algorytmów, złożoność, sortowanie i wyszukiwanie."
+
+#: core/i18n_catalog.py:39
+msgid ""
+"Probability theory, random variables, statistical inference, and hypothesis "
+"testing."
+msgstr "Rachunek prawdopodobieństwa, zmienne losowe, wnioskowanie statystyczne i testowanie hipotez."
+
+#: core/models.py:46
 msgid "Administrator"
 msgstr "Administrator"
 
-#: core/models.py:12 templates/courses/detail.html:61
+#: core/models.py:47 templates/courses/detail.html:61
 #: templates/courses/form.html:60 templates/courses/list.html:54
 msgid "Teacher"
 msgstr "Prowadzący"
 
-#: core/models.py:105 templates/courses/detail.html:21
-#: templates/courses/list.html:84 templates/dashboard/index.html:100
+#: core/models.py:138 core/views.py:879 templates/courses/detail.html:21
+#: templates/courses/list.html:85 templates/dashboard/index.html:98
 #: templates/enrollments/list.html:35 templates/students/detail.html:23
-#: templates/students/list.html:41 templates/students/list.html:91
+#: templates/students/list.html:41 templates/students/list.html:89
 msgid "Active"
 msgstr "Aktywny"
 
-#: core/models.py:106 templates/enrollments/list.html:36
+#: core/models.py:139 templates/enrollments/list.html:36
 msgid "Completed"
 msgstr "Zakończony"
 
-#: core/models.py:107 templates/enrollments/list.html:37
+#: core/models.py:140 templates/enrollments/list.html:37
 msgid "Dropped"
 msgstr "Wycofany"
 
-#: core/models.py:129
+#: core/models.py:176
+
+msgid "Coursework"
+msgstr "Praca semestralna"
+
+#: core/models.py:177
+msgid "Midterm"
+msgstr "Kolokwium"
+
+#: core/models.py:178
+msgid "Final exam"
+msgstr "Egzamin"
+
+#: core/models.py:179
+msgid "Retake"
+msgstr "Poprawka"
+
+#: core/models.py:184
+msgid "Which part of the course this mark is for"
+msgstr "Której części kursu dotyczy ta ocena"
+
+#: core/models.py:189
+msgid "How much this component counts towards the course mark"
+msgstr "Ile ta składowa waży w ocenie końcowej"
+
+#: core/models.py:194
 msgid "Grade from 2.0 (fail) to 5.0 (excellent)"
 msgstr "Ocena od 2.0 (niedostateczny) do 5.0 (bardzo dobry)"
 
-#: core/models.py:136
+#: core/models.py:201
 msgid "Account that last saved this grade"
 msgstr "Konto, które ostatnio zapisało tę ocenę"
 
-#: core/models.py:165 templates/attendance/list.html:65
+#: core/models.py:220 templates/attendance/list.html:70
 msgid "Present"
 msgstr "Obecny"
 
-#: core/models.py:166 templates/attendance/list.html:67
+#: core/models.py:221 templates/attendance/list.html:72
 msgid "Absent"
 msgstr "Nieobecny"
 
-#: core/models.py:167 templates/attendance/list.html:69
+#: core/models.py:222 templates/attendance/list.html:74
 msgid "Late"
 msgstr "Spóźniony"
 
-#: core/views.py:55
+#: core/views.py:63
 #, python-format
 msgid "Welcome back, %(name)s!"
 msgstr "Witaj ponownie, %(name)s!"
 
-#: core/views.py:59
+#: core/views.py:67
 msgid "Invalid username or password."
 msgstr "Nieprawidłowa nazwa użytkownika lub hasło."
 
-#: core/views.py:70
+#: core/views.py:101
 msgid "You have been logged out."
 msgstr "Zostałeś wylogowany."
 
-#: core/views.py:283
+#: core/views.py:342
 #, python-format
 msgid "Student \"%(name)s\" has been created successfully."
 msgstr "Student \"%(name)s\" został pomyślnie dodany."
 
-#: core/views.py:289
+#: core/views.py:348
 msgid "Add New Student"
 msgstr "Dodaj studenta"
 
-#: core/views.py:303
+#: core/views.py:362
 #, python-format
 msgid "Student \"%(name)s\" has been updated."
 msgstr "Dane studenta \"%(name)s\" zostały zaktualizowane."
 
-#: core/views.py:309
+#: core/views.py:368
 msgid "Edit Student"
 msgstr "Edytuj studenta"
 
-#: core/views.py:320
+#: core/views.py:379
 #, python-format
 msgid "Student \"%(name)s\" has been deleted."
 msgstr "Student \"%(name)s\" został usunięty."
 
-#: core/views.py:380
+#: core/views.py:443
 #, python-format
 msgid "Course \"%(name)s\" has been created."
 msgstr "Kurs \"%(name)s\" został utworzony."
 
-#: core/views.py:386
+#: core/views.py:449
 msgid "Add New Course"
 msgstr "Dodaj kurs"
 
-#: core/views.py:400
+#: core/views.py:463
 #, python-format
 msgid "Course \"%(name)s\" has been updated."
 msgstr "Kurs \"%(name)s\" został zaktualizowany."
 
-#: core/views.py:406
+#: core/views.py:469
 msgid "Edit Course"
 msgstr "Edytuj kurs"
 
-#: core/views.py:417
+#: core/views.py:480
 #, python-format
 msgid "Course \"%(name)s\" has been deleted."
 msgstr "Kurs \"%(name)s\" został usunięty."
 
-#: core/views.py:467
+#: core/views.py:530
 #, python-format
 msgid "%(student)s enrolled in %(course)s."
 msgstr "%(student)s został zapisany na %(course)s."
 
-#: core/views.py:476 templates/enrollments/list.html:22
-#: templates/enrollments/list.html:120
+#: core/views.py:539 templates/enrollments/list.html:22
+#: templates/enrollments/list.html:121
 msgid "New Enrollment"
 msgstr "Nowy zapis"
 
-#: core/views.py:488
+#: core/views.py:551
 msgid "Enrollment updated successfully."
 msgstr "Zapis został zaktualizowany."
 
-#: core/views.py:493
+#: core/views.py:556
 msgid "Edit Enrollment"
 msgstr "Edytuj zapis"
 
-#: core/views.py:503
+#: core/views.py:566
 msgid "Enrollment has been removed."
 msgstr "Zapis został usunięty."
 
-#: core/views.py:552
+#: core/views.py:615
 #, python-format
 msgid "Grade %(value)s assigned successfully."
 msgstr "Ocena %(value)s została wystawiona."
 
-#: core/views.py:558 templates/grades/form.html:58
-#: templates/grades/list.html:17 templates/grades/list.html:107
+#: core/views.py:621 templates/grades/form.html:58
+#: templates/grades/list.html:17 templates/grades/list.html:117
 msgid "Assign Grade"
 msgstr "Wystaw ocenę"
 
-#: core/views.py:569
+#: core/views.py:632
 msgid "You can only edit grades for your own courses."
 msgstr "Możesz edytować oceny tylko na swoich kursach."
 
-#: core/views.py:578
+#: core/views.py:641
 msgid "Grade updated successfully."
 msgstr "Ocena została zaktualizowana."
 
-#: core/views.py:583
+#: core/views.py:646
 msgid "Edit Grade"
 msgstr "Edytuj ocenę"
 
-#: core/views.py:593
+#: core/views.py:656
 msgid "You can only delete grades for your own courses."
 msgstr "Możesz usuwać oceny tylko na swoich kursach."
 
-#: core/views.py:598
+#: core/views.py:661
 msgid "Grade has been deleted."
 msgstr "Ocena została usunięta."
 
-#: core/views.py:642
+#: core/views.py:712
+msgid "That date could not be read. Using today instead."
+msgstr "Nie udało się odczytać daty. Użyto dzisiejszej."
+
+#: core/views.py:753
+#, python-format
+msgid "Attendance saved for %(count)s students in %(code)s on %(date)s."
+msgstr "Zapisano obecność %(count)s studentów na kursie %(code)s w dniu %(date)s."
+
+#: core/views.py:760
+msgid "Nothing to save — no students were marked."
+msgstr "Nie ma czego zapisać — żaden student nie został odnotowany."
+
+#: core/views.py:791
 #, python-format
 msgid "Attendance marked for %(name)s."
 msgstr "Odnotowano obecność: %(name)s."
 
-#: core/views.py:650 templates/attendance/list.html:20
+#: core/views.py:799
 msgid "Mark Attendance"
 msgstr "Odnotuj obecność"
 
-#: core/views.py:658
+#: core/views.py:807
 msgid "You can only edit attendance for your own courses."
 msgstr "Możesz edytować obecność tylko na swoich kursach."
 
-#: core/views.py:665
+#: core/views.py:814
 msgid "Attendance updated."
 msgstr "Obecność została zaktualizowana."
 
-#: core/views.py:669
+#: core/views.py:818
 msgid "Edit Attendance"
 msgstr "Edytuj obecność"
 
-#: core/views.py:679
+#: core/views.py:828
 msgid "You can only delete attendance for your own courses."
 msgstr "Możesz usuwać obecność tylko na swoich kursach."
 
-#: core/views.py:684
+#: core/views.py:833
 msgid "Attendance record deleted."
 msgstr "Wpis obecności został usunięty."
 
-#: core/views.py:698
+#: core/views.py:847
 msgid "Profile updated successfully."
 msgstr "Profil został zaktualizowany."
+
+#: core/views.py:872 templates/attendance/bulk.html:75
+#: templates/courses/detail.html:103 templates/students/form.html:53
+#: templates/students/list.html:56
+msgid "Student Number"
+msgstr "Numer albumu"
+
+#: core/views.py:872 templates/students/detail.html:59
+msgid "Email"
+msgstr "E-mail"
+
+#: core/views.py:873 templates/courses/detail.html:104
+#: templates/dashboard/index.html:84 templates/students/list.html:57
+msgid "Program"
+msgstr "Kierunek"
+
+#: core/views.py:873 templates/attendance/form.html:49
+#: templates/attendance/list.html:52 templates/courses/detail.html:105
+#: templates/courses/list.html:56 templates/dashboard/index.html:85
+#: templates/dashboard/index.html:133 templates/enrollments/form.html:52
+#: templates/enrollments/list.html:54 templates/students/detail.html:121
+#: templates/students/list.html:61
+msgid "Status"
+msgstr "Stan"
+
+#: core/views.py:873
+msgid "Enrollment Date"
+msgstr "Data zapisu"
+
+#: core/views.py:879 templates/courses/detail.html:23
+#: templates/courses/list.html:87 templates/dashboard/index.html:100
+#: templates/students/detail.html:25 templates/students/list.html:42
+#: templates/students/list.html:91
+msgid "Inactive"
+msgstr "Nieaktywny"
+
+#: core/views.py:892 templates/attendance/bulk.html:74
+#: templates/attendance/list.html:49 templates/courses/detail.html:102
+#: templates/dashboard/index.html:83 templates/dashboard/index.html:131
+#: templates/enrollments/form.html:35 templates/enrollments/list.html:50
+#: templates/grades/list.html:38 templates/students/list.html:55
+msgid "Student"
+msgstr "Student"
+
+#: core/views.py:892 templates/courses/detail.html:49
+#: templates/courses/form.html:39
+msgid "Course Code"
+msgstr "Kod kursu"
+
+#: core/views.py:892 templates/grades/list.html:40
+
+msgid "Component"
+msgstr "Składowa"
+
+#: core/views.py:893
+msgid "Weight %"
+msgstr "Waga %"
+
+#: core/views.py:893 templates/courses/detail.html:106
+#: templates/enrollments/list.html:55 templates/grades/list.html:41
+msgid "Grade"
+msgstr "Ocena"
+
+#: core/views.py:893 templates/grades/list.html:42
+msgid "Letter"
+msgstr "Litera"
+
+#: core/views.py:893 templates/grades/list.html:43
+#: templates/students/detail.html:122
+
+msgid "Course Mark"
+msgstr "Ocena końcowa"
+
+#: core/views.py:894 templates/grades/list.html:44
+msgid "Date Assigned"
+msgstr "Data wystawienia"
+
+#: core/views.py:894 templates/grades/list.html:45
+msgid "Assigned By"
+msgstr "Wystawił"
+
+#: templates/attendance/bulk.html:4 templates/attendance/bulk.html:10
+
+msgid "Mark Class Attendance"
+msgstr "Odnotuj obecność grupy"
+
+#: templates/attendance/bulk.html:5 templates/attendance/bulk.html:76
+#: templates/attendance/confirm_delete.html:5 templates/attendance/form.html:5
+#: templates/attendance/list.html:4 templates/attendance/list.html:5
+#: templates/attendance/list.html:10 templates/base.html:85
+msgid "Attendance"
+msgstr "Obecność"
+
+#: templates/attendance/bulk.html:5 templates/attendance/list.html:21
+#: templates/base.html:89
+msgid "Mark Class"
+msgstr "Obecność grupy"
+
+#: templates/attendance/bulk.html:11
+msgid "Pick a course and a date, then mark the whole group at once."
+msgstr "Wybierz kurs i datę, a następnie odnotuj całą grupę naraz."
+
+#: templates/attendance/bulk.html:14
+
+msgid "All Records"
+msgstr "Wszystkie wpisy"
+
+#: templates/attendance/bulk.html:21
+
+msgid "Select a course…"
+msgstr "Wybierz kurs…"
+
+#: templates/attendance/bulk.html:30
+msgid "Load Group"
+msgstr "Wczytaj grupę"
+
+#: templates/attendance/bulk.html:38
+msgid "Choose a course to begin"
+msgstr "Wybierz kurs, aby zacząć"
+
+#: templates/attendance/bulk.html:39
+msgid "The roster for that course loads here, ready to mark."
+msgstr "Lista studentów tego kursu pojawi się tutaj, gotowa do odnotowania."
+
+#: templates/attendance/bulk.html:46
+
+msgid "No active students on this course"
+msgstr "Brak aktywnych studentów na tym kursie"
+
+#: templates/attendance/bulk.html:47
+msgid "Only active enrolments can be marked."
+msgstr "Odnotować można tylko aktywne zapisy."
+
+#: templates/attendance/bulk.html:60
+#, python-format
+msgid "%(code)s — %(count)s students"
+msgstr "%(code)s — %(count)s studentów"
+
+#: templates/attendance/bulk.html:63
+msgid "Set all:"
+msgstr "Ustaw wszystkim:"
+
+#: templates/attendance/bulk.html:99
+
+msgid "Not marked"
+msgstr "Nieodnotowany"
+
+#: templates/attendance/bulk.html:111
+
+msgid "Save Attendance"
+msgstr "Zapisz obecność"
 
 #: templates/attendance/confirm_delete.html:4
 msgid "Delete Attendance"
 msgstr "Usuń obecność"
 
-#: templates/attendance/confirm_delete.html:5 templates/attendance/form.html:5
-#: templates/attendance/list.html:4 templates/attendance/list.html:5
-#: templates/attendance/list.html:10 templates/base.html:84
-msgid "Attendance"
-msgstr "Obecność"
-
-#: templates/attendance/confirm_delete.html:5 templates/attendance/list.html:77
+#: templates/attendance/confirm_delete.html:5 templates/attendance/list.html:82
 #: templates/courses/confirm_delete.html:5 templates/courses/detail.html:35
-#: templates/courses/list.html:98 templates/enrollments/list.html:96
-#: templates/grades/confirm_delete.html:5 templates/grades/list.html:93
+#: templates/courses/list.html:99 templates/enrollments/list.html:97
+#: templates/grades/confirm_delete.html:5 templates/grades/list.html:103
 #: templates/students/confirm_delete.html:5 templates/students/detail.html:37
-#: templates/students/list.html:105
+#: templates/students/list.html:103
 msgid "Delete"
 msgstr "Usuń"
 
@@ -351,19 +645,10 @@ msgstr "Powrót do obecności"
 msgid "Enrollment"
 msgstr "Zapis"
 
-#: templates/attendance/form.html:42 templates/attendance/list.html:46
-#: templates/dashboard/index.html:132 templates/enrollments/list.html:53
-#: templates/students/detail.html:119
+#: templates/attendance/form.html:42 templates/attendance/list.html:51
+#: templates/dashboard/index.html:134 templates/enrollments/list.html:53
 msgid "Date"
 msgstr "Data"
-
-#: templates/attendance/form.html:49 templates/attendance/list.html:47
-#: templates/courses/detail.html:103 templates/courses/list.html:56
-#: templates/dashboard/index.html:85 templates/dashboard/index.html:131
-#: templates/enrollments/form.html:52 templates/enrollments/list.html:54
-#: templates/students/detail.html:117 templates/students/list.html:61
-msgid "Status"
-msgstr "Status"
 
 #: templates/attendance/form.html:58
 msgid "Notes (Optional)"
@@ -385,56 +670,54 @@ msgstr "Rejestruj i przeglądaj obecność studentów"
 msgid "Attendance records for your courses"
 msgstr "Obecność na Twoich kursach"
 
-#: templates/attendance/list.html:28 templates/enrollments/list.html:31
+#: templates/attendance/list.html:24
+
+msgid "Single Record"
+msgstr "Pojedynczy wpis"
+
+#: templates/attendance/list.html:33 templates/enrollments/list.html:31
 #: templates/grades/list.html:25
 msgid "Search by student or course..."
 msgstr "Szukaj po studencie lub kursie..."
 
-#: templates/attendance/list.html:31
+#: templates/attendance/list.html:36
 msgid "Search"
 msgstr "Szukaj"
 
-#: templates/attendance/list.html:34
+#: templates/attendance/list.html:39
 msgid "Clear"
 msgstr "Wyczyść"
 
-#: templates/attendance/list.html:44 templates/courses/detail.html:100
-#: templates/dashboard/index.html:83 templates/dashboard/index.html:129
-#: templates/enrollments/form.html:35 templates/enrollments/list.html:50
-#: templates/grades/list.html:38 templates/students/list.html:55
-msgid "Student"
-msgstr "Student"
-
-#: templates/attendance/list.html:45 templates/courses/list.html:50
-#: templates/dashboard/index.html:130 templates/enrollments/form.html:43
+#: templates/attendance/list.html:50 templates/courses/list.html:50
+#: templates/dashboard/index.html:132 templates/enrollments/form.html:43
 #: templates/enrollments/list.html:51 templates/grades/list.html:39
-#: templates/students/detail.html:114
+#: templates/students/detail.html:118
 msgid "Course"
 msgstr "Kurs"
 
-#: templates/attendance/list.html:48 templates/courses/list.html:57
-#: templates/enrollments/list.html:56 templates/grades/list.html:45
+#: templates/attendance/list.html:53 templates/courses/list.html:57
+#: templates/enrollments/list.html:56 templates/grades/list.html:47
 #: templates/students/list.html:62
 msgid "Actions"
 msgstr "Akcje"
 
-#: templates/attendance/list.html:74 templates/courses/detail.html:32
-#: templates/courses/list.html:95 templates/enrollments/list.html:93
-#: templates/grades/list.html:90 templates/students/detail.html:34
-#: templates/students/list.html:102
+#: templates/attendance/list.html:79 templates/courses/detail.html:32
+#: templates/courses/list.html:96 templates/enrollments/list.html:94
+#: templates/grades/list.html:100 templates/students/detail.html:34
+#: templates/students/list.html:100
 msgid "Edit"
 msgstr "Edytuj"
 
-#: templates/attendance/list.html:88
+#: templates/attendance/list.html:93
 msgid "No Attendance Records"
 msgstr "Brak wpisów obecności"
 
-#: templates/attendance/list.html:89 templates/enrollments/list.html:111
-#: templates/grades/list.html:105
+#: templates/attendance/list.html:94 templates/enrollments/list.html:112
+#: templates/grades/list.html:115
 msgid "No results matching your search"
 msgstr "Brak wyników dla Twojego zapytania"
 
-#: templates/attendance/list.html:89
+#: templates/attendance/list.html:94
 msgid "Start by marking attendance for a class"
 msgstr "Zacznij od odnotowania obecności na zajęciach"
 
@@ -447,8 +730,8 @@ msgid "Welcome Back"
 msgstr "Witamy ponownie"
 
 #: templates/auth/login.html:14
-msgid "Sign in to Student Management System"
-msgstr "Zaloguj się do Systemu Zarządzania Studentami"
+msgid "Staff sign-in — manage your courses, grades and attendance"
+msgstr "Logowanie dla pracowników — zarządzaj kursami, ocenami i obecnością"
 
 #: templates/auth/login.html:19
 msgid "Invalid username or password. Please try again."
@@ -462,75 +745,85 @@ msgstr "Zaloguj"
 msgid "Forgot your password?"
 msgstr "Zapomniałeś hasła?"
 
-#: templates/base.html:51
-msgid "Management System"
-msgstr "System Zarządzania"
+#: templates/auth/login.html:45
+msgid ""
+"Accounts are issued to lecturers and administrators. Students do not sign in "
+"here."
+msgstr "Konta otrzymują wykładowcy i administratorzy. Studenci nie logują się tutaj."
 
-#: templates/base.html:57
+#: templates/base.html:52
+msgid "Staff Portal"
+msgstr "Portal wykładowcy"
+
+#: templates/base.html:58
 msgid "Overview"
 msgstr "Przegląd"
 
-#: templates/base.html:60 templates/dashboard/index.html:4
+#: templates/base.html:61 templates/dashboard/index.html:4
 #: templates/dashboard/index.html:5
 msgid "Dashboard"
 msgstr "Panel Główny"
 
-#: templates/base.html:65
+#: templates/base.html:66
 msgid "Academic"
 msgstr "Akademickie"
 
-#: templates/base.html:68 templates/students/confirm_delete.html:5
+#: templates/base.html:69 templates/students/confirm_delete.html:5
 #: templates/students/detail.html:5 templates/students/form.html:5
 #: templates/students/list.html:4 templates/students/list.html:5
 #: templates/students/list.html:10
 msgid "Students"
 msgstr "Studenci"
 
-#: templates/base.html:72 templates/courses/confirm_delete.html:5
+#: templates/base.html:73 templates/courses/confirm_delete.html:5
 #: templates/courses/detail.html:5 templates/courses/form.html:5
 #: templates/courses/list.html:4 templates/courses/list.html:5
 #: templates/courses/list.html:10 templates/students/list.html:59
 msgid "Courses"
 msgstr "Kursy"
 
-#: templates/base.html:76 templates/dashboard/index.html:33
+#: templates/base.html:77 templates/dashboard/index.html:33
 #: templates/enrollments/confirm_delete.html:5
 #: templates/enrollments/form.html:5 templates/enrollments/list.html:4
 #: templates/enrollments/list.html:5 templates/enrollments/list.html:10
 msgid "Enrollments"
 msgstr "Zapisy"
 
-#: templates/base.html:80 templates/grades/confirm_delete.html:5
+#: templates/base.html:81 templates/grades/confirm_delete.html:5
 #: templates/grades/form.html:5 templates/grades/list.html:4
 #: templates/grades/list.html:5 templates/grades/list.html:10
 msgid "Grades"
 msgstr "Oceny"
 
-#: templates/base.html:90
+#: templates/base.html:95
 msgid "Analytics"
 msgstr "Analityka"
 
-#: templates/base.html:93
-msgid "Reports"
-msgstr "Raporty"
-
-#: templates/base.html:96
+#: templates/base.html:98
 msgid "Export Students"
 msgstr "Eksportuj Studentów"
 
-#: templates/base.html:97
+#: templates/base.html:102
 msgid "Export Grades"
 msgstr "Eksportuj Oceny"
 
-#: templates/base.html:104
+#: templates/base.html:109
 msgid "System"
 msgstr "System"
 
-#: templates/base.html:107
+#: templates/base.html:112
 msgid "Admin Panel"
 msgstr "Panel Administratora"
 
-#: templates/base.html:162
+#: templates/base.html:148
+msgid "Language"
+msgstr "Język"
+
+#: templates/base.html:161
+msgid "Toggle theme"
+msgstr "Przełącz motyw"
+
+#: templates/base.html:169
 msgid "Logout"
 msgstr "Wyloguj"
 
@@ -559,31 +852,21 @@ msgstr ""
 
 #: templates/courses/detail.html:18 templates/courses/detail.html:57
 #: templates/courses/form.html:53 templates/courses/list.html:53
-#: templates/students/detail.html:116
+#: templates/students/detail.html:120
 msgid "Credits"
 msgstr "Punkty ECTS"
-
-#: templates/courses/detail.html:23 templates/courses/list.html:86
-#: templates/dashboard/index.html:102 templates/students/detail.html:25
-#: templates/students/list.html:42 templates/students/list.html:93
-msgid "Inactive"
-msgstr "Nieaktywny"
 
 #: templates/courses/detail.html:44
 msgid "Course Information"
 msgstr "Informacje o kursie"
 
-#: templates/courses/detail.html:49 templates/courses/form.html:39
-msgid "Course Code"
-msgstr "Kod kursu"
-
 #: templates/courses/detail.html:53 templates/courses/form.html:46
 #: templates/courses/list.html:52 templates/enrollments/list.html:52
-#: templates/students/detail.html:115
+#: templates/students/detail.html:119
 msgid "Semester"
 msgstr "Semestr"
 
-#: templates/courses/detail.html:66 templates/courses/list.html:75
+#: templates/courses/detail.html:66 templates/courses/list.html:76
 msgid "Unassigned"
 msgstr "Nieprzypisany"
 
@@ -599,31 +882,16 @@ msgstr "Wolne miejsca"
 msgid "Description"
 msgstr "Opis"
 
-#: templates/courses/detail.html:93
+#: templates/courses/detail.html:95
 #, python-format
-msgid "Enrolled Students (%(count)s)"
-msgstr "Zapisani studenci (%(count)s)"
+msgid "Students — %(active)s active of %(total)s enrolled"
+msgstr "Studenci — %(active)s aktywnych z %(total)s zapisanych"
 
-#: templates/courses/detail.html:101 templates/students/form.html:53
-#: templates/students/list.html:56
-msgid "Student Number"
-msgstr "Numer albumu"
-
-#: templates/courses/detail.html:102 templates/dashboard/index.html:84
-#: templates/students/list.html:57
-msgid "Program"
-msgstr "Program"
-
-#: templates/courses/detail.html:104 templates/enrollments/list.html:55
-#: templates/grades/list.html:40 templates/students/detail.html:118
-msgid "Grade"
-msgstr "Ocena"
-
-#: templates/courses/detail.html:129 templates/students/detail.html:144
+#: templates/courses/detail.html:132 templates/students/detail.html:148
 msgid "Not graded"
 msgstr "Brak oceny"
 
-#: templates/courses/detail.html:136
+#: templates/courses/detail.html:141
 msgid "No students enrolled in this course yet."
 msgstr "Na ten kurs nie zapisał się jeszcze żaden student."
 
@@ -669,7 +937,7 @@ msgstr "Zarządzaj kursami i ich szczegółami"
 msgid "Courses you teach"
 msgstr "Kursy, które prowadzisz"
 
-#: templates/courses/list.html:22 templates/courses/list.html:122
+#: templates/courses/list.html:22 templates/courses/list.html:123
 msgid "Add Course"
 msgstr "Dodaj kurs"
 
@@ -680,18 +948,6 @@ msgstr "Szukaj kursów..."
 #: templates/courses/list.html:34
 msgid "All Semesters"
 msgstr "Wszystkie semestry"
-
-#: templates/courses/list.html:35
-msgid "Fall"
-msgstr "Jesienny"
-
-#: templates/courses/list.html:36
-msgid "Spring"
-msgstr "Wiosenny"
-
-#: templates/courses/list.html:37
-msgid "Summer"
-msgstr "Letni"
 
 #: templates/courses/list.html:40 templates/enrollments/list.html:40
 #: templates/grades/list.html:28 templates/students/list.html:45
@@ -706,24 +962,24 @@ msgstr "Kod"
 msgid "Enrolled"
 msgstr "Zapisano"
 
-#: templates/courses/list.html:91 templates/students/list.html:98
+#: templates/courses/list.html:92 templates/students/list.html:96
 msgid "View"
 msgstr "Podgląd"
 
-#: templates/courses/list.html:110
+#: templates/courses/list.html:111
 msgid "No Courses Found"
 msgstr "Nie znaleziono kursów"
 
-#: templates/courses/list.html:113
+#: templates/courses/list.html:114
 #, python-format
 msgid "No courses matching \"%(query)s\""
 msgstr "Brak kursów pasujących do \"%(query)s\""
 
-#: templates/courses/list.html:115
+#: templates/courses/list.html:116
 msgid "Get started by creating your first course"
 msgstr "Zacznij od utworzenia pierwszego kursu"
 
-#: templates/courses/list.html:117
+#: templates/courses/list.html:118
 msgid "No courses are assigned to you yet"
 msgstr "Nie przypisano Ci jeszcze żadnego kursu"
 
@@ -735,7 +991,7 @@ msgstr "Liczba Studentów"
 msgid "Active Courses"
 msgstr "Aktywne Kursy"
 
-#: templates/dashboard/index.html:42 templates/students/detail.html:85
+#: templates/dashboard/index.html:42 templates/students/detail.html:88
 msgid "Average Grade"
 msgstr "Średnia Ocen"
 
@@ -747,6 +1003,10 @@ msgstr "Rozkład Ocen"
 msgid "Enrollments by Course"
 msgstr "Zapisy na Kursy"
 
+#: templates/dashboard/index.html:60
+msgid "Active Enrollments"
+msgstr "Aktywne zapisy"
+
 #: templates/dashboard/index.html:67
 msgid "Students by Program"
 msgstr "Studenci według programu"
@@ -755,7 +1015,7 @@ msgstr "Studenci według programu"
 msgid "Recent Students"
 msgstr "Ostatnio dodani studenci"
 
-#: templates/dashboard/index.html:77 templates/dashboard/index.html:123
+#: templates/dashboard/index.html:77 templates/dashboard/index.html:125
 msgid "View All"
 msgstr "Zobacz wszystkie"
 
@@ -763,13 +1023,21 @@ msgstr "Zobacz wszystkie"
 msgid "No students yet"
 msgstr "Brak studentów"
 
-#: templates/dashboard/index.html:122
+#: templates/dashboard/index.html:110
+msgid "New students will appear here once they are added."
+msgstr "Nowi studenci pojawią się tutaj po dodaniu."
+
+#: templates/dashboard/index.html:124
 msgid "Recent Enrollments"
 msgstr "Ostatnie zapisy"
 
-#: templates/dashboard/index.html:159 templates/students/detail.html:154
+#: templates/dashboard/index.html:162 templates/students/detail.html:168
 msgid "No enrollments yet"
 msgstr "Brak zapisów"
+
+#: templates/dashboard/index.html:163
+msgid "Recent course enrollments will show up here."
+msgstr "Ostatnie zapisy na kursy pojawią się w tym miejscu."
 
 #: templates/enrollments/confirm_delete.html:4
 #: templates/enrollments/confirm_delete.html:13
@@ -828,15 +1096,24 @@ msgstr "Zapisy studentów na Twoje kursy (tylko do odczytu)"
 msgid "All Status"
 msgstr "Wszystkie statusy"
 
-#: templates/enrollments/list.html:108
+#: templates/enrollments/list.html:85
+#, python-format
+msgid "%(counter)s component"
+msgid_plural "%(counter)s components"
+msgstr[0] "%(counter)s składowa"
+msgstr[1] "%(counter)s składowe"
+msgstr[2] "%(counter)s składowych"
+msgstr[3] "%(counter)s składowej"
+
+#: templates/enrollments/list.html:109
 msgid "No Enrollments Found"
 msgstr "Nie znaleziono zapisów"
 
-#: templates/enrollments/list.html:113
+#: templates/enrollments/list.html:114
 msgid "Create a new enrollment to get started"
 msgstr "Utwórz nowy zapis, aby rozpocząć"
 
-#: templates/enrollments/list.html:115 templates/students/list.html:124
+#: templates/enrollments/list.html:116 templates/students/list.html:122
 msgid "No students are enrolled in your courses yet"
 msgstr "Na Twoje kursy nie zapisał się jeszcze żaden student"
 
@@ -883,7 +1160,7 @@ msgid ""
 "Satisfactory (C) | 3.0 = Pass (D) | &lt;3.0 = Fail (F)"
 msgstr "Skala: 5.0 = bardzo dobry (A) | 4.5 = dobry plus (B) | 4.0 = dobry (B) | 3.5 = dostateczny plus (C) | 3.0 = dostateczny (D) | &lt;3.0 = niedostateczny (F)"
 
-#: templates/grades/form.html:51 templates/grades/list.html:44
+#: templates/grades/form.html:51 templates/grades/list.html:46
 msgid "Comments"
 msgstr "Komentarze"
 
@@ -899,23 +1176,16 @@ msgstr "Przeglądaj i zarządzaj ocenami na swoich kursach"
 msgid "Manage academic grades and results"
 msgstr "Zarządzaj ocenami i wynikami"
 
-#: templates/grades/list.html:41
-msgid "Letter"
-msgstr "Litera"
+#: templates/grades/list.html:65
+#, python-format
+msgid "%(weight)s%% of the course"
+msgstr "%(weight)s%% oceny końcowej"
 
-#: templates/grades/list.html:42
-msgid "Date Assigned"
-msgstr "Data wystawienia"
-
-#: templates/grades/list.html:43
-msgid "Assigned By"
-msgstr "Wystawił"
-
-#: templates/grades/list.html:104
+#: templates/grades/list.html:114
 msgid "No Grades Found"
 msgstr "Nie znaleziono ocen"
 
-#: templates/grades/list.html:105
+#: templates/grades/list.html:115
 msgid "Assign grades to student enrollments"
 msgstr "Wystawiaj oceny do zapisów studentów"
 
@@ -1036,6 +1306,28 @@ msgstr "Jeśli konto z podanym adresem e-mail istnieje, wysłaliśmy instrukcję
 msgid "Return to Login"
 msgstr "Powrót do logowania"
 
+#: templates/registration/password_reset_email.html:1
+#, python-format
+msgid "Hello %(name)s,"
+msgstr "Witaj %(name)s,"
+
+#: templates/registration/password_reset_email.html:3
+msgid ""
+"You requested a password reset for your Student Management System account."
+msgstr "Zażądano zresetowania hasła do Twojego konta w Systemie Zarządzania Studentami."
+
+#: templates/registration/password_reset_email.html:5
+msgid "Open the link below to choose a new password:"
+msgstr "Otwórz poniższy link, aby ustawić nowe hasło:"
+
+#: templates/registration/password_reset_email.html:8
+msgid "If you did not request this change, you can ignore this email."
+msgstr "Jeśli nie prosiłeś o tę zmianę, zignoruj tę wiadomość."
+
+#: templates/registration/password_reset_email.html:11
+msgid "Student Management System"
+msgstr "System Zarządzania Studentami"
+
 #: templates/registration/password_reset_form.html:13
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
@@ -1052,6 +1344,10 @@ msgstr "Wyślij link"
 #: templates/registration/password_reset_form.html:34
 msgid "Back to Login"
 msgstr "Powrót do logowania"
+
+#: templates/registration/password_reset_subject.txt:1
+msgid "Password reset — Student Management System"
+msgstr "Reset hasła — System Zarządzania Studentami"
 
 #: templates/students/confirm_delete.html:4
 #: templates/students/confirm_delete.html:13
@@ -1087,10 +1383,6 @@ msgstr "Program studiów"
 msgid "Date Enrolled"
 msgstr "Data zapisu"
 
-#: templates/students/detail.html:59
-msgid "Email"
-msgstr "E-mail"
-
 #: templates/students/detail.html:64 templates/students/form.html:74
 msgid "Phone"
 msgstr "Telefon"
@@ -1099,17 +1391,30 @@ msgstr "Telefon"
 msgid "Date of Birth"
 msgstr "Data urodzenia"
 
-#: templates/students/detail.html:81
+#: templates/students/detail.html:82
 msgid "Total Courses"
 msgstr "Liczba kursów"
 
-#: templates/students/detail.html:104
+#: templates/students/detail.html:82
+msgid "Your Courses"
+msgstr "Twoje kursy"
+
+#: templates/students/detail.html:88
+msgid "Average in Your Courses"
+msgstr "Średnia na Twoich kursach"
+
+#: templates/students/detail.html:108
 msgid "Enrolled Courses & Grades"
 msgstr "Kursy i oceny"
 
-#: templates/students/detail.html:106
+#: templates/students/detail.html:110
 msgid "Your Courses & Grades for this Student"
 msgstr "Twoje kursy i oceny tego studenta"
+
+#: templates/students/detail.html:123
+
+msgid "Components"
+msgstr "Składowe"
 
 #: templates/students/form.html:11
 msgid "Update student information"
@@ -1139,7 +1444,7 @@ msgstr "Zarządzaj danymi studentów i informacjami akademickimi"
 msgid "Students enrolled in your courses"
 msgstr "Studenci zapisani na Twoje kursy"
 
-#: templates/students/list.html:22 templates/students/list.html:129
+#: templates/students/list.html:22 templates/students/list.html:127
 msgid "Add Student"
 msgstr "Dodaj studenta"
 
@@ -1155,15 +1460,28 @@ msgstr "Wszystkie programy"
 msgid "Avg. Grade"
 msgstr "Średnia"
 
-#: templates/students/list.html:117
+#: templates/students/list.html:115
 msgid "No Students Found"
 msgstr "Nie znaleziono studentów"
 
-#: templates/students/list.html:120
+#: templates/students/list.html:118
 #, python-format
 msgid "No students matching \"%(query)s\""
 msgstr "Brak studentów pasujących do \"%(query)s\""
 
-#: templates/students/list.html:122
+#: templates/students/list.html:120
 msgid "Get started by adding your first student"
 msgstr "Zacznij od dodania pierwszego studenta"
+
+#~ msgid "Sign in to Student Management System"
+#~ msgstr "Zaloguj się do Systemu Zarządzania Studentami"
+
+#~ msgid "Management System"
+#~ msgstr "System Zarządzania"
+
+#, python-format
+#~ msgid "Enrolled Students (%(count)s)"
+#~ msgstr "Zapisani studenci (%(count)s)"
+
+#~ msgid "Reports"
+#~ msgstr "Raporty"

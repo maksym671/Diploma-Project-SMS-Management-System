@@ -271,14 +271,16 @@ a:hover {
 .sidebar-logo {
     width: 36px;
     height: 36px;
-    background: var(--accent);
+    background: transparent;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    color: #FFFFFF;
+    overflow: hidden;
     flex-shrink: 0;
+}
+
+.sidebar-logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 .sidebar-title {
@@ -381,11 +383,20 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: 'DM Sans', sans-serif;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
     color: #FFFFFF;
     flex-shrink: 0;
 }
+
+.sidebar-user-avatar.tone-0 { background: var(--accent); }
+.sidebar-user-avatar.tone-1 { background: var(--success); }
+.sidebar-user-avatar.tone-2 { background: var(--warning); }
+.sidebar-user-avatar.tone-3 { background: #7C3AED; }
+.sidebar-user-avatar.tone-4 { background: var(--info); }
+.sidebar-user-avatar.tone-5 { background: #DB2777; }
 
 .sidebar-user-info {
     overflow: hidden;
@@ -458,6 +469,57 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.lang-form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.lang-switch {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+}
+
+.lang-switch button,
+.lang-switch .is-active {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text-2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    padding: 6px 10px;
+    border-radius: 999px;
+    min-width: 36px;
+    text-align: center;
+}
+
+.lang-switch button {
+    cursor: pointer;
+}
+
+.lang-switch button:hover {
+    color: var(--text-1);
+}
+
+.lang-switch button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.lang-switch .is-active {
+    background: var(--surface-1);
+    color: var(--text-1);
+    box-shadow: var(--shadow-xs);
 }
 
 .btn-sidebar-toggle {
@@ -741,10 +803,9 @@ a:hover {
 .data-table thead th,
 .table thead th {
     padding: 10px 16px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.02em;
     color: var(--text-3);
     background: var(--surface-2);
     border-bottom: 1px solid var(--border);
@@ -793,6 +854,40 @@ a:hover {
     color: var(--text-3);
     margin-top: 1px;
 }
+
+.person-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.person-text {
+    min-width: 0;
+}
+
+.person-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.person-avatar.tone-0 { background: var(--accent-subtle); color: var(--accent); }
+.person-avatar.tone-1 { background: var(--success-subtle); color: var(--success); }
+.person-avatar.tone-2 { background: var(--warning-subtle); color: var(--warning); }
+.person-avatar.tone-3 { background: rgba(124, 58, 237, 0.10); color: #7C3AED; }
+.person-avatar.tone-4 { background: var(--info-subtle); color: var(--info); }
+.person-avatar.tone-5 { background: rgba(219, 39, 119, 0.10); color: #DB2777; }
+[data-theme="dark"] .person-avatar.tone-3 { background: rgba(167, 139, 250, 0.14); color: #A78BFA; }
+[data-theme="dark"] .person-avatar.tone-5 { background: rgba(244, 114, 182, 0.14); color: #F472B6; }
 
 /* ─── Buttons ────────────────────────────────────────────────── */
 .btn {
@@ -960,6 +1055,105 @@ a:hover {
 .badge-grade.c { background: var(--grade-c-bg); color: var(--grade-c); }
 .badge-grade.d { background: var(--grade-d-bg); color: var(--grade-d); }
 .badge-grade.f { background: var(--grade-f-bg); color: var(--grade-f); }
+
+/* ─── Bulk attendance picker ─────────────────────────────────── */
+.status-picker {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.status-option {
+    cursor: pointer;
+    margin: 0;
+}
+
+.status-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.status-option span {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    background: var(--surface-1);
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+    white-space: nowrap;
+}
+
+.status-option:hover span {
+    border-color: var(--text-3);
+}
+
+/* Focus lives on the hidden input, so mirror it onto the visible pill. */
+.status-option input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.status-option input:checked + span {
+    border-color: transparent;
+    color: #fff;
+}
+
+.status-present input:checked + span { background: var(--success); }
+.status-absent  input:checked + span { background: var(--danger); }
+.status-late    input:checked + span { background: var(--warning); }
+.status-none    input:checked + span {
+    background: var(--surface-2);
+    color: var(--text-2);
+    border-color: var(--border);
+}
+
+.bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.bulk-actions-label {
+    font-size: 12px;
+    color: var(--text-3);
+}
+
+.card-footer {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ─── Grade components ───────────────────────────────────────── */
+.grade-component {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.grade-component + .grade-component {
+    margin-top: 5px;
+}
+
+.grade-component-kind {
+    color: var(--text-2);
+    min-width: 84px;
+}
+
+.grade-component-weight {
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+}
 
 /* ─── Forms ──────────────────────────────────────────────────── */
 .form-control,
@@ -1186,16 +1380,24 @@ textarea.form-control {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 20px;
     font-weight: 700;
     color: #FFFFFF;
     flex-shrink: 0;
 }
 
-.detail-avatar.blue   { background: var(--accent); }
-.detail-avatar.teal   { background: var(--success); }
-.detail-avatar.violet  { background: #7C3AED; }
-[data-theme="dark"] .detail-avatar.violet { background: #A78BFA; }
+.detail-avatar.blue,
+.detail-avatar.tone-0 { background: var(--accent); }
+.detail-avatar.teal,
+.detail-avatar.tone-1 { background: var(--success); }
+.detail-avatar.tone-2 { background: var(--warning); }
+.detail-avatar.violet,
+.detail-avatar.tone-3 { background: #7C3AED; }
+.detail-avatar.tone-4 { background: var(--info); }
+.detail-avatar.tone-5 { background: #DB2777; }
+[data-theme="dark"] .detail-avatar.violet,
+[data-theme="dark"] .detail-avatar.tone-3 { background: #7C3AED; }
 
 .detail-info h2 {
     font-size: 22px;
@@ -1311,14 +1513,32 @@ textarea.form-control {
 .login-logo {
     width: 48px;
     height: 48px;
-    background: var(--accent);
+    background: transparent;
     border-radius: 12px;
+    overflow: hidden;
+    margin: 0 auto 20px;
+}
+
+.login-logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.login-logo:has(> i) {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    background: var(--accent);
     color: #FFFFFF;
-    margin: 0 auto 20px;
+    font-size: 22px;
+}
+
+.login-logo:has(> i) i {
+    background: none;
+    width: auto;
+    height: auto;
+    font-size: inherit;
 }
 
 .login-card h2 {
@@ -1346,6 +1566,85 @@ textarea.form-control {
     font-weight: 600;
     justify-content: center;
     margin-top: 4px;
+}
+
+/* Django's built-in password-reset views render their own widgets, which carry
+   no .form-control class, so style them by position instead. */
+.login-card input[type="email"],
+.login-card input[type="password"],
+.login-card input[type="text"] {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    width: 100%;
+}
+
+.login-card input[type="email"]:focus,
+.login-card input[type="password"]:focus,
+.login-card input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+/* `form.as_p` wraps each field in a <p> and drops the password rules into a
+   <ul>; give both the spacing and muted treatment used elsewhere. */
+.login-card form p {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.login-card form p label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.login-card .helptext,
+.login-card form ul {
+    display: block;
+    font-size: 12px;
+    color: var(--text-3);
+    margin: 6px 0 0;
+    padding-left: 16px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.login-card .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--danger);
+    text-align: left;
+}
+
+.login-audience {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    text-align: left;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 11px;
+    margin-bottom: 14px;
+}
+
+.login-audience i {
+    flex-shrink: 0;
+    margin-top: 1px;
 }
 
 .login-footer {

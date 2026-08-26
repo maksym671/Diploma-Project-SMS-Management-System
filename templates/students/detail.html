@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n sms_extras %}
 
 {% block title %}{{ student.full_name }}{% endblock %}
 {% block breadcrumb %}{% trans "Students" %} / {{ student.full_name }}{% endblock %}
@@ -7,8 +7,8 @@
 {% block content %}
 <div class="page-header">
     <div class="detail-header">
-        <div class="detail-avatar blue">
-            {{ student.first_name|make_list|first|upper }}{{ student.last_name|make_list|first|upper }}
+        <div class="detail-avatar tone-{{ student.full_name|avatar_tone }}">
+            {{ student.full_name|initials }}
         </div>
         <div class="detail-info">
             <h2>{{ student.full_name }}</h2>
@@ -49,7 +49,7 @@
         <div class="info-grid">
             <div class="info-item">
                 <div class="info-label">{% trans "Study Program" %}</div>
-                <div class="info-value">{{ student.study_program }}</div>
+                <div class="info-value">{{ student.study_program|trans_db }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">{% trans "Date Enrolled" %}</div>
@@ -78,14 +78,18 @@
             </div>
             {% endif %}
             <div class="info-item">
-                <div class="info-label">{% trans "Total Courses" %}</div>
-                <div class="info-value">{{ student.enrollment_count }}</div>
+                <div class="info-label">
+                    {% if user.is_admin %}{% trans "Total Courses" %}{% else %}{% trans "Your Courses" %}{% endif %}
+                </div>
+                <div class="info-value">{{ course_count }}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">{% trans "Average Grade" %}</div>
+                <div class="info-label">
+                    {% if user.is_admin %}{% trans "Average Grade" %}{% else %}{% trans "Average in Your Courses" %}{% endif %}
+                </div>
                 <div class="info-value">
-                    {% if student.average_grade %}
-                        {{ student.average_grade }}
+                    {% if average_grade %}
+                        {{ average_grade }}
                     {% else %}
                         —
                     {% endif %}
@@ -115,8 +119,8 @@
                     <th>{% trans "Semester" %}</th>
                     <th>{% trans "Credits" %}</th>
                     <th>{% trans "Status" %}</th>
-                    <th>{% trans "Grade" %}</th>
-                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Course Mark" %}</th>
+                    <th>{% trans "Components" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -126,9 +130,9 @@
                         <a href="{% url 'course_detail' enrollment.course.pk %}" class="table-name">
                             {{ enrollment.course.course_code }}
                         </a>
-                        <div class="table-sub">{{ enrollment.course.course_name }}</div>
+                        <div class="table-sub">{{ enrollment.course.course_name|trans_db }}</div>
                     </td>
-                    <td>{{ enrollment.course.semester }}</td>
+                    <td>{{ enrollment.course.get_semester_display }}</td>
                     <td>{{ enrollment.course.credits }}</td>
                     <td>
                         <span class="badge badge-{{ enrollment.status }}">
@@ -136,22 +140,33 @@
                         </span>
                     </td>
                     <td>
-                        {% if enrollment.grade %}
-                        <span class="badge badge-grade {{ enrollment.grade.letter_grade|lower }}">
-                            {{ enrollment.grade.grade_value }} ({{ enrollment.grade.letter_grade }})
+                        {% if enrollment.final_grade %}
+                        <span class="badge badge-grade {{ enrollment.final_letter|lower }}">
+                            {{ enrollment.final_grade }} ({{ enrollment.final_letter }})
                         </span>
                         {% else %}
                         <span class="text-muted">{% trans "Not graded" %}</span>
                         {% endif %}
                     </td>
-                    <td class="text-muted">
-                        {% if enrollment.grade %}{{ enrollment.grade.date_assigned|date:"SHORT_DATE_FORMAT" }}{% else %}—{% endif %}
+                    <td>
+                        {% for g in enrollment.grades.all %}
+                        <div class="grade-component">
+                            <span class="grade-component-kind">{{ g.get_kind_display }}</span>
+                            <span class="badge badge-grade {{ g.letter_grade|lower }}">{{ g.grade_value }}</span>
+                            <span class="grade-component-weight">{{ g.weight }}%</span>
+                        </div>
+                        {% empty %}
+                        <span class="text-muted">—</span>
+                        {% endfor %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-muted" style="text-align:center; padding:30px;">
-                        {% trans "No enrollments yet" %}
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-clipboard2-check"></i>
+                            <h5>{% trans "No enrollments yet" %}</h5>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

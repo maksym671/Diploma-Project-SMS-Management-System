@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load static i18n %}
 
 {% block title %}{% trans "Login" %}{% endblock %}
 
@@ -8,10 +8,10 @@
     <div class="login-bg"></div>
     <div class="login-card">
         <div class="login-logo">
-            <i class="bi bi-mortarboard-fill"></i>
+            <img src="{% static 'images/logo.svg' %}" alt="">
         </div>
         <h2>{% trans "Welcome Back" %}</h2>
-        <p class="subtitle">{% trans "Sign in to Student Management System" %}</p>
+        <p class="subtitle">{% trans "Staff sign-in — manage your courses, grades and attendance" %}</p>
 
         {% if form.errors %}
         <div class="alert alert-danger" style="margin-bottom: 20px;">
@@ -40,6 +40,10 @@
         </form>
 
         <div class="login-footer">
+            <div class="login-audience">
+                <i class="bi bi-info-circle"></i>
+                {% trans "Accounts are issued to lecturers and administrators. Students do not sign in here." %}
+            </div>
             Student Management System &copy; 2026
         </div>
     </div>

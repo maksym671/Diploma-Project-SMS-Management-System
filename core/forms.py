@@ -112,12 +112,17 @@ class EnrollmentForm(forms.ModelForm):
 
 
 class GradeForm(forms.ModelForm):
-    """Form for assigning and editing grades."""
+    """Form for assigning and editing one graded component of an enrolment."""
     class Meta:
         model = Grade
-        fields = ['enrollment', 'grade_value', 'comments']
+        fields = ['enrollment', 'kind', 'weight', 'grade_value', 'comments']
         widgets = {
             'enrollment': forms.Select(attrs={'class': 'form-select'}),
+            'kind': forms.Select(attrs={'class': 'form-select'}),
+            'weight': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': '1', 'max': '100', 'step': '1',
+            }),
             'grade_value': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'min': '2.0', 'max': '5.0', 'step': '0.1',
@@ -129,14 +134,35 @@ class GradeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        # Only show enrollments without grades (unless editing existing)
-        graded_ids = Grade.objects.values_list('enrollment_id', flat=True)
-        qs = Enrollment.objects.exclude(id__in=graded_ids)
-        if self.instance.pk:
-            qs = qs | Enrollment.objects.filter(id=self.instance.enrollment_id)
+        # An enrolment now takes several components, so every enrolment stays
+        # selectable; a teacher still only sees their own courses.
+        qs = Enrollment.objects.select_related('student', 'course')
         if user and user.is_teacher():
             qs = qs.filter(course__teacher=user)
         self.fields['enrollment'].queryset = qs
+
+    def clean(self):
+        cleaned_data = super().clean()
+        enrollment = cleaned_data.get('enrollment')
+        weight = cleaned_data.get('weight')
+
+        if enrollment and weight:
+            # The components of one course must not add up to more than a
+            # whole course, or the weighted mark stops meaning anything.
+            others = enrollment.grades.exclude(pk=self.instance.pk)
+            used = sum(grade.weight for grade in others)
+            if used + weight > 100:
+                raise forms.ValidationError(
+                    _('The components of %(code)s already use %(used)s%% of the '
+                      'course weight, so this one can be at most %(free)s%%.')
+                    % {
+                        'code': enrollment.course.course_code,
+                        'used': used,
+                        'free': 100 - used,
+                    }
+                )
+
+        return cleaned_data
 
 
 class AttendanceForm(forms.ModelForm):

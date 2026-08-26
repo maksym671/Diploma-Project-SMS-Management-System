@@ -1,0 +1,12 @@
+{% load sms_extras %}
+<div class="person-cell">
+    <span class="person-avatar tone-{{ name|avatar_tone }}" aria-hidden="true">{{ name|initials }}</span>
+    <div class="person-text">
+        {% if url %}
+        <a href="{{ url }}" class="table-name">{{ name }}</a>
+        {% else %}
+        <span class="table-name">{{ name }}</span>
+        {% endif %}
+        {% if sub %}<div class="table-sub">{{ sub }}</div>{% endif %}
+    </div>
+</div>

@@ -1,11 +1,11 @@
-{% load static i18n %}
+{% load static i18n sms_extras %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Student Management System — A web-based information system for managing students, courses, enrollments, and academic records.">
+    <meta name="description" content="Student Management System — the teaching-staff portal where lecturers and administrators manage course rosters, grades and attendance. Accounts are issued to staff only.">
     <title>{% block title %}Dashboard{% endblock %} — SMS</title>
 
     <!-- Prevent FOUC: apply saved theme immediately -->
@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="{% static 'images/logo.jpg' %}">
+    <link rel="icon" href="{% static 'images/logo.svg' %}" type="image/svg+xml">
 
     {% block extra_css %}{% endblock %}
 
@@ -35,6 +35,7 @@
     <script src="{% static 'vendor/turbo/turbo.es2017-umd.js' %}"></script>
 </head>
 <body>
+    {% block body %}
     {% if user.is_authenticated %}
     <div class="app-wrapper">
         <!-- Sidebar Overlay (Mobile) -->
@@ -43,12 +44,12 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo" style="background: transparent; padding: 0;">
-                    <img src="{% static 'images/logo.jpg' %}" alt="SMS Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px; mix-blend-mode: multiply;">
+                <div class="sidebar-logo">
+                    <img src="{% static 'images/logo.svg' %}" alt="">
                 </div>
                 <div>
                     <div class="sidebar-title">SMS</div>
-                    <div class="sidebar-subtitle">{% trans "Management System" %}</div>
+                    <div class="sidebar-subtitle">{% trans "Staff Portal" %}</div>
                 </div>
             </div>
 
@@ -83,19 +84,23 @@
                         <i class="bi bi-calendar-check-fill"></i>
                         <span>{% trans "Attendance" %}</span>
                     </a>
+                    <a href="{% url 'attendance_bulk' %}" class="sidebar-link {% if request.resolver_match.url_name == 'attendance_bulk' %}active{% endif %}">
+                        <i class="bi bi-check2-all"></i>
+                        <span>{% trans "Mark Class" %}</span>
+                    </a>
                 </div>
 
                 {% if user.is_teacher or user.is_admin %}
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">{% trans "Analytics" %}</div>
-                    <a href="#" class="sidebar-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                        <span>{% trans "Reports" %}</span>
+                    <a href="{% url 'export_students_csv' %}" class="sidebar-link">
+                        <i class="bi bi-download"></i>
+                        <span>{% trans "Export Students" %}</span>
                     </a>
-                    <ul class="dropdown-menu shadow border-0" style="background-color: var(--sidebar-bg);">
-                        <li><a class="dropdown-item" href="{% url 'export_students_csv' %}"><i class="bi bi-download me-2"></i>{% trans "Export Students" %}</a></li>
-                        <li><a class="dropdown-item" href="{% url 'export_grades_csv' %}"><i class="bi bi-download me-2"></i>{% trans "Export Grades" %}</a></li>
-                    </ul>
+                    <a href="{% url 'export_grades_csv' %}" class="sidebar-link">
+                        <i class="bi bi-download"></i>
+                        <span>{% trans "Export Grades" %}</span>
+                    </a>
                 </div>
                 {% endif %}
 
@@ -112,8 +117,8 @@
 
             <div class="sidebar-footer">
                 <a href="{% url 'profile' %}" class="sidebar-user text-decoration-none d-flex align-items-center w-100">
-                    <div class="sidebar-user-avatar">
-                        {{ user.username|make_list|first|upper }}
+                    <div class="sidebar-user-avatar tone-{{ user.get_full_name|default:user.username|avatar_tone }}">
+                        {{ user.get_full_name|default:user.username|initials }}
                     </div>
                     <div class="sidebar-user-info ms-2 flex-grow-1 text-truncate">
                         <div class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</div>
@@ -137,21 +142,23 @@
                 </div>
             </div>
             <div class="navbar-right d-flex align-items-center gap-3">
-                <form action="{% url 'set_language' %}" method="post" class="d-inline-flex align-items-center mb-0">
+                <form action="{% url 'set_language' %}" method="post" class="lang-form mb-0">
                     {% csrf_token %}
                     <input name="next" type="hidden" value="{{ request.get_full_path }}">
-                    <select name="language" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
-                        {% get_current_language as CURRENT_LANGUAGE %}
-                        {% get_available_languages as LANGUAGES %}
-                        {% get_language_info_list for LANGUAGES as languages %}
-                        {% for language in languages %}
-                            <option value="{{ language.code }}"{% if language.code == CURRENT_LANGUAGE %} selected{% endif %}>
-                                {{ language.name_local }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                    <div class="lang-switch" role="group" aria-label="{% trans 'Language' %}">
+                        {% if LANGUAGE_CODE == 'en' %}
+                        <span class="is-active" aria-current="true">EN</span>
+                        {% else %}
+                        <button type="submit" name="language" value="en">EN</button>
+                        {% endif %}
+                        {% if LANGUAGE_CODE == 'pl' %}
+                        <span class="is-active" aria-current="true">PL</span>
+                        {% else %}
+                        <button type="submit" name="language" value="pl">PL</button>
+                        {% endif %}
+                    </div>
                 </form>
-                <button class="btn-theme-toggle" id="theme-toggle" title="Toggle theme">
+                <button class="btn-theme-toggle" id="theme-toggle" title="{% trans 'Toggle theme' %}">
                     <i class="bi bi-moon-fill"></i>
                     <i class="bi bi-sun-fill"></i>
                 </button>
@@ -186,6 +193,7 @@
     {% else %}
         {% block content_noauth %}{% endblock %}
     {% endif %}
+    {% endblock %}
 
     <!-- Bootstrap JS -->
     <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>

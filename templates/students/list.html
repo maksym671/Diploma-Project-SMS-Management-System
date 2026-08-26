@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n sms_extras %}
 
 {% block title %}{% trans "Students" %}{% endblock %}
 {% block breadcrumb %}{% trans "Students" %}{% endblock %}
@@ -33,7 +33,7 @@
     <select name="program" class="form-select" onchange="this.form.submit()" id="filter-program">
         <option value="">{% trans "All Programs" %}</option>
         {% for prog in programs %}
-        <option value="{{ prog }}" {% if selected_program == prog %}selected{% endif %}>{{ prog }}</option>
+        <option value="{{ prog }}" {% if selected_program == prog %}selected{% endif %}>{{ prog|trans_db }}</option>
         {% endfor %}
     </select>
     <select name="status" class="form-select" onchange="this.form.submit()" id="filter-status">
@@ -66,13 +66,11 @@
                 {% for student in students %}
                 <tr>
                     <td>
-                        <a href="{% url 'student_detail' student.pk %}" class="table-name">
-                            {{ student.full_name }}
-                        </a>
-                        <div class="table-sub">{{ student.email }}</div>
+                        {% url 'student_detail' student.pk as student_url %}
+                        {% include "partials/person_cell.html" with name=student.full_name sub=student.email url=student_url %}
                     </td>
                     <td>{{ student.student_number }}</td>
-                    <td>{{ student.study_program }}</td>
+                    <td>{{ student.study_program|trans_db }}</td>
                     <td class="text-muted">{{ student.date_enrolled|date:"SHORT_DATE_FORMAT" }}</td>
                     <td>
                         <span class="badge badge-info">{{ student.annotated_enrollment_count }}</span>

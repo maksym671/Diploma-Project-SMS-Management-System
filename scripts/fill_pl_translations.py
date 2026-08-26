@@ -70,10 +70,10 @@ TRANSLATIONS = {
     'Course': 'Kurs',
     'Grade': 'Ocena',
     'Enrollment': 'Zapis',
-    'Status': 'Status',
+    'Status': 'Stan',
     'Date': 'Data',
     'Actions': 'Akcje',
-    'Program': 'Program',
+    'Program': 'Kierunek',
     'Semester': 'Semestr',
     'Credits': 'Punkty ECTS',
     'Teacher': 'Prowadzący',
@@ -130,6 +130,73 @@ TRANSLATIONS = {
     'Date of Birth': 'Data urodzenia',
     'Address': 'Adres',
     'Total Courses': 'Liczba kursów',
+
+    # --- Staff-facing framing ----------------------------------------------
+    'Staff Portal': 'Portal wykładowcy',
+    'Staff sign-in — manage your courses, grades and attendance':
+        'Logowanie dla pracowników — zarządzaj kursami, ocenami i obecnością',
+    'Accounts are issued to lecturers and administrators. Students do not sign in here.':
+        'Konta otrzymują wykładowcy i administratorzy. Studenci nie logują się tutaj.',
+
+    # --- Grade components ---------------------------------------------------
+    'Coursework': 'Praca semestralna',
+    'Midterm': 'Kolokwium',
+    'Final exam': 'Egzamin',
+    'Retake': 'Poprawka',
+    'Component': 'Składowa',
+    'Components': 'Składowe',
+    'Course Mark': 'Ocena końcowa',
+    'Weight %': 'Waga %',
+    '%(weight)s%% of the course': '%(weight)s%% oceny końcowej',
+    'Which part of the course this mark is for':
+        'Której części kursu dotyczy ta ocena',
+    'How much this component counts towards the course mark':
+        'Ile ta składowa waży w ocenie końcowej',
+    'The components of %(code)s already use %(used)s%% of the course weight, so this '
+    'one can be at most %(free)s%%.':
+        'Składowe kursu %(code)s zajmują już %(used)s%% wagi, więc ta może mieć '
+        'najwyżej %(free)s%%.',
+
+    # --- Bulk attendance ----------------------------------------------------
+    'Mark Class Attendance': 'Odnotuj obecność grupy',
+    'Mark Class': 'Obecność grupy',
+    'Single Record': 'Pojedynczy wpis',
+    'All Records': 'Wszystkie wpisy',
+    'Pick a course and a date, then mark the whole group at once.':
+        'Wybierz kurs i datę, a następnie odnotuj całą grupę naraz.',
+    'Select a course…': 'Wybierz kurs…',
+    'Load Group': 'Wczytaj grupę',
+    'Choose a course to begin': 'Wybierz kurs, aby zacząć',
+    'The roster for that course loads here, ready to mark.':
+        'Lista studentów tego kursu pojawi się tutaj, gotowa do odnotowania.',
+    'No active students on this course': 'Brak aktywnych studentów na tym kursie',
+    'Only active enrolments can be marked.':
+        'Odnotować można tylko aktywne zapisy.',
+    '%(code)s — %(count)s students': '%(code)s — %(count)s studentów',
+    'Set all:': 'Ustaw wszystkim:',
+    'Not marked': 'Nieodnotowany',
+    'Save Attendance': 'Zapisz obecność',
+    'Attendance': 'Obecność',
+    'Attendance saved for %(count)s students in %(code)s on %(date)s.':
+        'Zapisano obecność %(count)s studentów na kursie %(code)s w dniu %(date)s.',
+    'Nothing to save — no students were marked.':
+        'Nie ma czego zapisać — żaden student nie został odnotowany.',
+    'That date could not be read. Using today instead.':
+        'Nie udało się odczytać daty. Użyto dzisiejszej.',
+
+    # --- Password-reset email ---------------------------------------------
+    'Hello %(name)s,': 'Witaj %(name)s,',
+    'You requested a password reset for your Student Management System account.':
+        'Zażądano zresetowania hasła do Twojego konta w Systemie Zarządzania Studentami.',
+    'Open the link below to choose a new password:':
+        'Otwórz poniższy link, aby ustawić nowe hasło:',
+    'If you did not request this change, you can ignore this email.':
+        'Jeśli nie prosiłeś o tę zmianę, zignoruj tę wiadomość.',
+    'Student Management System': 'System Zarządzania Studentami',
+    'Password reset — Student Management System':
+        'Reset hasła — System Zarządzania Studentami',
+    'Your Courses': 'Twoje kursy',
+    'Average in Your Courses': 'Średnia na Twoich kursach',
     'Enrolled Courses & Grades': 'Kursy i oceny',
     'Your Courses & Grades for this Student': 'Twoje kursy i oceny tego studenta',
     'No enrollments yet': 'Brak zapisów',
@@ -167,6 +234,8 @@ TRANSLATIONS = {
     'Available Seats': 'Wolne miejsca',
     'Description': 'Opis',
     'Enrolled Students (%(count)s)': 'Zapisani studenci (%(count)s)',
+    'Students — %(active)s active of %(total)s enrolled':
+        'Studenci — %(active)s aktywnych z %(total)s zapisanych',
     'No students enrolled in this course yet.':
         'Na ten kurs nie zapisał się jeszcze żaden student.',
     'Update course information': 'Zaktualizuj informacje o kursie',
@@ -278,6 +347,11 @@ TRANSLATIONS = {
     'Recent Students': 'Ostatnio dodani studenci',
     'Recent Enrollments': 'Ostatnie zapisy',
     'No students yet': 'Brak studentów',
+    'New students will appear here once they are added.':
+        'Nowi studenci pojawią się tutaj po dodaniu.',
+    'Recent course enrollments will show up here.':
+        'Ostatnie zapisy na kursy pojawią się w tym miejscu.',
+    'Language': 'Język',
 
     # --- Profile -----------------------------------------------------------
     'My Profile': 'Mój profil',
@@ -312,6 +386,39 @@ TRANSLATIONS = {
     'Your password has been set. You may go ahead and log in now.':
         'Twoje hasło zostało ustawione. Możesz się teraz zalogować.',
     'Log In': 'Zaloguj się',
+    'Toggle theme': 'Przełącz motyw',
+    'Active Enrollments': 'Aktywne zapisy',
+    'Enrollment Date': 'Data zapisu',
+
+    # --- Stored demo data (shown through trans_db) -------------------------
+    'Computer Science': 'Informatyka',
+    'Mathematics': 'Matematyka',
+    'Physics': 'Fizyka',
+    'Administration': 'Administracja',
+    'Introduction to Computer Science': 'Wstęp do informatyki',
+    'Database Systems': 'Systemy baz danych',
+    'Web Development': 'Tworzenie aplikacji webowych',
+    'Calculus I': 'Analiza matematyczna I',
+    'Linear Algebra': 'Algebra liniowa',
+    'Physics I — Mechanics': 'Fizyka I — Mechanika',
+    'Data Structures & Algorithms': 'Struktury danych i algorytmy',
+    'Statistics & Probability': 'Statystyka i rachunek prawdopodobieństwa',
+    'Fundamental concepts of computer science including algorithms, data structures, and programming basics.':
+        'Podstawy informatyki: algorytmy, struktury danych i wstęp do programowania.',
+    'Design and implementation of relational databases, SQL, normalization, and transaction management.':
+        'Projektowanie i implementacja relacyjnych baz danych, SQL, normalizacja i transakcje.',
+    'Modern web technologies including HTML5, CSS3, JavaScript, and server-side programming.':
+        'Nowoczesne technologie webowe: HTML5, CSS3, JavaScript oraz programowanie po stronie serwera.',
+    'Limits, derivatives, and integrals of single-variable functions.':
+        'Granice, pochodne i całki funkcji jednej zmiennej.',
+    'Vectors, matrices, linear transformations, eigenvalues and eigenvectors.':
+        'Wektory, macierze, przekształcenia liniowe, wartości i wektory własne.',
+    "Classical mechanics, Newton's laws, energy, momentum, and rotational motion.":
+        'Mechanika klasyczna, prawa Newtona, energia, pęd i ruch obrotowy.',
+    'Advanced data structures, algorithm design, complexity analysis, sorting and searching.':
+        'Zaawansowane struktury danych, projektowanie algorytmów, złożoność, sortowanie i wyszukiwanie.',
+    'Probability theory, random variables, statistical inference, and hypothesis testing.':
+        'Rachunek prawdopodobieństwa, zmienne losowe, wnioskowanie statystyczne i testowanie hipotez.',
 }
 
 
@@ -328,6 +435,18 @@ def po_quote(value: str) -> str:
         if chunk or suffix:
             lines.append(f'"{chunk}{suffix}"')
     return '\n'.join(lines)
+
+
+# Plural messages. Polish takes four forms — 1, 2-4, 5+, and the fractional
+# case — so these cannot live in TRANSLATIONS, which holds one string each.
+PLURAL_TRANSLATIONS = {
+    '%(counter)s component': [
+        '%(counter)s składowa',
+        '%(counter)s składowe',
+        '%(counter)s składowych',
+        '%(counter)s składowej',
+    ],
+}
 
 
 HEADER_FIELDS = {
@@ -356,6 +475,26 @@ def main() -> None:
             continue
         msgid = ''.join(re.findall(r'"(.*)"', match.group(1)))
         if not msgid:
+            continue
+
+        if 'msgid_plural' in block:
+            forms = PLURAL_TRANSLATIONS.get(msgid)
+            if forms is None:
+                if re.search(r'^msgstr\[0\] ""$', block, re.M):
+                    unknown.append(msgid)
+                    missing += 1
+                continue
+            block = re.sub(r'^#\| .*\n', '', block, flags=re.M)
+            block = re.sub(r'^#, fuzzy(, )?', lambda m: '#, ' if m.group(1) else '',
+                           block, flags=re.M)
+            for index, form in enumerate(forms):
+                block = re.sub(
+                    rf'^msgstr\[{index}\] ".*"$',
+                    lambda _m, f=form: f'msgstr[{index}] "{f}"',
+                    block, flags=re.M,
+                )
+            blocks[i] = block
+            filled += 1
             continue
 
         translation = TRANSLATIONS.get(msgid)

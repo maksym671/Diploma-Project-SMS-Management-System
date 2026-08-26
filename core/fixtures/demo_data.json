@@ -87,9 +87,9 @@
       "last_login": null,
       "is_superuser": false,
       "username": "teacher1",
-      "first_name": "",
-      "last_name": "",
-      "email": "",
+      "first_name": "Anna",
+      "last_name": "Kowalska",
+      "email": "teacher1@sms.edu",
       "is_staff": false,
       "is_active": true,
       "date_joined": "2026-06-26T06:07:47.223Z",
@@ -1662,7 +1662,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.599Z",
-      "updated_at": "2026-06-18T19:57:46.599Z"
+      "updated_at": "2026-06-18T19:57:46.599Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1677,7 +1679,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.600Z",
-      "updated_at": "2026-06-18T19:57:46.600Z"
+      "updated_at": "2026-06-18T19:57:46.600Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1692,7 +1696,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.600Z",
-      "updated_at": "2026-06-18T19:57:46.600Z"
+      "updated_at": "2026-06-18T19:57:46.600Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1707,7 +1713,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.601Z",
-      "updated_at": "2026-06-18T19:57:46.601Z"
+      "updated_at": "2026-06-18T19:57:46.601Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1722,7 +1730,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.602Z",
-      "updated_at": "2026-06-18T19:57:46.602Z"
+      "updated_at": "2026-06-18T19:57:46.602Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1737,7 +1747,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.602Z",
-      "updated_at": "2026-06-18T19:57:46.602Z"
+      "updated_at": "2026-06-18T19:57:46.602Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1752,7 +1764,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.603Z",
-      "updated_at": "2026-06-18T19:57:46.603Z"
+      "updated_at": "2026-06-18T19:57:46.603Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1767,7 +1781,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.603Z",
-      "updated_at": "2026-06-18T19:57:46.603Z"
+      "updated_at": "2026-06-18T19:57:46.603Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1782,7 +1798,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.604Z",
-      "updated_at": "2026-06-18T19:57:46.604Z"
+      "updated_at": "2026-06-18T19:57:46.604Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1797,7 +1815,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.604Z",
-      "updated_at": "2026-06-18T19:57:46.604Z"
+      "updated_at": "2026-06-18T19:57:46.604Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1812,7 +1832,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.605Z",
-      "updated_at": "2026-06-18T19:57:46.605Z"
+      "updated_at": "2026-06-18T19:57:46.605Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -1827,7 +1849,9 @@
         "prof.chen"
       ],
       "created_at": "2026-06-18T19:57:46.606Z",
-      "updated_at": "2026-06-18T19:57:46.606Z"
+      "updated_at": "2026-06-18T19:57:46.606Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -1842,7 +1866,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.607Z",
-      "updated_at": "2026-06-18T19:57:46.607Z"
+      "updated_at": "2026-06-18T19:57:46.607Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1857,7 +1883,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.608Z",
-      "updated_at": "2026-06-18T19:57:46.608Z"
+      "updated_at": "2026-06-18T19:57:46.608Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1872,7 +1900,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.609Z",
-      "updated_at": "2026-06-18T19:57:46.609Z"
+      "updated_at": "2026-06-18T19:57:46.609Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1887,7 +1917,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.610Z",
-      "updated_at": "2026-06-18T19:57:46.610Z"
+      "updated_at": "2026-06-18T19:57:46.610Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1902,7 +1934,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.610Z",
-      "updated_at": "2026-06-18T19:57:46.610Z"
+      "updated_at": "2026-06-18T19:57:46.610Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1917,7 +1951,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.611Z",
-      "updated_at": "2026-06-18T19:57:46.611Z"
+      "updated_at": "2026-06-18T19:57:46.611Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1932,7 +1968,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.612Z",
-      "updated_at": "2026-06-18T19:57:46.612Z"
+      "updated_at": "2026-06-18T19:57:46.612Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1947,7 +1985,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.612Z",
-      "updated_at": "2026-06-18T19:57:46.612Z"
+      "updated_at": "2026-06-18T19:57:46.612Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -1962,7 +2002,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.613Z",
-      "updated_at": "2026-06-18T19:57:46.613Z"
+      "updated_at": "2026-06-18T19:57:46.613Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -1977,7 +2019,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.613Z",
-      "updated_at": "2026-06-18T19:57:46.613Z"
+      "updated_at": "2026-06-18T19:57:46.613Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -1992,7 +2036,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.614Z",
-      "updated_at": "2026-06-18T19:57:46.614Z"
+      "updated_at": "2026-06-18T19:57:46.614Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2007,7 +2053,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.615Z",
-      "updated_at": "2026-06-18T19:57:46.615Z"
+      "updated_at": "2026-06-18T19:57:46.615Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2022,7 +2070,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.615Z",
-      "updated_at": "2026-06-18T19:57:46.615Z"
+      "updated_at": "2026-06-18T19:57:46.615Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2037,7 +2087,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.616Z",
-      "updated_at": "2026-06-18T19:57:46.616Z"
+      "updated_at": "2026-06-18T19:57:46.616Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2052,7 +2104,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.616Z",
-      "updated_at": "2026-06-18T19:57:46.616Z"
+      "updated_at": "2026-06-18T19:57:46.616Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2067,7 +2121,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.617Z",
-      "updated_at": "2026-06-18T19:57:46.617Z"
+      "updated_at": "2026-06-18T19:57:46.617Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2082,7 +2138,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.618Z",
-      "updated_at": "2026-06-18T19:57:46.618Z"
+      "updated_at": "2026-06-18T19:57:46.618Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2097,7 +2155,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.618Z",
-      "updated_at": "2026-06-18T19:57:46.618Z"
+      "updated_at": "2026-06-18T19:57:46.618Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2112,7 +2172,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.619Z",
-      "updated_at": "2026-06-18T19:57:46.619Z"
+      "updated_at": "2026-06-18T19:57:46.619Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2127,7 +2189,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.619Z",
-      "updated_at": "2026-06-18T19:57:46.619Z"
+      "updated_at": "2026-06-18T19:57:46.619Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2142,7 +2206,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.620Z",
-      "updated_at": "2026-06-18T19:57:46.620Z"
+      "updated_at": "2026-06-18T19:57:46.620Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2157,7 +2223,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.620Z",
-      "updated_at": "2026-06-18T19:57:46.620Z"
+      "updated_at": "2026-06-18T19:57:46.620Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2172,7 +2240,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.621Z",
-      "updated_at": "2026-06-18T19:57:46.621Z"
+      "updated_at": "2026-06-18T19:57:46.621Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2187,7 +2257,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.622Z",
-      "updated_at": "2026-06-18T19:57:46.622Z"
+      "updated_at": "2026-06-18T19:57:46.622Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2202,7 +2274,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.623Z",
-      "updated_at": "2026-06-18T19:57:46.623Z"
+      "updated_at": "2026-06-18T19:57:46.623Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2217,7 +2291,9 @@
         "prof.chen"
       ],
       "created_at": "2026-06-18T19:57:46.623Z",
-      "updated_at": "2026-06-18T19:57:46.623Z"
+      "updated_at": "2026-06-18T19:57:46.623Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2232,7 +2308,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.624Z",
-      "updated_at": "2026-06-18T19:57:46.624Z"
+      "updated_at": "2026-06-18T19:57:46.624Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2247,7 +2325,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.625Z",
-      "updated_at": "2026-06-18T19:57:46.625Z"
+      "updated_at": "2026-06-18T19:57:46.625Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2262,7 +2342,9 @@
         "prof.chen"
       ],
       "created_at": "2026-06-18T19:57:46.625Z",
-      "updated_at": "2026-06-18T19:57:46.625Z"
+      "updated_at": "2026-06-18T19:57:46.625Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2277,7 +2359,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.626Z",
-      "updated_at": "2026-06-18T19:57:46.626Z"
+      "updated_at": "2026-06-18T19:57:46.626Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2292,7 +2376,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.627Z",
-      "updated_at": "2026-06-18T19:57:46.627Z"
+      "updated_at": "2026-06-18T19:57:46.627Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2307,7 +2393,9 @@
         "prof.chen"
       ],
       "created_at": "2026-06-18T19:57:46.627Z",
-      "updated_at": "2026-06-18T19:57:46.627Z"
+      "updated_at": "2026-06-18T19:57:46.627Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2322,7 +2410,9 @@
         "prof.chen"
       ],
       "created_at": "2026-06-18T19:57:46.628Z",
-      "updated_at": "2026-06-18T19:57:46.628Z"
+      "updated_at": "2026-06-18T19:57:46.628Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2337,7 +2427,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.629Z",
-      "updated_at": "2026-06-18T19:57:46.629Z"
+      "updated_at": "2026-06-18T19:57:46.629Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2352,7 +2444,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.630Z",
-      "updated_at": "2026-06-18T19:57:46.630Z"
+      "updated_at": "2026-06-18T19:57:46.630Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2367,7 +2461,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.631Z",
-      "updated_at": "2026-06-18T19:57:46.631Z"
+      "updated_at": "2026-06-18T19:57:46.631Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2382,7 +2478,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.632Z",
-      "updated_at": "2026-06-18T19:57:46.632Z"
+      "updated_at": "2026-06-18T19:57:46.632Z",
+      "kind": "final",
+      "weight": 60
     }
   },
   {
@@ -2397,7 +2495,9 @@
         "prof.chen"
       ],
       "created_at": "2026-06-18T19:57:46.632Z",
-      "updated_at": "2026-06-18T19:57:46.632Z"
+      "updated_at": "2026-06-18T19:57:46.632Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2412,7 +2512,9 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.633Z",
-      "updated_at": "2026-06-18T19:57:46.633Z"
+      "updated_at": "2026-06-18T19:57:46.633Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2427,7 +2529,9 @@
         "teacher"
       ],
       "created_at": "2026-06-18T19:57:46.634Z",
-      "updated_at": "2026-06-18T19:57:46.634Z"
+      "updated_at": "2026-06-18T19:57:46.634Z",
+      "kind": "final",
+      "weight": 100
     }
   },
   {
@@ -2442,7 +2546,587 @@
         "prof.martinez"
       ],
       "created_at": "2026-06-18T19:57:46.635Z",
-      "updated_at": "2026-06-18T19:57:46.635Z"
+      "updated_at": "2026-06-18T19:57:46.635Z",
+      "kind": "final",
+      "weight": 60
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 54,
+    "fields": {
+      "enrollment": 2,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 55,
+    "fields": {
+      "enrollment": 7,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 56,
+    "fields": {
+      "enrollment": 8,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 57,
+    "fields": {
+      "enrollment": 9,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 58,
+    "fields": {
+      "enrollment": 16,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 59,
+    "fields": {
+      "enrollment": 18,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 60,
+    "fields": {
+      "enrollment": 22,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 61,
+    "fields": {
+      "enrollment": 28,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 62,
+    "fields": {
+      "enrollment": 32,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 63,
+    "fields": {
+      "enrollment": 34,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 64,
+    "fields": {
+      "enrollment": 40,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 65,
+    "fields": {
+      "enrollment": 43,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 66,
+    "fields": {
+      "enrollment": 46,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 67,
+    "fields": {
+      "enrollment": 47,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 68,
+    "fields": {
+      "enrollment": 48,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 69,
+    "fields": {
+      "enrollment": 51,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 70,
+    "fields": {
+      "enrollment": 56,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 71,
+    "fields": {
+      "enrollment": 59,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 72,
+    "fields": {
+      "enrollment": 64,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 73,
+    "fields": {
+      "enrollment": 66,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 74,
+    "fields": {
+      "enrollment": 67,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 75,
+    "fields": {
+      "enrollment": 68,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 76,
+    "fields": {
+      "enrollment": 73,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "5.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 77,
+    "fields": {
+      "enrollment": 74,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 78,
+    "fields": {
+      "enrollment": 82,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 79,
+    "fields": {
+      "enrollment": 84,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 80,
+    "fields": {
+      "enrollment": 1,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 81,
+    "fields": {
+      "enrollment": 3,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.chen"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 82,
+    "fields": {
+      "enrollment": 4,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 83,
+    "fields": {
+      "enrollment": 11,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 84,
+    "fields": {
+      "enrollment": 14,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 85,
+    "fields": {
+      "enrollment": 17,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "3.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 86,
+    "fields": {
+      "enrollment": 19,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.0",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "teacher"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.grade",
+    "pk": 87,
+    "fields": {
+      "enrollment": 24,
+      "kind": "midterm",
+      "weight": 40,
+      "grade_value": "4.5",
+      "date_assigned": "2026-04-20",
+      "comments": "",
+      "assigned_by": [
+        "prof.martinez"
+      ],
+      "created_at": "2026-04-20T10:00:00Z",
+      "updated_at": "2026-04-20T10:00:00Z"
     }
   },
   {
@@ -2455,6 +3139,2454 @@
       "notes": "",
       "created_at": "2026-06-22T02:45:34.014Z",
       "updated_at": "2026-06-22T02:45:34.014Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 2,
+    "fields": {
+      "enrollment": 1,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 3,
+    "fields": {
+      "enrollment": 10,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 4,
+    "fields": {
+      "enrollment": 24,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 5,
+    "fields": {
+      "enrollment": 36,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 6,
+    "fields": {
+      "enrollment": 79,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 7,
+    "fields": {
+      "enrollment": 1,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 8,
+    "fields": {
+      "enrollment": 10,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 9,
+    "fields": {
+      "enrollment": 24,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 10,
+    "fields": {
+      "enrollment": 36,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 11,
+    "fields": {
+      "enrollment": 79,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 12,
+    "fields": {
+      "enrollment": 1,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 13,
+    "fields": {
+      "enrollment": 10,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 14,
+    "fields": {
+      "enrollment": 24,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 15,
+    "fields": {
+      "enrollment": 36,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 16,
+    "fields": {
+      "enrollment": 79,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 17,
+    "fields": {
+      "enrollment": 1,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 18,
+    "fields": {
+      "enrollment": 10,
+      "date": "2026-05-25",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 19,
+    "fields": {
+      "enrollment": 24,
+      "date": "2026-05-25",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 20,
+    "fields": {
+      "enrollment": 36,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 21,
+    "fields": {
+      "enrollment": 79,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 22,
+    "fields": {
+      "enrollment": 3,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 23,
+    "fields": {
+      "enrollment": 6,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 24,
+    "fields": {
+      "enrollment": 12,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 25,
+    "fields": {
+      "enrollment": 13,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 26,
+    "fields": {
+      "enrollment": 20,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 27,
+    "fields": {
+      "enrollment": 25,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 28,
+    "fields": {
+      "enrollment": 42,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 29,
+    "fields": {
+      "enrollment": 49,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 30,
+    "fields": {
+      "enrollment": 57,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 31,
+    "fields": {
+      "enrollment": 63,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 32,
+    "fields": {
+      "enrollment": 71,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 33,
+    "fields": {
+      "enrollment": 83,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 34,
+    "fields": {
+      "enrollment": 3,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 35,
+    "fields": {
+      "enrollment": 6,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 36,
+    "fields": {
+      "enrollment": 12,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 37,
+    "fields": {
+      "enrollment": 13,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 38,
+    "fields": {
+      "enrollment": 20,
+      "date": "2026-05-11",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 39,
+    "fields": {
+      "enrollment": 25,
+      "date": "2026-05-11",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 40,
+    "fields": {
+      "enrollment": 42,
+      "date": "2026-05-11",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 41,
+    "fields": {
+      "enrollment": 49,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 42,
+    "fields": {
+      "enrollment": 57,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 43,
+    "fields": {
+      "enrollment": 63,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 44,
+    "fields": {
+      "enrollment": 71,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 45,
+    "fields": {
+      "enrollment": 83,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 46,
+    "fields": {
+      "enrollment": 3,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 47,
+    "fields": {
+      "enrollment": 6,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 48,
+    "fields": {
+      "enrollment": 12,
+      "date": "2026-05-18",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 49,
+    "fields": {
+      "enrollment": 13,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 50,
+    "fields": {
+      "enrollment": 20,
+      "date": "2026-05-18",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 51,
+    "fields": {
+      "enrollment": 25,
+      "date": "2026-05-18",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 52,
+    "fields": {
+      "enrollment": 42,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 53,
+    "fields": {
+      "enrollment": 49,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 54,
+    "fields": {
+      "enrollment": 57,
+      "date": "2026-05-18",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 55,
+    "fields": {
+      "enrollment": 63,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 56,
+    "fields": {
+      "enrollment": 71,
+      "date": "2026-05-18",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 57,
+    "fields": {
+      "enrollment": 83,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 58,
+    "fields": {
+      "enrollment": 3,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 59,
+    "fields": {
+      "enrollment": 6,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 60,
+    "fields": {
+      "enrollment": 12,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 61,
+    "fields": {
+      "enrollment": 13,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 62,
+    "fields": {
+      "enrollment": 20,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 63,
+    "fields": {
+      "enrollment": 25,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 64,
+    "fields": {
+      "enrollment": 42,
+      "date": "2026-05-25",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 65,
+    "fields": {
+      "enrollment": 49,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 66,
+    "fields": {
+      "enrollment": 57,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 67,
+    "fields": {
+      "enrollment": 63,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 68,
+    "fields": {
+      "enrollment": 71,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 69,
+    "fields": {
+      "enrollment": 83,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 70,
+    "fields": {
+      "enrollment": 4,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 71,
+    "fields": {
+      "enrollment": 15,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 72,
+    "fields": {
+      "enrollment": 21,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 73,
+    "fields": {
+      "enrollment": 27,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 74,
+    "fields": {
+      "enrollment": 33,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 75,
+    "fields": {
+      "enrollment": 44,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 76,
+    "fields": {
+      "enrollment": 50,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 77,
+    "fields": {
+      "enrollment": 54,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 78,
+    "fields": {
+      "enrollment": 78,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 79,
+    "fields": {
+      "enrollment": 4,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 80,
+    "fields": {
+      "enrollment": 15,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 81,
+    "fields": {
+      "enrollment": 21,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 82,
+    "fields": {
+      "enrollment": 27,
+      "date": "2026-05-11",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 83,
+    "fields": {
+      "enrollment": 33,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 84,
+    "fields": {
+      "enrollment": 44,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 85,
+    "fields": {
+      "enrollment": 50,
+      "date": "2026-05-11",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 86,
+    "fields": {
+      "enrollment": 54,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 87,
+    "fields": {
+      "enrollment": 78,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 88,
+    "fields": {
+      "enrollment": 4,
+      "date": "2026-05-18",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 89,
+    "fields": {
+      "enrollment": 15,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 90,
+    "fields": {
+      "enrollment": 21,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 91,
+    "fields": {
+      "enrollment": 27,
+      "date": "2026-05-18",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 92,
+    "fields": {
+      "enrollment": 33,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 93,
+    "fields": {
+      "enrollment": 44,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 94,
+    "fields": {
+      "enrollment": 50,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 95,
+    "fields": {
+      "enrollment": 54,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 96,
+    "fields": {
+      "enrollment": 78,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 97,
+    "fields": {
+      "enrollment": 4,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 98,
+    "fields": {
+      "enrollment": 15,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 99,
+    "fields": {
+      "enrollment": 21,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 100,
+    "fields": {
+      "enrollment": 27,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 101,
+    "fields": {
+      "enrollment": 33,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 102,
+    "fields": {
+      "enrollment": 44,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 103,
+    "fields": {
+      "enrollment": 50,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 104,
+    "fields": {
+      "enrollment": 54,
+      "date": "2026-05-25",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 105,
+    "fields": {
+      "enrollment": 78,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 106,
+    "fields": {
+      "enrollment": 5,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 107,
+    "fields": {
+      "enrollment": 17,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 108,
+    "fields": {
+      "enrollment": 26,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 109,
+    "fields": {
+      "enrollment": 39,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 110,
+    "fields": {
+      "enrollment": 85,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 111,
+    "fields": {
+      "enrollment": 5,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 112,
+    "fields": {
+      "enrollment": 17,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 113,
+    "fields": {
+      "enrollment": 26,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 114,
+    "fields": {
+      "enrollment": 39,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 115,
+    "fields": {
+      "enrollment": 85,
+      "date": "2026-05-11",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 116,
+    "fields": {
+      "enrollment": 5,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 117,
+    "fields": {
+      "enrollment": 17,
+      "date": "2026-05-18",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 118,
+    "fields": {
+      "enrollment": 26,
+      "date": "2026-05-18",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 119,
+    "fields": {
+      "enrollment": 39,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 120,
+    "fields": {
+      "enrollment": 85,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 121,
+    "fields": {
+      "enrollment": 5,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 122,
+    "fields": {
+      "enrollment": 17,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 123,
+    "fields": {
+      "enrollment": 26,
+      "date": "2026-05-25",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 124,
+    "fields": {
+      "enrollment": 39,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 125,
+    "fields": {
+      "enrollment": 85,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 126,
+    "fields": {
+      "enrollment": 11,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 127,
+    "fields": {
+      "enrollment": 31,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 128,
+    "fields": {
+      "enrollment": 41,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 129,
+    "fields": {
+      "enrollment": 52,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 130,
+    "fields": {
+      "enrollment": 53,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 131,
+    "fields": {
+      "enrollment": 65,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 132,
+    "fields": {
+      "enrollment": 70,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 133,
+    "fields": {
+      "enrollment": 75,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 134,
+    "fields": {
+      "enrollment": 11,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 135,
+    "fields": {
+      "enrollment": 31,
+      "date": "2026-05-11",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 136,
+    "fields": {
+      "enrollment": 41,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 137,
+    "fields": {
+      "enrollment": 52,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 138,
+    "fields": {
+      "enrollment": 53,
+      "date": "2026-05-11",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 139,
+    "fields": {
+      "enrollment": 65,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 140,
+    "fields": {
+      "enrollment": 70,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 141,
+    "fields": {
+      "enrollment": 75,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 142,
+    "fields": {
+      "enrollment": 11,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 143,
+    "fields": {
+      "enrollment": 31,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 144,
+    "fields": {
+      "enrollment": 41,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 145,
+    "fields": {
+      "enrollment": 52,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 146,
+    "fields": {
+      "enrollment": 53,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 147,
+    "fields": {
+      "enrollment": 65,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 148,
+    "fields": {
+      "enrollment": 70,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 149,
+    "fields": {
+      "enrollment": 75,
+      "date": "2026-05-18",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 150,
+    "fields": {
+      "enrollment": 11,
+      "date": "2026-05-25",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 151,
+    "fields": {
+      "enrollment": 31,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 152,
+    "fields": {
+      "enrollment": 41,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 153,
+    "fields": {
+      "enrollment": 52,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 154,
+    "fields": {
+      "enrollment": 53,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 155,
+    "fields": {
+      "enrollment": 65,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 156,
+    "fields": {
+      "enrollment": 70,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 157,
+    "fields": {
+      "enrollment": 75,
+      "date": "2026-05-25",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 158,
+    "fields": {
+      "enrollment": 14,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 159,
+    "fields": {
+      "enrollment": 23,
+      "date": "2026-05-04",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 160,
+    "fields": {
+      "enrollment": 45,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 161,
+    "fields": {
+      "enrollment": 87,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 162,
+    "fields": {
+      "enrollment": 14,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 163,
+    "fields": {
+      "enrollment": 23,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 164,
+    "fields": {
+      "enrollment": 45,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 165,
+    "fields": {
+      "enrollment": 87,
+      "date": "2026-05-11",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 166,
+    "fields": {
+      "enrollment": 14,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 167,
+    "fields": {
+      "enrollment": 23,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 168,
+    "fields": {
+      "enrollment": 45,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 169,
+    "fields": {
+      "enrollment": 87,
+      "date": "2026-05-18",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 170,
+    "fields": {
+      "enrollment": 14,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 171,
+    "fields": {
+      "enrollment": 23,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 172,
+    "fields": {
+      "enrollment": 45,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 173,
+    "fields": {
+      "enrollment": 87,
+      "date": "2026-05-25",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 174,
+    "fields": {
+      "enrollment": 19,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 175,
+    "fields": {
+      "enrollment": 30,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 176,
+    "fields": {
+      "enrollment": 38,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 177,
+    "fields": {
+      "enrollment": 77,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 178,
+    "fields": {
+      "enrollment": 81,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 179,
+    "fields": {
+      "enrollment": 19,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 180,
+    "fields": {
+      "enrollment": 30,
+      "date": "2026-05-11",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 181,
+    "fields": {
+      "enrollment": 38,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 182,
+    "fields": {
+      "enrollment": 77,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 183,
+    "fields": {
+      "enrollment": 81,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 184,
+    "fields": {
+      "enrollment": 19,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 185,
+    "fields": {
+      "enrollment": 30,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 186,
+    "fields": {
+      "enrollment": 38,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 187,
+    "fields": {
+      "enrollment": 77,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 188,
+    "fields": {
+      "enrollment": 81,
+      "date": "2026-05-18",
+      "status": "late",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 189,
+    "fields": {
+      "enrollment": 19,
+      "date": "2026-05-25",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 190,
+    "fields": {
+      "enrollment": 30,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 191,
+    "fields": {
+      "enrollment": 38,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 192,
+    "fields": {
+      "enrollment": 77,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 193,
+    "fields": {
+      "enrollment": 81,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 194,
+    "fields": {
+      "enrollment": 29,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 195,
+    "fields": {
+      "enrollment": 55,
+      "date": "2026-05-04",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 196,
+    "fields": {
+      "enrollment": 86,
+      "date": "2026-05-04",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-04T09:15:00Z",
+      "updated_at": "2026-05-04T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 197,
+    "fields": {
+      "enrollment": 29,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 198,
+    "fields": {
+      "enrollment": 55,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 199,
+    "fields": {
+      "enrollment": 86,
+      "date": "2026-05-11",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-11T09:15:00Z",
+      "updated_at": "2026-05-11T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 200,
+    "fields": {
+      "enrollment": 29,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 201,
+    "fields": {
+      "enrollment": 55,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 202,
+    "fields": {
+      "enrollment": 86,
+      "date": "2026-05-18",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-18T09:15:00Z",
+      "updated_at": "2026-05-18T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 203,
+    "fields": {
+      "enrollment": 29,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 204,
+    "fields": {
+      "enrollment": 55,
+      "date": "2026-05-25",
+      "status": "present",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
+    }
+  },
+  {
+    "model": "core.attendance",
+    "pk": 205,
+    "fields": {
+      "enrollment": 86,
+      "date": "2026-05-25",
+      "status": "absent",
+      "notes": "",
+      "created_at": "2026-05-25T09:15:00Z",
+      "updated_at": "2026-05-25T09:15:00Z"
     }
   }
 ]

@@ -40,8 +40,37 @@ services:
       - key: DJANGO_ADMIN_PASSWORD
         sync: false
 
-      # Password reset: "console" writes mail to the logs, "smtp" really sends.
+      # ---------------------------------------------------------------
+      # Password-reset email.
+      #
+      # "console" only writes the message to the Render log, so nobody
+      # actually receives a reset link. "smtp" delivers for real and needs
+      # the four values below; set the secret ones in the Render dashboard
+      # (Environment tab) so they never reach the repository.
+      #
+      # `manage.py check --deploy` fails loudly if this is half-configured.
+      # ---------------------------------------------------------------
       - key: EMAIL_BACKEND
-        value: console
+        value: smtp
+
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "True"
+
+      # The mailbox that sends the message — for Gmail this is the account
+      # itself, and EMAIL_HOST_PASSWORD must be a 16-character App Password
+      # (Google account -> Security -> 2-Step Verification -> App passwords),
+      # never the normal account password.
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+
+      # Must be the address that owns the SMTP account, otherwise providers
+      # drop the message or file it as spam.
+      # Example: Student Management System <your.account@gmail.com>
       - key: DEFAULT_FROM_EMAIL
-        value: Student Management System <noreply@sms.local>
+        sync: false

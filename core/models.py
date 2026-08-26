@@ -1,8 +1,43 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+
+def letter_for(value):
+    """Letter band for a numeric grade — used by single grades and averages alike."""
+    if value is None:
+        return None
+    v = float(value)
+    if v >= 4.5:
+        return 'A'
+    if v >= 4.0:
+        return 'B'
+    if v >= 3.5:
+        return 'C'
+    if v >= 3.0:
+        return 'D'
+    return 'F'
+
+
+def weighted_average(grades):
+    """Weighted mean of an iterable of Grade rows, or None when there are none.
+
+    Course marks are made of components that do not count equally — a final
+    exam usually outweighs a midterm — so every average in the system runs
+    through here instead of a plain mean.
+    """
+    total = Decimal('0')
+    weight = 0
+    for grade in grades:
+        total += Decimal(grade.grade_value) * grade.weight
+        weight += grade.weight
+    if not weight:
+        return None
+    return (total / weight).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
 
 class User(AbstractUser):
@@ -56,18 +91,16 @@ class Student(models.Model):
 
     @property
     def average_grade(self):
-        grades = Grade.objects.filter(enrollment__student=self)
-        if grades.exists():
-            return round(grades.aggregate(models.Avg('grade_value'))['grade_value__avg'], 2)
-        return None
+        """Weighted mean over every graded component this student has."""
+        return weighted_average(Grade.objects.filter(enrollment__student=self))
 
 
 class Course(models.Model):
     """Course offered by the institution."""
     SEMESTER_CHOICES = [
-        ('Fall', 'Fall'),
-        ('Spring', 'Spring'),
-        ('Summer', 'Summer'),
+        ('Fall', _('Fall')),
+        ('Spring', _('Spring')),
+        ('Summer', _('Summer')),
     ]
     course_name = models.CharField(max_length=200)
     course_code = models.CharField(max_length=20, unique=True)
@@ -119,10 +152,42 @@ class Enrollment(models.Model):
     def __str__(self):
         return f"{self.student.full_name} → {self.course.course_code}"
 
+    @property
+    def final_grade(self):
+        """Course mark: the weighted mean of this enrolment's components.
+
+        Reads `self.grades.all()`, so a view that prefetches the relation pays
+        no extra query per row.
+        """
+        return weighted_average(self.grades.all())
+
+    @property
+    def final_letter(self):
+        return letter_for(self.final_grade)
+
 
 class Grade(models.Model):
-    """Academic grade assigned to a student for a specific enrollment."""
-    enrollment = models.OneToOneField(Enrollment, on_delete=models.CASCADE, related_name='grade')
+    """One graded component of an enrolment — a midterm, an exam, coursework.
+
+    An enrolment carries several of these; `Enrollment.final_grade` combines
+    them by weight into the course mark.
+    """
+    KIND_CHOICES = [
+        ('coursework', _('Coursework')),
+        ('midterm', _('Midterm')),
+        ('final', _('Final exam')),
+        ('retake', _('Retake')),
+    ]
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE, related_name='grades')
+    kind = models.CharField(
+        max_length=12, choices=KIND_CHOICES, default='final',
+        help_text=_('Which part of the course this mark is for'),
+    )
+    weight = models.PositiveIntegerField(
+        default=100,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        help_text=_('How much this component counts towards the course mark'),
+    )
     grade_value = models.DecimalField(
         max_digits=3, decimal_places=1,
         validators=[MinValueValidator(2.0), MaxValueValidator(5.0)],
@@ -139,24 +204,14 @@ class Grade(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-date_assigned']
+        ordering = ['-date_assigned', 'kind']
 
     def __str__(self):
-        return f"{self.enrollment} — {self.grade_value}"
+        return f"{self.enrollment} — {self.get_kind_display()} {self.grade_value}"
 
     @property
     def letter_grade(self):
-        v = float(self.grade_value)
-        if v >= 4.5:
-            return 'A'
-        elif v >= 4.0:
-            return 'B'
-        elif v >= 3.5:
-            return 'C'
-        elif v >= 3.0:
-            return 'D'
-        else:
-            return 'F'
+        return letter_for(self.grade_value)
 
 
 class Attendance(models.Model):

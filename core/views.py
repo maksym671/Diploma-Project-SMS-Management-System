@@ -1,20 +1,28 @@
 import json
+import logging
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.dateparse import parse_date
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Count, Avg, Q
+from django.db.models import Count, Avg, Q, Sum, F, FloatField
+from django.db.models.functions import Cast
 from django.http import JsonResponse, HttpResponse
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 import csv
 
-from .models import Student, Course, Enrollment, Grade, Attendance
+from .models import Student, Course, Enrollment, Grade, Attendance, weighted_average
 from .forms import LoginForm, StudentForm, CourseForm, EnrollmentForm, GradeForm, AttendanceForm, ProfileForm
 from .decorators import admin_required, teacher_or_admin_required
 
+
+logger = logging.getLogger(__name__)
 
 PAGE_SIZE = 20
 
@@ -63,6 +71,29 @@ def login_view(request):
     return render(request, 'auth/login.html', {'form': form})
 
 
+class ResilientPasswordResetView(PasswordResetView):
+    """Password reset that survives an unreachable mail server.
+
+    Django lets the SMTP error bubble up, which turns a mis-typed host or an
+    expired app password into a 500 page. The reset response is deliberately
+    identical for known and unknown addresses anyway, so on a delivery failure
+    show that same page and put the real reason in the server log.
+    """
+
+    def form_valid(self, form):
+        try:
+            return super().form_valid(form)
+        except OSError:
+            # SMTPException, socket and TLS errors all derive from OSError.
+            logger.exception(
+                'Password reset email could not be delivered to %r. '
+                'Check EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER and '
+                'EMAIL_HOST_PASSWORD.',
+                form.cleaned_data.get('email'),
+            )
+            return redirect(self.get_success_url())
+
+
 @require_POST
 def logout_view(request):
     """Log the user out. POST only, so link prefetching cannot end a session."""
@@ -97,11 +128,15 @@ def dashboard(request):
             enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
         ).order_by('-enrollment_count')[:8]
 
-        avg_grade = Grade.objects.filter(enrollment__course__teacher=request.user).aggregate(avg=Avg('grade_value'))['avg']
-        avg_grade = round(avg_grade, 2) if avg_grade else 0
+        avg_grade = weighted_average(
+            Grade.objects.filter(enrollment__course__teacher=request.user)
+        ) or 0
 
+        # distinct=True: joining through enrollments repeats a student once per
+        # course they take with this teacher, which made the chart total
+        # overshoot the "Total Students" KPI on the same screen.
         programs = Student.objects.filter(enrollments__course__teacher=request.user, is_active=True).values('study_program').annotate(
-            count=Count('id')
+            count=Count('id', distinct=True)
         ).order_by('-count')[:6]
 
     else:
@@ -125,8 +160,7 @@ def dashboard(request):
             enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
         ).order_by('-enrollment_count')[:8]
 
-        avg_grade = Grade.objects.aggregate(avg=Avg('grade_value'))['avg']
-        avg_grade = round(avg_grade, 2) if avg_grade else 0
+        avg_grade = weighted_average(Grade.objects.all()) or 0
 
         programs = Student.objects.filter(is_active=True).values('study_program').annotate(
             count=Count('id')
@@ -134,7 +168,7 @@ def dashboard(request):
 
     course_labels = [c.course_code for c in course_stats]
     course_data = [c.enrollment_count for c in course_stats]
-    program_labels = [p['study_program'] for p in programs]
+    program_labels = [str(_(p['study_program'])) for p in programs]
     program_data = [p['count'] for p in programs]
 
     context = {
@@ -188,7 +222,7 @@ def api_dashboard_data(request):
         enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
     ).order_by('-enrollment_count')[:8]
 
-    avg_grade = grade_qs.aggregate(avg=Avg('grade_value'))['avg']
+    avg_grade = weighted_average(grade_qs)
 
     return JsonResponse({
         'role': user.role,
@@ -219,7 +253,18 @@ def student_list(request):
     # pagination needs, so the sort order is restated explicitly.
     students = students.annotate(
         annotated_enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'), distinct=True),
-        annotated_average_grade=Avg('enrollments__grade__grade_value')
+        # Weighted mean over every component, matching Student.average_grade:
+        # sum(value * weight) / sum(weight).
+        #
+        # Both sides are cast to float on purpose. SQLite gives a "decimal"
+        # cast NUMERIC affinity, which turns the operands into integers and
+        # makes the division integer division — 350/100 came back as 3
+        # instead of 3.5. A real cast divides correctly on SQLite and
+        # Postgres alike.
+        annotated_average_grade=Cast(
+            Sum(F('enrollments__grades__grade_value') * F('enrollments__grades__weight')),
+            FloatField(),
+        ) / Cast(Sum('enrollments__grades__weight'), FloatField()),
     ).order_by('last_name', 'first_name')
 
     if query:
@@ -258,14 +303,28 @@ def student_detail(request, pk):
     """View student details with enrollments and grades."""
     student = get_object_or_404(visible_students(request.user), pk=pk)
 
-    enrollments = Enrollment.objects.filter(student=student).select_related('course', 'grade')
+    enrollments = (
+        Enrollment.objects.filter(student=student)
+        .select_related('course')
+        .prefetch_related('grades')
+    )
     # A teacher only sees the part of the record that belongs to their own courses.
     if request.user.is_teacher():
         enrollments = enrollments.filter(course__teacher=request.user)
 
+    # The summary card has to agree with the table below it. The model
+    # properties aggregate over every course the student takes, which would
+    # leak another teacher's roster and grades, so scope them to `enrollments`.
+    course_count = enrollments.count()
+    average_grade = weighted_average(
+        Grade.objects.filter(enrollment__in=enrollments)
+    )
+
     context = {
         'student': student,
         'enrollments': enrollments,
+        'course_count': course_count,
+        'average_grade': round(average_grade, 2) if average_grade is not None else None,
     }
     return render(request, 'students/detail.html', context)
 
@@ -358,7 +417,11 @@ def course_list(request):
 def course_detail(request, pk):
     """View course details with enrolled students."""
     course = get_object_or_404(visible_courses(request.user), pk=pk)
-    enrollments = Enrollment.objects.filter(course=course).select_related('student', 'grade')
+    enrollments = (
+        Enrollment.objects.filter(course=course)
+        .select_related('student')
+        .prefetch_related('grades')
+    )
 
     context = {
         'course': course,
@@ -428,7 +491,7 @@ def enrollment_list(request):
     query = request.GET.get('q', '')
     status = request.GET.get('status', '')
 
-    enrollments = Enrollment.objects.select_related('student', 'course', 'grade')
+    enrollments = Enrollment.objects.select_related('student', 'course').prefetch_related('grades')
 
     if request.user.is_teacher():
         enrollments = enrollments.filter(course__teacher=request.user)
@@ -515,7 +578,7 @@ def grade_list(request):
 
     grades = Grade.objects.select_related(
         'enrollment__student', 'enrollment__course', 'assigned_by'
-    )
+    ).prefetch_related('enrollment__grades')
 
     if request.user.is_teacher():
         grades = grades.filter(enrollment__course__teacher=request.user)
@@ -631,6 +694,92 @@ def attendance_list(request):
 
 @login_required
 @teacher_or_admin_required
+def attendance_bulk(request):
+    """Mark a whole class for one date on a single screen.
+
+    The per-record form needs one round trip per student, which is unusable
+    for a 30-person group. This view shows the roster for a chosen course and
+    date, pre-selected with whatever was already recorded, and saves the lot
+    in one POST.
+    """
+    courses = visible_courses(request.user).filter(is_active=True).order_by('course_code')
+
+    course_id = request.POST.get('course') or request.GET.get('course')
+    raw_date = request.POST.get('date') or request.GET.get('date')
+
+    selected_date = parse_date(raw_date) if raw_date else timezone.localdate()
+    if selected_date is None:
+        messages.error(request, _('That date could not be read. Using today instead.'))
+        selected_date = timezone.localdate()
+
+    course = None
+    if course_id:
+        # 404 rather than a silent empty roster if a teacher aims at a
+        # colleague's course.
+        course = get_object_or_404(courses, pk=course_id)
+
+    roster = []
+    if course:
+        enrollments = (
+            course.enrollments.filter(status='active')
+            .select_related('student')
+            .order_by('student__last_name', 'student__first_name')
+        )
+        existing = {
+            record.enrollment_id: record
+            for record in Attendance.objects.filter(
+                enrollment__in=enrollments, date=selected_date
+            )
+        }
+
+        if request.method == 'POST':
+            saved = cleared = 0
+            for enrollment in enrollments:
+                choice = request.POST.get(f'status_{enrollment.pk}')
+                if choice in {'present', 'absent', 'late'}:
+                    Attendance.objects.update_or_create(
+                        enrollment=enrollment, date=selected_date,
+                        defaults={'status': choice},
+                    )
+                    saved += 1
+                elif choice == 'none' and enrollment.pk in existing:
+                    # "Not marked" is an explicit state: drop any record so the
+                    # screen keeps telling the truth about that date.
+                    existing[enrollment.pk].delete()
+                    cleared += 1
+
+            if saved or cleared:
+                messages.success(request, _(
+                    'Attendance saved for %(count)s students in %(code)s on %(date)s.'
+                ) % {
+                    'count': saved,
+                    'code': course.course_code,
+                    'date': selected_date,
+                })
+            else:
+                messages.info(request, _('Nothing to save — no students were marked.'))
+            return redirect(f"{reverse('attendance_bulk')}?course={course.pk}&date={selected_date}")
+
+        for enrollment in enrollments:
+            record = existing.get(enrollment.pk)
+            roster.append({
+                'enrollment': enrollment,
+                'student': enrollment.student,
+                'status': record.status if record else '',
+            })
+
+    context = {
+        'courses': courses,
+        'course': course,
+        'selected_date': selected_date,
+        'roster': roster,
+        'statuses': Attendance.STATUS_CHOICES,
+    }
+    return render(request, 'attendance/bulk.html', context)
+
+
+@login_required
+@teacher_or_admin_required
 def attendance_create(request):
     """Mark attendance."""
     if request.method == 'POST':
@@ -719,12 +868,15 @@ def export_students_csv(request):
     response = _csv_response('students_report.csv')
 
     writer = csv.writer(response)
-    writer.writerow(['Student Number', 'First Name', 'Last Name', 'Email', 'Program', 'Status', 'Enrollment Date'])
+    writer.writerow([
+        _('Student Number'), _('First Name'), _('Last Name'), _('Email'),
+        _('Program'), _('Status'), _('Enrollment Date'),
+    ])
 
     for s in visible_students(request.user):
         writer.writerow([
             s.student_number, s.first_name, s.last_name, s.email,
-            s.study_program, 'Active' if s.is_active else 'Inactive', s.date_enrolled
+            _(s.study_program), _('Active') if s.is_active else _('Inactive'), s.date_enrolled
         ])
     return response
 
@@ -737,13 +889,14 @@ def export_grades_csv(request):
 
     writer = csv.writer(response)
     writer.writerow([
-        'Student', 'Course Code', 'Course Name', 'Grade', 'Letter',
-        'Date Assigned', 'Assigned By',
+        _('Student'), _('Course Code'), _('Course Name'), _('Component'),
+        _('Weight %'), _('Grade'), _('Letter'), _('Course Mark'),
+        _('Date Assigned'), _('Assigned By'),
     ])
 
     grades = Grade.objects.select_related(
         'enrollment__student', 'enrollment__course', 'assigned_by'
-    )
+    ).prefetch_related('enrollment__grades')
     if request.user.is_teacher():
         grades = grades.filter(enrollment__course__teacher=request.user)
 
@@ -751,7 +904,9 @@ def export_grades_csv(request):
         assigned_by = g.assigned_by
         writer.writerow([
             g.enrollment.student.full_name, g.enrollment.course.course_code,
-            g.enrollment.course.course_name, g.grade_value, g.letter_grade, g.date_assigned,
+            _(g.enrollment.course.course_name), g.get_kind_display(), g.weight,
+            g.grade_value, g.letter_grade, g.enrollment.final_grade,
+            g.date_assigned,
             (assigned_by.get_full_name() or assigned_by.username) if assigned_by else '',
         ])
     return response

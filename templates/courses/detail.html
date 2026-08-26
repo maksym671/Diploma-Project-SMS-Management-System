@@ -1,20 +1,20 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n sms_extras %}
 
-{% block title %}{{ course.course_name }}{% endblock %}
+{% block title %}{{ course.course_name|trans_db }}{% endblock %}
 {% block breadcrumb %}{% trans "Courses" %} / {{ course.course_code }}{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div class="detail-header">
         <div class="detail-avatar teal">
-            {{ course.course_code|truncatechars:2 }}
+            {{ course.course_code|slice:":2" }}
         </div>
         <div class="detail-info">
-            <h2>{{ course.course_name }}</h2>
+            <h2>{{ course.course_name|trans_db }}</h2>
             <div class="detail-meta">
                 <span><i class="bi bi-hash"></i> {{ course.course_code }}</span>
-                <span><i class="bi bi-calendar3"></i> {{ course.semester }}</span>
+                <span><i class="bi bi-calendar3"></i> {{ course.get_semester_display }}</span>
                 <span><i class="bi bi-star"></i> {{ course.credits }} {% trans "Credits" %}</span>
                 <span>
                     {% if course.is_active %}
@@ -51,7 +51,7 @@
             </div>
             <div class="info-item">
                 <div class="info-label">{% trans "Semester" %}</div>
-                <div class="info-value">{{ course.semester }}</div>
+                <div class="info-value">{{ course.get_semester_display }}</div>
             </div>
             <div class="info-item">
                 <div class="info-label">{% trans "Credits" %}</div>
@@ -79,7 +79,7 @@
         {% if course.description %}
         <div class="info-item mt-2">
             <div class="info-label">{% trans "Description" %}</div>
-            <div class="info-value">{{ course.description }}</div>
+            <div class="info-value">{{ course.description|trans_db }}</div>
         </div>
         {% endif %}
     </div>
@@ -90,7 +90,9 @@
     <div class="card-header">
         <h5>
             <i class="bi bi-people mr-1"></i>
-            {% blocktrans with count=enrollments.count %}Enrolled Students ({{ count }}){% endblocktrans %}
+            {# The table lists every enrolment, including dropped and completed #}
+            {# ones, so name both numbers instead of contradicting the card above. #}
+            {% blocktrans with active=course.enrolled_count total=enrollments|length %}Students — {{ active }} active of {{ total }} enrolled{% endblocktrans %}
         </h5>
     </div>
     <div class="table-container">
@@ -108,23 +110,24 @@
                 {% for enrollment in enrollments %}
                 <tr>
                     <td>
-                        <a href="{% url 'student_detail' enrollment.student.pk %}" class="table-name">
-                            {{ enrollment.student.full_name }}
-                        </a>
-                        <div class="table-sub">{{ enrollment.student.email }}</div>
+                        {% url 'student_detail' enrollment.student.pk as student_url %}
+                        {% include "partials/person_cell.html" with name=enrollment.student.full_name sub=enrollment.student.email url=student_url %}
                     </td>
                     <td>{{ enrollment.student.student_number }}</td>
-                    <td>{{ enrollment.student.study_program }}</td>
+                    <td>{{ enrollment.student.study_program|trans_db }}</td>
                     <td>
                         <span class="badge badge-{{ enrollment.status }}">
                             {{ enrollment.get_status_display }}
                         </span>
                     </td>
                     <td>
-                        {% if enrollment.grade %}
-                        <span class="badge badge-grade {{ enrollment.grade.letter_grade|lower }}">
-                            {{ enrollment.grade.grade_value }} ({{ enrollment.grade.letter_grade }})
+                        {% if enrollment.final_grade %}
+                        <span class="badge badge-grade {{ enrollment.final_letter|lower }}">
+                            {{ enrollment.final_grade }} ({{ enrollment.final_letter }})
                         </span>
+                        <div class="table-sub">
+                            {% for g in enrollment.grades.all %}{{ g.get_kind_display }} {{ g.grade_value }} · {{ g.weight }}%{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                        </div>
                         {% else %}
                         <span class="text-muted">{% trans "Not graded" %}</span>
                         {% endif %}
@@ -132,8 +135,11 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-muted" style="text-align:center; padding:30px;">
-                        {% trans "No students enrolled in this course yet." %}
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <i class="bi bi-people"></i>
+                            <h5>{% trans "No students enrolled in this course yet." %}</h5>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

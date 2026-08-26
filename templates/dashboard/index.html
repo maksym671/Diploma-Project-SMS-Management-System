@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n l10n %}
+{% load i18n l10n sms_extras %}
 
 {% block title %}{% trans "Dashboard" %}{% endblock %}
 {% block breadcrumb %}{% trans "Dashboard" %}{% endblock %}
@@ -57,7 +57,7 @@
     <div class="chart-card animate-in">
         <h5><i class="bi bi-bar-chart-fill mr-1 text-teal"></i> {% trans "Enrollments by Course" %}</h5>
         <div class="chart-container">
-            <canvas id="enrollmentChart" data-labels='{{ course_labels|safe }}' data-values='{{ course_data|safe }}'></canvas>
+            <canvas id="enrollmentChart" data-labels='{{ course_labels|safe }}' data-values='{{ course_data|safe }}' data-series-label="{% trans 'Active Enrollments' %}"></canvas>
         </div>
     </div>
 </div>
@@ -89,12 +89,10 @@
                     {% for student in recent_students %}
                     <tr>
                         <td>
-                            <a href="{% url 'student_detail' student.pk %}" class="table-name">
-                                {{ student.full_name }}
-                            </a>
-                            <div class="table-sub">{{ student.student_number }}</div>
+                            {% url 'student_detail' student.pk as student_url %}
+                            {% include "partials/person_cell.html" with name=student.full_name sub=student.student_number url=student_url %}
                         </td>
-                        <td>{{ student.study_program }}</td>
+                        <td>{{ student.study_program|trans_db }}</td>
                         <td>
                             {% if student.is_active %}
                             <span class="badge badge-active">{% trans "Active" %}</span>
@@ -105,8 +103,12 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="3" class="text-muted" style="text-align:center; padding:30px;">
-                            {% trans "No students yet" %}
+                        <td colspan="3">
+                            <div class="empty-state">
+                                <i class="bi bi-people"></i>
+                                <h5>{% trans "No students yet" %}</h5>
+                                <p>{% trans "New students will appear here once they are added." %}</p>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -136,15 +138,14 @@
                 {% for enrollment in recent_enrollments %}
                 <tr>
                     <td>
-                        <a href="{% url 'student_detail' enrollment.student.pk %}" class="table-name">
-                            {{ enrollment.student.full_name }}
-                        </a>
+                        {% url 'student_detail' enrollment.student.pk as student_url %}
+                        {% include "partials/person_cell.html" with name=enrollment.student.full_name url=student_url %}
                     </td>
                     <td>
                         <a href="{% url 'course_detail' enrollment.course.pk %}">
                             {{ enrollment.course.course_code }}
                         </a>
-                        <div class="table-sub">{{ enrollment.course.course_name }}</div>
+                        <div class="table-sub">{{ enrollment.course.course_name|trans_db }}</div>
                     </td>
                     <td>
                         <span class="badge badge-{{ enrollment.status }}">
@@ -153,12 +154,16 @@
                     </td>
                     <td class="text-muted">{{ enrollment.enrollment_date }}</td>
                 </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="text-muted" style="text-align:center; padding:30px;">
-                        {% trans "No enrollments yet" %}
-                    </td>
-                </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="bi bi-clipboard2-check"></i>
+                                <h5>{% trans "No enrollments yet" %}</h5>
+                                <p>{% trans "Recent course enrollments will show up here." %}</p>
+                            </div>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

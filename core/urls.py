@@ -38,6 +38,7 @@ urlpatterns = [
 
     # Attendance
     path('attendance/', views.attendance_list, name='attendance_list'),
+    path('attendance/mark/', views.attendance_bulk, name='attendance_bulk'),
     path('attendance/add/', views.attendance_create, name='attendance_create'),
     path('attendance/<int:pk>/edit/', views.attendance_update, name='attendance_update'),
     path('attendance/<int:pk>/delete/', views.attendance_delete, name='attendance_delete'),
