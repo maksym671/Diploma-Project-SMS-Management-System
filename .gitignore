@@ -38,3 +38,6 @@ staticfiles/
 # Scratch left behind by the screenshot capture used for the defence deck
 docs/.chrome-profile/
 node_modules/
+
+# CI workflow kept local until a workflow-scoped token is set
+.github/workflows/ci.yml
