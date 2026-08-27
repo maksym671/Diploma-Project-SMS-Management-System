@@ -82,7 +82,8 @@ Set environment variables (see `.env.example`):
 | `ALLOWED_HOSTS` | Comma-separated hosts |
 | `DATABASE_URL` | Postgres connection string |
 | `DJANGO_ADMIN_PASSWORD` | Replaces the published demo password on the `admin` account |
-| `EMAIL_BACKEND` | `console` or `smtp` |
+| `EMAIL_BACKEND` | `console`, `brevo` or `smtp` |
+| `BREVO_API_KEY` | API key when `EMAIL_BACKEND=brevo` |
 | `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | SMTP |
 | `CSRF_TRUSTED_ORIGINS` | e.g. `https://your-app.onrender.com` |
 
@@ -106,10 +107,19 @@ password without committing it.
 ### Password-reset email
 
 `EMAIL_BACKEND=console` only writes the message to the platform log, so nobody
-receives a reset link. For real delivery set `EMAIL_BACKEND=smtp` together with
-`EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` and a `DEFAULT_FROM_EMAIL`
-that belongs to the SMTP account. Keep the two secrets in the platform
-dashboard, never in the repository.
+receives a reset link.
+
+On Render's free plan outbound SMTP is firewalled, so `EMAIL_BACKEND=smtp`
+hangs until the worker times out and the reset page returns a 500. Use
+`EMAIL_BACKEND=brevo` there: it sends the same message over HTTPS through
+`core.mail.BrevoAPIBackend`. Set `BREVO_API_KEY` (from brevo.com → SMTP & API →
+API keys) and a `DEFAULT_FROM_EMAIL` verified under Brevo's *Senders & IPs*.
+With no key the reset page still responds normally and logs a warning.
+
+On a host that permits outbound SMTP, `EMAIL_BACKEND=smtp` also works with
+`EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` and a matching
+`DEFAULT_FROM_EMAIL`. Keep every secret in the platform dashboard, never in the
+repository.
 
 `manage.py check --deploy` names whichever piece is missing (`mail.W001`–`W004`)
 and CI fails on it, so a half-configured mailer cannot reach production
