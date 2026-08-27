@@ -4,6 +4,10 @@ set -o errexit
 
 pip install -r requirements.txt
 
+# Dashboard start command may still be the old one-liner. On Render this
+# forces gunicorn to load gunicorn.conf.py (1 worker, 8 threads).
+python scripts/patch_gunicorn_for_render.py
+
 # Refresh the Polish catalogue when the build image ships gettext. The compiled
 # django.mo is committed too, so a missing msgfmt must not fail the deploy.
 # The ignores keep msgfmt out of the catalogues shipped inside installed packages.

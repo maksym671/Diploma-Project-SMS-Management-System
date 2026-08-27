@@ -1177,3 +1177,33 @@ class RegressionTests(TestCase):
             'window.__smsAppLoaded', code,
             'main.js needs a run-once guard so document listeners bind once.',
         )
+
+    def test_render_build_forces_threaded_gunicorn(self):
+        """Dashboard start command may lag render.yaml; the build patches it."""
+        import importlib.util
+        from pathlib import Path
+        import tempfile
+
+        build = (settings.BASE_DIR / 'build.sh').read_text(encoding='utf-8')
+        self.assertIn('patch_gunicorn_for_render', build)
+        conf = (settings.BASE_DIR / 'gunicorn.conf.py').read_text(encoding='utf-8')
+        self.assertIn('threads = 8', conf)
+        self.assertIn('workers = 1', conf)
+
+        spec = importlib.util.spec_from_file_location(
+            'patch_gunicorn_for_render',
+            settings.BASE_DIR / 'scripts' / 'patch_gunicorn_for_render.py',
+        )
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            launcher = Path(tmp) / 'gunicorn'
+            launcher.write_text('#!/usr/bin/env python\nprint("old")\n', encoding='utf-8')
+            config = Path(tmp) / 'gunicorn.conf.py'
+            config.write_text('threads = 8\n', encoding='utf-8')
+            mod.patch_launcher(launcher, config)
+            text = launcher.read_text(encoding='utf-8')
+            self.assertIn('-c', text)
+            self.assertIn('--threads', text)
+            self.assertIn(str(config), text)
