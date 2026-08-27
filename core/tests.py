@@ -36,6 +36,29 @@ class AvatarHelperTests(TestCase):
         self.assertIn(avatar_tone('Ola Kowalska'), range(6))
 
 
+class CustomDomainTests(TestCase):
+    def test_apex_adds_www(self):
+        from sms_project.settings import hosts_for_custom_domain
+        self.assertEqual(
+            hosts_for_custom_domain('sms-shpak.me'),
+            ['sms-shpak.me', 'www.sms-shpak.me'],
+        )
+
+    def test_www_adds_apex(self):
+        from sms_project.settings import hosts_for_custom_domain
+        self.assertEqual(
+            hosts_for_custom_domain('https://www.sms-shpak.me/'),
+            ['sms-shpak.me', 'www.sms-shpak.me'],
+        )
+
+    def test_https_origins_skip_localhost(self):
+        from sms_project.settings import https_origins_from_hosts
+        self.assertEqual(
+            https_origins_from_hosts(['localhost', 'sms-shpak.me']),
+            ['https://sms-shpak.me'],
+        )
+
+
 class CoreModelTests(TestCase):
     def setUp(self):
         self.teacher = User.objects.create_user(

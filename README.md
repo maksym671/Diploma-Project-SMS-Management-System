@@ -79,6 +79,7 @@ Set environment variables (see `.env.example`):
 | `ALLOWED_HOSTS` | Comma-separated hosts |
 | `DATABASE_URL` | Postgres connection string |
 | `DJANGO_ADMIN_PASSWORD` | Replaces the published demo password on the `admin` account |
+| `CUSTOM_DOMAIN` | Apex of the Namecheap `.me` (adds www + CSRF automatically) |
 | `CSRF_TRUSTED_ORIGINS` | e.g. `https://your-app.onrender.com` |
 
 ## Deployment

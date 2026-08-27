@@ -106,9 +106,9 @@ Logout (кнопка, POST — ссылкой сессию не убить). В�
 
 ## 4. Что говорить, если спросят «где домен .me»
 
-*«The live system is already on Render with HTTPS. A custom .me domain is waiting on GitHub Student Pack / Namecheap. Functionally the defence uses this URL.»*
+Если домен уже висит: показать `https://sms-shpak.me` (или тот адрес, который реально зарегистрировали). Render-URL остаётся запасным.
 
-Пока Pack закрыт, домен не нужен.
+Если Pack только что открыли, а DNS ещё не доехал: *«The app is live on Render with HTTPS. The .me from GitHub Student Pack / Namecheap is being attached now.»*
 
 ---
 
@@ -210,16 +210,20 @@ User → Course (преподаватель). Student + Course → Enrollment (u
 
 ---
 
-## 7. Когда откроется GitHub Student Pack
+## 7. GitHub Student Pack → Namecheap `.me`
 
-Это **не** часть пятиминутного демо. После оффера Namecheap:
+Цель: **`sms-shpak.me`** (WHOIS: свободен). Если занят в корзине — `shpak-sms.me`.
 
-1. Забрать `.me` (например `sms-shpak.me`).
-2. DNS: CNAME на `diploma-project-sms-management-system.onrender.com`.
-3. Render → Settings → Custom Domains — вписать домен.
-4. Обновить `LIVE_URL` в `scripts/generate_presentation.py` и пересобрать слайды.
+1. https://education.github.com/pack → войти GitHub → **Namecheap** → Get offer / Redeem. Авторизовать Namecheap.
+2. Откроется nc.me / Namecheap. Искать `sms-shpak.me`, в корзину, checkout. Год должен быть $0; карту Namecheap часто всё равно спрашивает.
+3. Namecheap → домен → **Advanced DNS**. Удалить AAAA. Записи (TTL 1 min):
+   - A, host `@`, value `216.24.57.1`
+   - CNAME, host `www`, value `diploma-project-sms-management-system.onrender.com.`
+4. Render → сервис SMS → **Settings → Custom Domains → Add** `sms-shpak.me` (www подтянется сам). **Verify**.
+5. Environment: `CUSTOM_DOMAIN=sms-shpak.me` (код уже добавляет apex+www в ALLOWED_HOSTS и CSRF).
+6. Когда https://sms-shpak.me открывает логин — сказать, пересоберём слайды (`LIVE_URL` в `scripts/generate_presentation.py`).
 
-До этого в слайдах и документации остаётся текущий Render-URL.
+Пока Verify красный, комиссия идёт на Render-URL.
 
 ---
 
@@ -238,7 +242,7 @@ User → Course (преподаватель). Student + Course → Enrollment (u
 | Тесты и CI | `manage.py test` + GitHub Actions | да |
 | Деплой HTTPS | Render + Neon, `DEBUG=False` | да |
 | Документация + презентация | `docs/`, PPTX | да |
-| Домен `.me` | Pack ещё закрыт — не блокер защиты | позже |
+| Домен `.me` | Pack одобрен — вешаем `sms-shpak.me` | в работе |
 
 Чего **нет** в ТЗ I степени и не надо доделывать до защиты: React SPA, Stripe, OAuth, студенческий логин, почтовый reset пароля.
 

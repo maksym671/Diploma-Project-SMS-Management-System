@@ -42,6 +42,32 @@ def env_bool(key, default=False):
     return value.strip().lower() in {'1', 'true', 'yes', 'on'}
 
 
+def hosts_for_custom_domain(domain):
+    """Apex + www so a Namecheap .me works whether the user typed either."""
+    domain = (domain or '').strip().lower()
+    domain = domain.removeprefix('https://').removeprefix('http://').strip().strip('/')
+    if not domain:
+        return []
+    if domain.startswith('www.'):
+        apex = domain[4:]
+        return [apex, domain]
+    return [domain, f'www.{domain}']
+
+
+def https_origins_from_hosts(hosts):
+    origins = []
+    for host in hosts:
+        host = (host or '').strip()
+        if (
+            not host
+            or host in {'localhost', '127.0.0.1', '*'}
+            or host.startswith('.')
+        ):
+            continue
+        origins.append(f'https://{host}')
+    return origins
+
+
 # ---------------------------------------------------------------------------
 # Core
 # ---------------------------------------------------------------------------
@@ -63,6 +89,10 @@ ALLOWED_HOSTS = [
 RENDER_EXTERNAL_HOSTNAME = env('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+for host in hosts_for_custom_domain(env('CUSTOM_DOMAIN', '')):
+    if host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host)
 
 
 # ---------------------------------------------------------------------------
@@ -237,8 +267,9 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_REFERRER_POLICY = 'same-origin'
     X_FRAME_OPTIONS = 'DENY'
-    if not CSRF_TRUSTED_ORIGINS and RENDER_EXTERNAL_HOSTNAME:
-        CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
+    for origin in https_origins_from_hosts(ALLOWED_HOSTS):
+        if origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(origin)
 
     if SECRET_KEY.startswith('django-insecure'):
         raise ValueError(

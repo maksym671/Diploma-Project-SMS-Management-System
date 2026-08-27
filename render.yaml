@@ -20,6 +20,11 @@ services:
       - key: DEBUG
         value: "False"
 
+      # Apex + www of the Namecheap .me (e.g. sms-shpak.me). Also add it under
+      # Settings → Custom Domains, then point DNS at this service.
+      - key: CUSTOM_DOMAIN
+        sync: false
+
       # RENDER_EXTERNAL_HOSTNAME is injected automatically and appended to
       # ALLOWED_HOSTS in settings.py, so only extra custom domains go here.
       - key: ALLOWED_HOSTS
