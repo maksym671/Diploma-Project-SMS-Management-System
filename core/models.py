@@ -2,6 +2,8 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import F, FloatField, Sum
+from django.db.models.functions import Cast
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -38,6 +40,25 @@ def weighted_average(grades):
     if not weight:
         return None
     return (total / weight).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+
+def weighted_average_qs(qs):
+    """Same figure as `weighted_average`, computed in SQL instead of Python.
+
+    The dashboard and JSON endpoint used to load every Grade row just to
+    multiply in a loop. On SQLite the product must be floated first or the
+    division becomes integer division (350/100 → 3).
+    """
+    row = qs.aggregate(
+        total=Cast(Sum(F('grade_value') * F('weight')), FloatField()),
+        weight=Cast(Sum('weight'), FloatField()),
+    )
+    total, weight = row['total'], row['weight']
+    if not weight:
+        return None
+    return Decimal(str(total / weight)).quantize(
+        Decimal('0.01'), rounding=ROUND_HALF_UP,
+    )
 
 
 class User(AbstractUser):

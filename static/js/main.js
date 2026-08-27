@@ -2,35 +2,45 @@
    Student Management System — JavaScript
    ============================================================ */
 
-/* Turbo re-evaluates every <script> in the <body> on each visit, in the same
-   global scope. Top-level `let`/`const` would therefore throw
-   "Identifier has already been declared" on the second page, aborting this
-   whole file. An IIFE keeps the declarations local, and the flag below makes
-   the document-level listeners register exactly once — `document` survives
-   Turbo visits, so the handlers registered here keep firing afterwards. */
+/* Chart.js and this file live in <head>, so Turbo does not re-evaluate them.
+   The IIFE + run-once guard still matter: a hard refresh is fine, but a
+   service-worker or a second include would otherwise bind listeners twice. */
 (function () {
     'use strict';
 
     if (window.__smsAppLoaded) return;
     window.__smsAppLoaded = true;
 
-/* Turbo fires `turbo:load` on the initial load too, so guard against running
-   twice against the same DOM: duplicate listeners and re-created charts on an
-   already-used canvas throw "Canvas is already in use". */
-let appInitialized = false;
+/* Turbo fires `turbo:load` on the initial load too. Chart.js lives in <head>
+   (evaluated once); this file also lives there, so listeners register once.
+   Page widgets re-run on every visit because the main column is replaced. */
 
-function initApp() {
-    if (appInitialized) return;
-    appInitialized = true;
+function navKey(path) {
+    if (path === '/') return 'dashboard';
+    if (path.startsWith('/attendance/mark')) return 'attendance-bulk';
+    if (path.startsWith('/attendance')) return 'attendance';
+    if (path.startsWith('/students')) return 'students';
+    if (path.startsWith('/courses')) return 'courses';
+    if (path.startsWith('/enrollments')) return 'enrollments';
+    if (path.startsWith('/grades')) return 'grades';
+    if (path.startsWith('/teachers')) return 'teachers';
+    if (path.startsWith('/profile')) return 'profile';
+    return '';
+}
 
-    initThemeToggle();
-    initSidebar();
+function syncSidebar() {
+    const key = navKey(location.pathname);
+    document.querySelectorAll('.sidebar-link[data-nav]').forEach(link => {
+        link.classList.toggle('active', link.dataset.nav === key);
+    });
+}
+
+function initPageWidgets() {
+    syncSidebar();
     initAlerts();
     initAnimatedCounters();
-
-    // Chart.js measures axis labels once, at draw time. Drawing before the web
-    // fonts arrive measures the fallback font and clips wider labels, so wait
-    // for the real fonts first.
+    // Prefetch snapshots should not spin up Chart.js — the real visit will.
+    if (document.documentElement.hasAttribute('data-turbo-preview')) return;
     if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(initCharts);
     } else {
@@ -38,71 +48,61 @@ function initApp() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
-document.addEventListener('turbo:load', initApp);
-document.addEventListener('turbo:before-render', () => {
-    appInitialized = false;
-    destroyCharts();
-});
-
-
-/* ─── Theme Toggle ──────────────────────────────────────────── */
-function initThemeToggle() {
-    const toggle = document.getElementById('theme-toggle');
-    if (!toggle) return;
-
-    toggle.addEventListener('click', () => {
+document.addEventListener('click', function (event) {
+    const themeToggle = event.target.closest('#theme-toggle');
+    if (themeToggle) {
         const html = document.documentElement;
-        const current = html.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         html.setAttribute('data-theme', next);
         localStorage.setItem('sms-theme', next);
-    });
-}
-
-
-/* ─── Sidebar Toggle (Mobile) ───────────────────────────────── */
-function initSidebar() {
-    const toggle = document.getElementById('sidebar-toggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-
-    if (toggle && sidebar) {
-        toggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            if (overlay) overlay.classList.toggle('active');
-        });
-
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            });
-        }
+        return;
     }
+
+    const sidebarToggle = event.target.closest('#sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebarToggle && sidebar) {
+        sidebar.classList.toggle('active');
+        if (overlay) overlay.classList.toggle('active');
+        return;
+    }
+    if (overlay && event.target === overlay && sidebar) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        return;
+    }
+    // Permanent sidebar keeps `.active` across Turbo visits — close it on nav.
+    if (event.target.closest('.sidebar-link, .sidebar-user') && sidebar) {
+        sidebar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+    }
+
+    const closeBtn = event.target.closest('.alert-close');
+    if (closeBtn) {
+        const alert = closeBtn.closest('.alert');
+        if (!alert) return;
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateX(40px)';
+        setTimeout(() => alert.remove(), 300);
+    }
+});
+
+document.addEventListener('turbo:load', initPageWidgets);
+document.addEventListener('turbo:before-render', destroyCharts);
+if (typeof Turbo !== 'undefined' && typeof Turbo.setProgressBarDelay === 'function') {
+    Turbo.setProgressBarDelay(80);
 }
 
-
-/* ─── Auto-dismiss Alerts ───────────────────────────────────── */
 function initAlerts() {
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        // Auto-dismiss after 5 seconds
+    document.querySelectorAll('.alert').forEach(alert => {
+        if (alert.dataset.smsBound) return;
+        alert.dataset.smsBound = '1';
         setTimeout(() => {
+            if (!alert.isConnected) return;
             alert.style.opacity = '0';
             alert.style.transform = 'translateX(40px)';
             setTimeout(() => alert.remove(), 300);
         }, 5000);
-
-        // Close button
-        const closeBtn = alert.querySelector('.alert-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                alert.style.opacity = '0';
-                alert.style.transform = 'translateX(40px)';
-                setTimeout(() => alert.remove(), 300);
-            });
-        }
     });
 }
 
@@ -113,40 +113,33 @@ function initAnimatedCounters() {
     // data-target is always written with a dot (see the unlocalize filter),
     // while the displayed number follows the interface language.
     const locale = document.documentElement.lang || 'en';
+    const instant = document.documentElement.hasAttribute('data-turbo-preview');
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const counter = entry.target;
-                const target = parseFloat(counter.dataset.target);
-                const isFloat = target % 1 !== 0;
-                const format = new Intl.NumberFormat(locale, isFloat
-                    ? { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                    : { maximumFractionDigits: 0 });
-                const duration = 1200;
-                const startTime = performance.now();
+    counters.forEach(counter => {
+        const target = parseFloat(counter.dataset.target);
+        const isFloat = target % 1 !== 0;
+        const format = new Intl.NumberFormat(locale, isFloat
+            ? { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            : { maximumFractionDigits: 0 });
 
-                function updateCounter(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    // Ease out cubic
-                    const eased = 1 - Math.pow(1 - progress, 3);
-                    const current = target * eased;
+        if (instant) {
+            counter.textContent = format.format(target);
+            return;
+        }
 
-                    counter.textContent = format.format(current);
+        const duration = 500;
+        const startTime = performance.now();
 
-                    if (progress < 1) {
-                        requestAnimationFrame(updateCounter);
-                    }
-                }
+        function updateCounter(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            counter.textContent = format.format(target * eased);
+            if (progress < 1) requestAnimationFrame(updateCounter);
+        }
 
-                requestAnimationFrame(updateCounter);
-                observer.unobserve(counter);
-            }
-        });
-    }, { threshold: 0.3 });
-
-    counters.forEach(counter => observer.observe(counter));
+        requestAnimationFrame(updateCounter);
+    });
 }
 
 

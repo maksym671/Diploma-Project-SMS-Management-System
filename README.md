@@ -40,7 +40,7 @@ editing `style.css` or `main.js` and reload to no visible effect. Hard-reload
 python manage.py test
 ```
 
-77 tests cover models, authentication, role-based access and data isolation,
+80 tests cover models, authentication, role-based access and data isolation,
 pagination, the dashboard JSON API, enrolment capacity rules, weighted grade
 components, bulk attendance marking, grade authorship, Polish localisation,
 the deployment seed step, and a smoke render of every page for both roles.
@@ -114,7 +114,7 @@ export DEBUG=False SECRET_KEY="$(python -c 'import secrets;print(secrets.token_u
 export ALLOWED_HOSTS=127.0.0.1 SECURE_SSL_REDIRECT=False
 export DATABASE_URL="sqlite:////tmp/prod_rehearsal.sqlite3"
 ./build.sh
-gunicorn sms_project.wsgi:application --bind 127.0.0.1:8877
+gunicorn sms_project.wsgi:application --bind 127.0.0.1:8877 --workers 1 --threads 8
 ```
 
 ## Who it is for

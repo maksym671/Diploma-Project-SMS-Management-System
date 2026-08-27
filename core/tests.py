@@ -8,12 +8,17 @@ from unittest import mock
 
 from django.core.management import call_command
 from django.conf import settings
+from django.db import connection
 from django.test import TestCase, Client, override_settings
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
 from core.forms import GradeForm
-from core.models import User, Student, Course, Enrollment, Grade, Attendance
+from core.models import (
+    User, Student, Course, Enrollment, Grade, Attendance,
+    weighted_average, weighted_average_qs,
+)
 from core.templatetags.sms_extras import avatar_tone, initials
 
 
@@ -232,6 +237,21 @@ class DashboardApiTests(TestCase):
         self.assertEqual(data['role'], 'teacher')
         self.assertEqual(data['total_courses'], 1)
 
+    def test_html_dashboard_stays_within_a_query_budget(self):
+        """KPI + charts used to load every Grade row; keep this a handful of aggregates."""
+        self.client.login(username='admin', password='pass12345')
+        self.client.get(reverse('dashboard'))
+        with CaptureQueriesContext(connection) as captured:
+            response = self.client.get(reverse('dashboard'))
+        self.assertEqual(response.status_code, 200)
+        self.assertLessEqual(
+            len(captured), 18,
+            'Dashboard issued %d queries:\n%s' % (
+                len(captured),
+                '\n'.join(q['sql'] for q in captured),
+            ),
+        )
+
 
 
 
@@ -274,6 +294,17 @@ class WeightedGradeTests(TestCase):
         # Plain mean would be 4.00; weighted is 0.4*3 + 0.6*5 = 4.20.
         self.assertEqual(self.enrollment.final_grade, Decimal('4.20'))
         self.assertEqual(self.enrollment.final_letter, 'B')
+
+    def test_sql_weighted_average_matches_python(self):
+        Grade.objects.create(enrollment=self.enrollment, kind='midterm',
+                             weight=40, grade_value=Decimal('3.0'))
+        Grade.objects.create(enrollment=self.enrollment, kind='final',
+                             weight=60, grade_value=Decimal('5.0'))
+        python = weighted_average(self.enrollment.grades.all())
+        sql = weighted_average_qs(Grade.objects.filter(enrollment=self.enrollment))
+        self.assertEqual(python, Decimal('4.20'))
+        self.assertEqual(sql, python)
+        self.assertIsNone(weighted_average_qs(Grade.objects.none()))
 
     def test_an_ungraded_enrollment_has_no_mark(self):
         self.assertIsNone(self.enrollment.final_grade)
@@ -848,6 +879,21 @@ class SmokeRenderTests(TestCase):
         login_page = Client().get(reverse('login'))
         self.assertContains(login_page, 'images/logo.svg')
 
+    def test_chrome_is_wired_for_fast_turbo_navigation(self):
+        """Scripts stay in <head>; CSV must not be prefetched as HTML."""
+        self.client.login(username='admin', password='pass12345')
+        page = self.client.get(reverse('dashboard'))
+        html = page.content.decode()
+        head, body = html.split('</head>', 1)
+        self.assertIn('chart.umd.min.js', head)
+        self.assertIn('js/main.js', head)
+        self.assertNotIn('bootstrap.bundle', html)
+        self.assertContains(page, 'data-turbo-permanent')
+        self.assertContains(page, 'data-turbo="false"')
+        self.assertContains(page, 'data-turbo-prefetch="false"')
+        self.assertNotIn('chart.umd.min.js', body)
+        self.assertNotIn('js/main.js', body)
+
     def test_admin_pages_render(self):
         self.client.login(username='admin', password='pass12345')
         urls = self._list_and_detail_urls() + [
@@ -1109,11 +1155,10 @@ class RegressionTests(TestCase):
         self.assertContains(response, '0 active of 1 enrolled')
 
     def test_main_js_is_wrapped_against_double_evaluation(self):
-        """Turbo re-runs every body script in the same global scope.
+        """Keep declarations inside an IIFE so a second include cannot clash.
 
-        Top-level `let`/`const` therefore threw "Identifier has already been
-        declared" on the second page, which aborted the whole file. The
-        declarations must stay inside an IIFE, behind a run-once guard.
+        Chart.js and main.js now live in <head> (Turbo does not re-run those),
+        but the run-once guard still stops duplicate document listeners.
         """
         source = (settings.BASE_DIR / 'static' / 'js' / 'main.js').read_text(encoding='utf-8')
 

@@ -15,7 +15,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 import csv
 
-from .models import User, Student, Course, Enrollment, Grade, Attendance, weighted_average
+from .models import User, Student, Course, Enrollment, Grade, Attendance, weighted_average_qs
 from .forms import (
     LoginForm,
     StudentForm,
@@ -83,88 +83,98 @@ def logout_view(request):
     return redirect('login')
 
 
+def _grade_distribution(grade_qs):
+    """Letter-band counts in one query instead of five separate COUNTs."""
+    row = grade_qs.aggregate(
+        A=Count('id', filter=Q(grade_value__gte=4.5)),
+        B=Count('id', filter=Q(grade_value__gte=4.0, grade_value__lt=4.5)),
+        C=Count('id', filter=Q(grade_value__gte=3.5, grade_value__lt=4.0)),
+        D=Count('id', filter=Q(grade_value__gte=3.0, grade_value__lt=3.5)),
+        F=Count('id', filter=Q(grade_value__lt=3.0)),
+    )
+    return {band: row[band] for band in ('A', 'B', 'C', 'D', 'F')}
+
+
+def dashboard_metrics(user):
+    """Role-scoped KPI payload shared by the HTML dashboard and /api/dashboard/."""
+    if user.is_teacher():
+        grade_qs = Grade.objects.filter(enrollment__course__teacher=user)
+        course_qs = Course.objects.filter(teacher=user, is_active=True)
+        student_qs = Student.objects.filter(
+            enrollments__course__teacher=user, is_active=True,
+        ).distinct()
+        enrollment_qs = Enrollment.objects.filter(
+            course__teacher=user, status='active',
+        )
+        recent_students = (
+            Student.objects.filter(enrollments__course__teacher=user)
+            .distinct().order_by('-created_at')[:5]
+        )
+        recent_enrollments = (
+            Enrollment.objects.filter(course__teacher=user)
+            .select_related('student', 'course')
+            .order_by('-created_at')[:5]
+        )
+        # distinct=True: joining through enrollments repeats a student once per
+        # course they take with this teacher, which made the chart total
+        # overshoot the "Total Students" KPI on the same screen.
+        programs = Student.objects.filter(
+            enrollments__course__teacher=user, is_active=True,
+        ).values('study_program').annotate(
+            count=Count('id', distinct=True),
+        ).order_by('-count')[:6]
+    else:
+        grade_qs = Grade.objects.all()
+        course_qs = Course.objects.filter(is_active=True)
+        student_qs = Student.objects.filter(is_active=True)
+        enrollment_qs = Enrollment.objects.filter(status='active')
+        recent_students = Student.objects.order_by('-created_at')[:5]
+        recent_enrollments = (
+            Enrollment.objects.select_related('student', 'course')
+            .order_by('-created_at')[:5]
+        )
+        programs = student_qs.values('study_program').annotate(
+            count=Count('id'),
+        ).order_by('-count')[:6]
+
+    course_stats = list(
+        course_qs.annotate(
+            enrollment_count=Count(
+                'enrollments', filter=Q(enrollments__status='active'),
+            )
+        ).order_by('-enrollment_count')[:8]
+    )
+
+    return {
+        'role': user.role,
+        'total_students': student_qs.count(),
+        'total_courses': course_qs.count(),
+        'total_enrollments': enrollment_qs.count(),
+        'total_grades': grade_qs.count(),
+        'avg_grade': weighted_average_qs(grade_qs) or 0,
+        'grade_distribution': _grade_distribution(grade_qs),
+        'course_labels': [c.course_code for c in course_stats],
+        'course_data': [c.enrollment_count for c in course_stats],
+        'program_labels': [str(_(p['study_program'])) for p in programs],
+        'program_data': [p['count'] for p in programs],
+        'recent_students': recent_students,
+        'recent_enrollments': recent_enrollments,
+    }
+
+
 # ─── Dashboard ───────────────────────────────────────────────────────
 
 @login_required
 def dashboard(request):
     """Main dashboard with statistics and analytics."""
-    if request.user.is_teacher():
-        total_students = Student.objects.filter(enrollments__course__teacher=request.user, is_active=True).distinct().count()
-        total_courses = Course.objects.filter(teacher=request.user, is_active=True).count()
-        total_enrollments = Enrollment.objects.filter(course__teacher=request.user, status='active').count()
-        total_grades = Grade.objects.filter(enrollment__course__teacher=request.user).count()
-
-        recent_students = Student.objects.filter(enrollments__course__teacher=request.user).distinct().order_by('-created_at')[:5]
-        recent_enrollments = Enrollment.objects.filter(course__teacher=request.user).select_related('student', 'course').order_by('-created_at')[:5]
-
-        grade_distribution = {
-            'A': Grade.objects.filter(enrollment__course__teacher=request.user, grade_value__gte=4.5).count(),
-            'B': Grade.objects.filter(enrollment__course__teacher=request.user, grade_value__gte=4.0, grade_value__lt=4.5).count(),
-            'C': Grade.objects.filter(enrollment__course__teacher=request.user, grade_value__gte=3.5, grade_value__lt=4.0).count(),
-            'D': Grade.objects.filter(enrollment__course__teacher=request.user, grade_value__gte=3.0, grade_value__lt=3.5).count(),
-            'F': Grade.objects.filter(enrollment__course__teacher=request.user, grade_value__lt=3.0).count(),
-        }
-
-        course_stats = Course.objects.filter(teacher=request.user, is_active=True).annotate(
-            enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
-        ).order_by('-enrollment_count')[:8]
-
-        avg_grade = weighted_average(
-            Grade.objects.filter(enrollment__course__teacher=request.user)
-        ) or 0
-
-        # distinct=True: joining through enrollments repeats a student once per
-        # course they take with this teacher, which made the chart total
-        # overshoot the "Total Students" KPI on the same screen.
-        programs = Student.objects.filter(enrollments__course__teacher=request.user, is_active=True).values('study_program').annotate(
-            count=Count('id', distinct=True)
-        ).order_by('-count')[:6]
-
-    else:
-        total_students = Student.objects.filter(is_active=True).count()
-        total_courses = Course.objects.filter(is_active=True).count()
-        total_enrollments = Enrollment.objects.filter(status='active').count()
-        total_grades = Grade.objects.count()
-
-        recent_students = Student.objects.order_by('-created_at')[:5]
-        recent_enrollments = Enrollment.objects.select_related('student', 'course').order_by('-created_at')[:5]
-
-        grade_distribution = {
-            'A': Grade.objects.filter(grade_value__gte=4.5).count(),
-            'B': Grade.objects.filter(grade_value__gte=4.0, grade_value__lt=4.5).count(),
-            'C': Grade.objects.filter(grade_value__gte=3.5, grade_value__lt=4.0).count(),
-            'D': Grade.objects.filter(grade_value__gte=3.0, grade_value__lt=3.5).count(),
-            'F': Grade.objects.filter(grade_value__lt=3.0).count(),
-        }
-
-        course_stats = Course.objects.filter(is_active=True).annotate(
-            enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
-        ).order_by('-enrollment_count')[:8]
-
-        avg_grade = weighted_average(Grade.objects.all()) or 0
-
-        programs = Student.objects.filter(is_active=True).values('study_program').annotate(
-            count=Count('id')
-        ).order_by('-count')[:6]
-
-    course_labels = [c.course_code for c in course_stats]
-    course_data = [c.enrollment_count for c in course_stats]
-    program_labels = [str(_(p['study_program'])) for p in programs]
-    program_data = [p['count'] for p in programs]
-
+    metrics = dashboard_metrics(request.user)
     context = {
-        'total_students': total_students,
-        'total_courses': total_courses,
-        'total_enrollments': total_enrollments,
-        'total_grades': total_grades,
-        'recent_students': recent_students,
-        'recent_enrollments': recent_enrollments,
-        'grade_distribution': json.dumps(grade_distribution),
-        'course_labels': json.dumps(course_labels),
-        'course_data': json.dumps(course_data),
-        'avg_grade': avg_grade,
-        'program_labels': json.dumps(program_labels),
-        'program_data': json.dumps(program_data),
+        **metrics,
+        'grade_distribution': json.dumps(metrics['grade_distribution']),
+        'course_labels': json.dumps(metrics['course_labels']),
+        'course_data': json.dumps(metrics['course_data']),
+        'program_labels': json.dumps(metrics['program_labels']),
+        'program_data': json.dumps(metrics['program_data']),
     }
     return render(request, 'dashboard/index.html', context)
 
@@ -174,47 +184,18 @@ def dashboard(request):
 @login_required
 def api_dashboard_data(request):
     """JSON REST endpoint for dashboard chart / KPI data (role-scoped)."""
-    user = request.user
-
-    if user.is_teacher():
-        grade_qs = Grade.objects.filter(enrollment__course__teacher=user)
-        course_qs = Course.objects.filter(teacher=user, is_active=True)
-        student_count = Student.objects.filter(
-            enrollments__course__teacher=user, is_active=True
-        ).distinct().count()
-        enrollment_count = Enrollment.objects.filter(
-            course__teacher=user, status='active'
-        ).count()
-    else:
-        grade_qs = Grade.objects.all()
-        course_qs = Course.objects.filter(is_active=True)
-        student_count = Student.objects.filter(is_active=True).count()
-        enrollment_count = Enrollment.objects.filter(status='active').count()
-
-    grade_distribution = {
-        'A': grade_qs.filter(grade_value__gte=4.5).count(),
-        'B': grade_qs.filter(grade_value__gte=4.0, grade_value__lt=4.5).count(),
-        'C': grade_qs.filter(grade_value__gte=3.5, grade_value__lt=4.0).count(),
-        'D': grade_qs.filter(grade_value__gte=3.0, grade_value__lt=3.5).count(),
-        'F': grade_qs.filter(grade_value__lt=3.0).count(),
-    }
-
-    course_stats = course_qs.annotate(
-        enrollment_count=Count('enrollments', filter=Q(enrollments__status='active'))
-    ).order_by('-enrollment_count')[:8]
-
-    avg_grade = weighted_average(grade_qs)
-
+    metrics = dashboard_metrics(request.user)
+    avg = metrics['avg_grade']
     return JsonResponse({
-        'role': user.role,
-        'total_students': student_count,
-        'total_courses': course_qs.count(),
-        'total_enrollments': enrollment_count,
-        'total_grades': grade_qs.count(),
-        'avg_grade': float(round(avg_grade, 2)) if avg_grade else 0,
-        'grade_distribution': grade_distribution,
-        'course_labels': [c.course_code for c in course_stats],
-        'course_data': [c.enrollment_count for c in course_stats],
+        'role': metrics['role'],
+        'total_students': metrics['total_students'],
+        'total_courses': metrics['total_courses'],
+        'total_enrollments': metrics['total_enrollments'],
+        'total_grades': metrics['total_grades'],
+        'avg_grade': float(round(avg, 2)) if avg else 0,
+        'grade_distribution': metrics['grade_distribution'],
+        'course_labels': metrics['course_labels'],
+        'course_data': metrics['course_data'],
     })
 
 
@@ -297,7 +278,7 @@ def student_detail(request, pk):
     # properties aggregate over every course the student takes, which would
     # leak another teacher's roster and grades, so scope them to `enrollments`.
     course_count = enrollments.count()
-    average_grade = weighted_average(
+    average_grade = weighted_average_qs(
         Grade.objects.filter(enrollment__in=enrollments)
     )
 

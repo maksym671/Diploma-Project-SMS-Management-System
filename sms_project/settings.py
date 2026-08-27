@@ -134,11 +134,17 @@ if database_url:
     # sslmode to any other backend (e.g. a SQLite URL used to rehearse the
     # production build locally) raises a connection error.
     is_postgres = database_url.startswith(('postgres://', 'postgresql://'))
+    # Neon’s pooler (and PgBouncer in transaction mode) cannot keep a
+    # Django connection open. Direct Neon hosts can, and that avoids a
+    # fresh TLS handshake on every tab switch.
+    uses_pooler = '-pooler' in database_url
     DATABASES['default'] = dj_database_url.parse(
         database_url,
-        conn_max_age=0,
+        conn_max_age=600 if is_postgres and not uses_pooler else 0,
         ssl_require=is_postgres and not DEBUG,
     )
+    if is_postgres:
+        DATABASES['default']['CONN_HEALTH_CHECKS'] = True
 
 
 # ---------------------------------------------------------------------------
@@ -198,6 +204,11 @@ STORAGES = {
         'BACKEND': _static_backend,
     },
 }
+
+# Hashed filenames already get an immutable cache; this covers any leftover
+# unhashed file WhiteNoise still serves (favicons, error pages).
+if not DEBUG:
+    WHITENOISE_MAX_AGE = 31536000
 
 
 # ---------------------------------------------------------------------------

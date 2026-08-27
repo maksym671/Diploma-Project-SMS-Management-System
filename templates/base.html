@@ -29,10 +29,13 @@
 
     {% block extra_css %}{% endblock %}
 
-    <!-- Hotwire Turbo 8 for instant page transitions & prefetching -->
+    <!-- Hotwire Turbo 8: in <head> so it is not re-evaluated on every visit. -->
     <meta name="turbo-prefetch" content="true">
     <meta name="view-transition" content="same-origin">
     <script src="{% static 'vendor/turbo/turbo.es2017-umd.js' %}"></script>
+    {# Chart.js + app JS stay in head: Turbo re-runs body scripts on each tab. #}
+    <script defer src="{% static 'vendor/chartjs/chart.umd.min.js' %}"></script>
+    <script defer src="{% static 'js/main.js' %}"></script>
 </head>
 <body>
     {% block body %}
@@ -42,7 +45,8 @@
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        {# Language in the id so a PL/EN switch replaces the permanent node. #}
+        <aside class="sidebar" id="sidebar-{{ LANGUAGE_CODE }}" data-turbo-permanent>
             <div class="sidebar-header">
                 <div class="sidebar-logo">
                     <img src="{% static 'images/logo.svg' %}" alt="">
@@ -56,7 +60,7 @@
             <nav class="sidebar-nav">
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">{% trans "Overview" %}</div>
-                    <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <a href="{% url 'dashboard' %}" data-nav="dashboard" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                         <i class="bi bi-grid-1x2-fill"></i>
                         <span>{% trans "Dashboard" %}</span>
                     </a>
@@ -64,27 +68,27 @@
 
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">{% trans "Academic" %}</div>
-                    <a href="{% url 'student_list' %}" class="sidebar-link {% if 'student' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'student_list' %}" data-nav="students" class="sidebar-link {% if 'student' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-people-fill"></i>
                         <span>{% trans "Students" %}</span>
                     </a>
-                    <a href="{% url 'course_list' %}" class="sidebar-link {% if 'course' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'course_list' %}" data-nav="courses" class="sidebar-link {% if 'course' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-book-fill"></i>
                         <span>{% trans "Courses" %}</span>
                     </a>
-                    <a href="{% url 'enrollment_list' %}" class="sidebar-link {% if 'enrollment' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'enrollment_list' %}" data-nav="enrollments" class="sidebar-link {% if 'enrollment' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-clipboard2-check-fill"></i>
                         <span>{% trans "Enrollments" %}</span>
                     </a>
-                    <a href="{% url 'grade_list' %}" class="sidebar-link {% if 'grade' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'grade_list' %}" data-nav="grades" class="sidebar-link {% if 'grade' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-award-fill"></i>
                         <span>{% trans "Grades" %}</span>
                     </a>
-                    <a href="{% url 'attendance_list' %}" class="sidebar-link {% if 'attendance' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'attendance_list' %}" data-nav="attendance" class="sidebar-link {% if request.resolver_match.url_name != 'attendance_bulk' and 'attendance' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-calendar-check-fill"></i>
                         <span>{% trans "Attendance" %}</span>
                     </a>
-                    <a href="{% url 'attendance_bulk' %}" class="sidebar-link {% if request.resolver_match.url_name == 'attendance_bulk' %}active{% endif %}">
+                    <a href="{% url 'attendance_bulk' %}" data-nav="attendance-bulk" class="sidebar-link {% if request.resolver_match.url_name == 'attendance_bulk' %}active{% endif %}">
                         <i class="bi bi-check2-all"></i>
                         <span>{% trans "Mark Class" %}</span>
                     </a>
@@ -93,11 +97,11 @@
                 {% if user.is_teacher or user.is_admin %}
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">{% trans "Analytics" %}</div>
-                    <a href="{% url 'export_students_csv' %}" class="sidebar-link">
+                    <a href="{% url 'export_students_csv' %}" class="sidebar-link" data-turbo="false" data-turbo-prefetch="false">
                         <i class="bi bi-download"></i>
                         <span>{% trans "Export Students" %}</span>
                     </a>
-                    <a href="{% url 'export_grades_csv' %}" class="sidebar-link">
+                    <a href="{% url 'export_grades_csv' %}" class="sidebar-link" data-turbo="false" data-turbo-prefetch="false">
                         <i class="bi bi-download"></i>
                         <span>{% trans "Export Grades" %}</span>
                     </a>
@@ -107,11 +111,11 @@
                 {% if user.is_admin %}
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">{% trans "System" %}</div>
-                    <a href="{% url 'teacher_list' %}" class="sidebar-link {% if 'teacher' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'teacher_list' %}" data-nav="teachers" class="sidebar-link {% if 'teacher' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-person-badge-fill"></i>
                         <span>{% trans "Teachers" %}</span>
                     </a>
-                    <a href="{% url 'admin:index' %}" class="sidebar-link" target="_blank">
+                    <a href="{% url 'admin:index' %}" class="sidebar-link" target="_blank" rel="noopener" data-turbo="false" data-turbo-prefetch="false">
                         <i class="bi bi-gear-fill"></i>
                         <span>{% trans "Admin Panel" %}</span>
                     </a>
@@ -198,15 +202,6 @@
         {% block content_noauth %}{% endblock %}
     {% endif %}
     {% endblock %}
-
-    <!-- Bootstrap JS -->
-    <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
-
-    <!-- Chart.js -->
-    <script src="{% static 'vendor/chartjs/chart.umd.min.js' %}"></script>
-
-    <!-- Custom JS -->
-    <script src="{% static 'js/main.js' %}"></script>
 
     {% block extra_js %}{% endblock %}
 </body>
