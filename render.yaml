@@ -55,9 +55,14 @@ services:
       # mail is sent) instead of erroring.
       #
       # `manage.py check --deploy` warns (mail.W005) if the key is missing.
+      #
+      # Default here is "console": the reset link is written to the Render log
+      # instead of emailed, which needs no external account and never 500s.
+      # Switch this value to "brevo" and set the two vars below to deliver real
+      # email to the inbox.
       # ---------------------------------------------------------------
       - key: EMAIL_BACKEND
-        value: brevo
+        value: console
 
       # Create at brevo.com -> SMTP & API -> API keys (free tier). Secret,
       # so it stays out of the repo.
