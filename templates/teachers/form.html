@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumb %}{% trans "Teachers" %} / {{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{{ title }}</h1>
+        <p class="page-subtitle">
+            {% if teacher %}
+            {% trans "Update the lecturer details or set a new password." %}
+            {% else %}
+            {% trans "Create the account and give the lecturer a username and password." %}
+            {% endif %}
+        </p>
+    </div>
+    <a href="{% url 'teacher_list' %}" class="btn btn-outline">
+        <i class="bi bi-arrow-left"></i> {% trans "Back to List" %}
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" id="teacher-form">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="alert alert-danger mb-3">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                {% trans "Please correct the errors below." %}
+            </div>
+            {% endif %}
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="id_username">{% trans "Username" %} *</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="form-text text-rose">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="id_email">{% trans "Email Address" %}</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <div class="form-text text-rose">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="id_first_name">{% trans "First Name" %}</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                    <div class="form-text text-rose">{{ form.first_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="id_last_name">{% trans "Last Name" %}</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                    <div class="form-text text-rose">{{ form.last_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="id_department">{% trans "Department" %}</label>
+                    {{ form.department }}
+                    {% if form.department.errors %}
+                    <div class="form-text text-rose">{{ form.department.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group" style="padding-top: 16px; border-top: 1px solid var(--border);">
+                <label class="form-label">{% trans "Password" %}{% if not teacher %} *{% endif %}</label>
+                {% if form.password1.help_text %}
+                <p class="form-text" style="margin-bottom: 10px;">{{ form.password1.help_text }}</p>
+                {% endif %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="id_password1">{% trans "New password" %}</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                        <div class="form-text text-rose">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="id_password2">{% trans "Confirm password" %}</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                        <div class="form-text text-rose">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                {{ form.is_active }}
+                <label class="form-label" for="id_is_active" style="margin: 0;">{% trans "Active account" %}</label>
+            </div>
+
+            <div class="btn-group mt-2">
+                <button type="submit" class="btn btn-primary" id="submit-teacher">
+                    <i class="bi bi-check-lg"></i>
+                    {% if teacher %}{% trans "Update Teacher" %}{% else %}{% trans "Create Teacher" %}{% endif %}
+                </button>
+                <a href="{% url 'teacher_list' %}" class="btn btn-outline">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

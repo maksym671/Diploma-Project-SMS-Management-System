@@ -1,7 +1,7 @@
 """Builds the diploma defence deck for the Student Management System.
 
 Every figure quoted on the slides comes from the repository itself: 6 models,
-5 migrations, 50 tests, 269 translatable strings, and the demo dataset that
+6 migrations, 77 tests, 308 translatable strings, and the demo dataset that
 ships with the deployment.
 
     pptx_env/bin/python scripts/generate_presentation.py
@@ -9,6 +9,7 @@ ships with the deployment.
 
 from pathlib import Path
 
+from PIL import Image
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
@@ -21,9 +22,17 @@ SHOTS = ROOT / 'docs' / 'screenshots'
 OUTPUT = ROOT / 'Maksym_Shpak_Diploma_Presentation.pptx'
 
 LIVE_URL = 'diploma-project-sms-management-system.onrender.com'
+LIVE_HREF = 'https://' + LIVE_URL
+UNI_URL = 'https://www.vizja.pl'
+DEMO_TEACHER = 'prof.martinez'
+DEMO_TEACHER_B = 'prof.chen'
+DEMO_PASSWORD = 'demo1234'
 STUDENT = 'Maksym Shpak'
-INDEX_NO = '[nr albumu]'
-SUPERVISOR = '[dr / promotor]'
+INDEX_NO = '45567'
+SUPERVISOR = 'Marcin Kacprowicz'
+LOGO_DARK = ROOT / 'docs' / 'assets' / 'vizja_logo_dark.png'
+LOGO_LIGHT = ROOT / 'docs' / 'assets' / 'vizja_logo_light.png'
+LOGO_DARK_V = ROOT / 'docs' / 'assets' / 'vizja_logo_dark_vertical.png'
 
 # --- palette -----------------------------------------------------------------
 INK = RGBColor(0x0F, 0x17, 0x2A)
@@ -52,7 +61,7 @@ CONTENT_W = W - 2 * MARGIN
 BODY_TOP = 1.62
 FOOTER_Y = 6.94
 
-TOTAL_SLIDES = 16
+TOTAL_SLIDES = 11
 
 
 # --- primitives --------------------------------------------------------------
@@ -98,7 +107,7 @@ def track(slide, x, y, w, h, color=ACCENT, radius=0.5):
 
 
 def _style_run(run, size=12, bold=False, color=SLATE, font=BODY_FONT,
-               italic=False, spacing=None):
+               italic=False, spacing=None, url=None):
     run.font.size = Pt(size)
     run.font.bold = bold
     run.font.italic = italic
@@ -106,6 +115,10 @@ def _style_run(run, size=12, bold=False, color=SLATE, font=BODY_FONT,
     run.font.name = font
     if spacing:
         run._r.get_or_add_rPr().set('spc', str(int(spacing * 100)))
+    if url:
+        run.hyperlink.address = url
+        run.font.underline = False
+        run.font.color.rgb = color
 
 
 def text(slide, x, y, w, h, blocks, anchor=MSO_ANCHOR.TOP, align=PP_ALIGN.LEFT):
@@ -141,16 +154,30 @@ def text(slide, x, y, w, h, blocks, anchor=MSO_ANCHOR.TOP, align=PP_ALIGN.LEFT):
                 font=style.get('font', BODY_FONT),
                 italic=style.get('italic', False),
                 spacing=style.get('spacing'),
+                url=style.get('url'),
             )
     return box
 
 
 # --- slide chrome ------------------------------------------------------------
-def footer(slide, dark=False):
+def add_logo(slide, path, x, y, w, url=UNI_URL):
+    """Places a PNG logo and makes it open the university site on click."""
+    iw, ih = Image.open(path).size
+    h = w * ih / iw
+    pic = slide.shapes.add_picture(str(path), Inches(x), Inches(y), Inches(w), Inches(h))
+    pic.click_action.hyperlink.address = url
+    return h
+
+
+def footer(slide, dark=False, logo=False):
+    if logo:
+        path = LOGO_DARK if dark else LOGO_LIGHT
+        add_logo(slide, path, MARGIN, FOOTER_Y - 0.02, 1.42)
     text(
         slide, W - MARGIN - 2.4, FOOTER_Y, 2.4, 0.28,
         [{'text': 'www.vizja.pl', 'size': 10.5,
-          'color': FAINT if dark else MUTED, 'spacing': 0.6}],
+          'color': FAINT if dark else MUTED, 'spacing': 0.6,
+          'url': UNI_URL}],
         align=PP_ALIGN.RIGHT,
     )
 
@@ -180,7 +207,7 @@ def head(prs, number, title, kicker=None, accent=ACCENT):
     )
     rect(slide, MARGIN, FOOTER_Y - 0.16, CONTENT_W, 0.012,
          fill=LINE, shape=MSO_SHAPE.RECTANGLE)
-    footer(slide)
+    footer(slide, logo=True)
     return slide
 
 
@@ -324,10 +351,12 @@ def slide_title(prs):
     rect(slide, 10.35, 3.5, 4.4, 4.4, fill=RGBColor(0x18, 0x22, 0x39), radius=0.5)
     track(slide, MARGIN, 1.42, 0.11, 0.9, color=ACCENT)
 
-    text(slide, MARGIN + 0.32, 1.44, 8.4, 0.26,
+    add_logo(slide, LOGO_DARK_V, 9.25, 1.72, 3.55)
+
+    text(slide, MARGIN + 0.32, 1.44, 8.0, 0.26,
          [{'text': 'UNIWERSYTET VIZJA  ·  SCHOOL OF COMPUTER SCIENCE & TECHNOLOGIES',
            'size': 11, 'bold': True, 'color': FAINT, 'spacing': 1.4}])
-    text(slide, MARGIN + 0.32, 1.86, 8.9, 2.0, [
+    text(slide, MARGIN + 0.32, 1.86, 8.2, 2.0, [
         {'text': 'Design and Implementation of a', 'size': 33,
          'color': WHITE, 'font': HEAD_FONT, 'line': 1.1},
         {'text': 'Web-Based Student Management System', 'size': 33, 'bold': True,
@@ -336,11 +365,13 @@ def slide_title(prs):
          'color': WHITE, 'font': HEAD_FONT, 'line': 1.1},
     ])
 
-    chip = rect(slide, MARGIN + 0.32, 4.14, 5.62, 0.44, fill=ACCENT, radius=0.4)
-    text(slide, MARGIN + 0.52, 4.2, 5.3, 0.32,
+    chip = rect(slide, MARGIN + 0.32, 4.14, 6.35, 0.44, fill=ACCENT, radius=0.4)
+    chip.click_action.hyperlink.address = LIVE_HREF
+    text(slide, MARGIN + 0.52, 4.2, 6.05, 0.32,
          [{'runs': [('LIVE   ', {'size': 9.5, 'bold': True, 'color': WHITE,
                                  'spacing': 1.4}),
-                    (LIVE_URL, {'size': 11.5, 'bold': True, 'color': WHITE})]}],
+                    (LIVE_HREF, {'size': 11.5, 'bold': True, 'color': WHITE,
+                                 'url': LIVE_HREF})]}],
          anchor=MSO_ANCHOR.MIDDLE)
 
     rect(slide, MARGIN, 5.42, 7.9, 0.012, fill=RGBColor(0x2C, 0x3A, 0x52),
@@ -375,33 +406,29 @@ def slide_agenda(prs):
         ('04', 'System Architecture',
          'Browser › Render TLS › Gunicorn › PostgreSQL'),
         ('05', 'Database Design',
-         '6 models, 5 migrations, constraints in the schema'),
+         '6 models, 6 migrations, constraints in the schema'),
         ('06', 'Key Features',
-         'Gradebook, attendance, analytics, CSV export'),
-        ('07', 'Role-Based Access Control',
-         'Administrator and teacher data isolation'),
-        ('08', 'Internationalisation',
-         '269 translatable strings, English and Polish'),
-        ('09', 'Quality Assurance & CI',
-         '50 automated tests, four CI gates'),
-        ('10', 'Deployment & Results',
-         'Live on Render + Neon at zero hosting cost'),
+         'Weighted grades, RBAC, EN/PL, 77 tests'),
+        ('07', 'Application Screenshots',
+         'Dashboard, student records, mobile layout'),
+        ('08', 'Deployment & Results',
+         'Live on Render + Neon, then what comes next'),
     ]
     col_w = (CONTENT_W - 0.4) / 2
     for i, (num, title, sub) in enumerate(items):
-        col, row = divmod(i, 5)
+        col, row = divmod(i, 4)
         x = MARGIN + col * (col_w + 0.4)
-        y = BODY_TOP + row * 0.98
+        y = BODY_TOP + 0.08 + row * 1.22
         text(slide, x, y + 0.04, 0.52, 0.4,
-             [{'text': num, 'size': 20, 'bold': True, 'color': FAINT,
+             [{'text': num, 'size': 22, 'bold': True, 'color': FAINT,
                'font': HEAD_FONT}])
-        text(slide, x + 0.62, y, col_w - 0.62, 0.8, [
-            {'text': title, 'size': 14, 'bold': True, 'color': INK,
-             'space_after': 3},
-            {'text': sub, 'size': 11, 'color': SLATE, 'line': 1.12},
+        text(slide, x + 0.62, y, col_w - 0.62, 0.95, [
+            {'text': title, 'size': 16, 'bold': True, 'color': INK,
+             'space_after': 4},
+            {'text': sub, 'size': 12, 'color': SLATE, 'line': 1.14},
         ])
-        if row < 4:
-            rect(slide, x, y + 0.82, col_w, 0.008, fill=LINE,
+        if row < 3:
+            rect(slide, x, y + 1.04, col_w, 0.008, fill=LINE,
                  shape=MSO_SHAPE.RECTANGLE)
     return slide
 
@@ -444,7 +471,7 @@ def slide_problem(prs):
     note_bar(slide, FOOTER_Y - 0.98, [
         ('Result: ', {'size': 12.5, 'bold': True, 'color': WHITE}),
         ('one auditable, role-aware platform now managing 25 students, 8 courses, '
-         '87 enrollments and 53 grades in production.',
+         '87 enrollments and 87 grades in production.',
          {'size': 12.5, 'color': RGBColor(0xD6, 0xDF, 0xEC)}),
     ])
     return slide
@@ -462,13 +489,13 @@ def slide_competitors(prs):
         ['Setup effort', 'Days of plugin work', 'Institutional contract',
          'Minutes, no control', 'Minutes — a single build script'],
         ['Gradebook', 'Yes, complex', 'Yes', 'Basic',
-         'Yes, with author audit trail'],
+         'Weighted components + author audit'],
         ['Attendance register', 'Plugin required', 'Yes', 'Not available',
-         'Built in, four statuses'],
+         'Built in, three statuses'],
         ['Role isolation', 'Configurable, intricate', 'Yes', 'Limited',
          'Enforced at queryset level'],
         ['Bilingual EN / PL', 'Language packs', 'Polish-first', 'Yes',
-         'Native, 269 strings'],
+         'Native, 308 strings'],
         ['Analytics', 'Reports plugin', 'Institutional reports', 'Minimal',
          'Chart.js dashboard + CSV'],
         ['Cost of ownership', 'GPL + hosting', 'Licensed', 'Free, data in Google',
@@ -493,12 +520,12 @@ def slide_stack(prs):
         ('Backend', 'Runtime · data · authentication', ACCENT, [
             'Python 3.12', 'Django 6.0.6', 'PostgreSQL 16 (Neon)',
             'SQLite 3 for development', 'Django session authentication',
-            'Custom user model with roles', 'Django ORM · 5 migrations',
+            'Custom user model with roles', 'Django ORM · 6 migrations',
             'dj-database-url 2.1',
         ]),
         ('Frontend', 'Templates · charts · theming', VIOLET, [
-            'Django Templates · 28 files', 'Semantic HTML5',
-            'CSS custom properties · 1 771 lines', 'Vanilla JavaScript ES6 · 399 lines',
+            'Django Templates · 27 files', 'Semantic HTML5',
+            'CSS custom properties · 1 945 lines', 'Vanilla JavaScript ES6 · 413 lines',
             'Chart.js 4 — doughnut and bars', 'Turbo 8 page transitions',
             'Bootstrap Icons', 'Light and dark themes',
         ]),
@@ -577,9 +604,9 @@ def slide_architecture(prs):
 
     sup_y = mid_y + 1.12
     services = [
-        ('SMTP email', 'Password reset links'),
+        ('i18n EN / PL', 'Interface language switch'),
         ('GitHub Actions', 'Tests and deploy gates'),
-        ('Django Admin', 'Superuser operations'),
+        ('Teachers screen', 'Admin issues lecturer accounts'),
         ('CSV export', 'Role-scoped reporting'),
         ('/api/dashboard/', 'JSON metrics endpoint'),
     ]
@@ -597,7 +624,7 @@ def slide_architecture(prs):
 
 
 def slide_database(prs):
-    slide = head(prs, 7, 'Database Design', kicker='6 models · 5 migrations')
+    slide = head(prs, 7, 'Database Design', kicker='6 models · 6 migrations')
     entities = [
         ('User', 'extends AbstractUser', ACCENT,
          ['id', 'username · email', 'first_name · last_name',
@@ -611,12 +638,13 @@ def slide_database(prs):
         ('Enrollment', 'student ⇄ course', AMBER,
          ['id', 'student_id → Student', 'course_id → Course', 'enrollment_date',
           'status → active | completed | dropped', 'unique (student, course)']),
-        ('Grade', 'assessment', GREEN,
-         ['id', 'enrollment_id → Enrollment', 'grade_value 2.0 – 5.0',
-          'letter_grade (derived)', 'assigned_by → User', 'date_assigned · comments']),
+        ('Grade', 'weighted component', GREEN,
+         ['id', 'enrollment_id → Enrollment',
+          'kind → coursework | midterm | final | retake',
+          'weight 1–100 %', 'grade_value 2.0 – 5.0', 'assigned_by → User']),
         ('Attendance', 'daily register', PINK,
          ['id', 'enrollment_id → Enrollment', 'date',
-          'status → present | absent | late | excused', 'notes',
+          'status → present | absent | late', 'notes',
           'unique (enrollment, date)']),
     ]
     cw = (CONTENT_W - 2 * 0.22) / 3
@@ -648,28 +676,23 @@ def slide_features(prs):
     slide = head(prs, 8, 'Key Features', kicker='What the system actually does')
     features = [
         ('Academic Records', ACCENT,
-         'Complete CRUD for students, courses and enrollments. Search, programme '
-         'and status filters plus pagination — and the filters survive every page '
-         'change because they are carried in the query string.'),
-        ('Gradebook with Audit Trail', GREEN,
-         'Numeric grades from 2.0 to 5.0 map automatically to letter grades. Each '
-         'record stores assigned_by, so it is always provable which teacher entered '
-         'or last edited a mark.'),
+         'CRUD for students, courses and enrollments. Administrators issue lecturer '
+         'accounts on Teachers. Enrollment is refused once max_students is reached.'),
+        ('Weighted Gradebook', GREEN,
+         'Coursework, midterm, exam and retake — each with a weight. The course mark '
+         'is their weighted mean. assigned_by records who last saved the component.'),
         ('Attendance Register', AMBER,
-         'Present, absent, late and excused, with one row per enrollment per day '
-         'guaranteed by a database constraint. The resulting attendance rate feeds '
-         'the analytics directly.'),
-        ('Analytics Dashboard', VIOLET,
-         'Four KPI tiles and three Chart.js visualisations — grade distribution, '
-         'enrollments per course, students per programme — all computed by ORM '
-         'aggregation and also served as JSON at /api/dashboard/.'),
-        ('Capacity & Validation', TEAL,
-         'Enrollment is refused once a course reaches max_students. Duplicate '
-         'enrollments and duplicate attendance rows are impossible by design, not '
-         'by convention.'),
-        ('Export & Password Recovery', PINK,
-         'Students and grades export to CSV with translated headers, scoped to the '
-         "caller's role. Password reset delivers a signed, single-use link over SMTP."),
+         'Present, absent and late — one row per enrollment per day, enforced in the '
+         'schema. Mark Class saves a whole roster in a single request.'),
+        ('Analytics & Export', VIOLET,
+         'Four KPI tiles, three Chart.js views and JSON at /api/dashboard/. CSV '
+         'export of students and grades is scoped to the caller\'s role.'),
+        ('Role-Based Access', TEAL,
+         'Administrators see the institution; teachers see only their courses. '
+         'Decorators guard the route, querysets filter again — a guessed URL returns nothing.'),
+        ('i18n & Quality', PINK,
+         '308 strings, English ⇄ Polish, locale-aware dates. 77 automated tests and '
+         'four CI gates (tests, migrations, deploy check, collectstatic) on every push.'),
     ]
     cw = (CONTENT_W - 2 * 0.22) / 3
     ch = 2.24
@@ -687,184 +710,20 @@ def slide_features(prs):
     return slide
 
 
-def slide_access(prs):
-    slide = head(prs, 9, 'Role-Based Access Control',
-                 kicker='Two roles, enforced twice')
-    headers = ['Capability', 'Administrator', 'Teacher']
-    rows = [
-        ['Dashboard', 'Institution-wide metrics', 'Own courses only'],
-        ['Students', 'Create, edit, delete', 'Read-only, own courses'],
-        ['Courses', 'Full CRUD, assigns teachers', 'Read-only, own courses'],
-        ['Enrollments', 'Full CRUD', 'Read-only, own courses'],
-        ['Grades', 'Full CRUD, all courses', 'Full CRUD, own courses'],
-        ['Attendance', 'Full CRUD, all courses', 'Full CRUD, own courses'],
-        ['CSV export', 'Complete dataset', 'Scoped to own courses'],
-        ['Django Admin', 'Available', 'Not available'],
-    ]
-    table_w = 7.3
-    matrix(slide, MARGIN, BODY_TOP, table_w, headers, rows,
-           [2.3, 2.62, 2.38], row_height=0.42, highlight=2, highlight_color=VIOLET)
-
-    side_x = MARGIN + table_w + 0.3
-    side_w = CONTENT_W - table_w - 0.3
-    notes = [
-        ('Guarded twice', ACCENT,
-         '@admin_required and @teacher_or_admin_required protect the route; the '
-         'queryset is filtered again inside the view. A guessed URL returns nothing.'),
-        ('IDOR-proof', VIOLET,
-         'Every detail, edit and delete view re-checks object ownership before it '
-         'touches the database.'),
-        ('Proven by tests', GREEN,
-         'TeacherDataIsolationTests asserts that a teacher can neither read nor '
-         'modify records belonging to a course they do not own.'),
-    ]
-    y = BODY_TOP
-    for title, color, body in notes:
-        card(slide, side_x, y, side_w, 1.28)
-        rect(slide, side_x, y, 0.055, 1.28, fill=color, radius=0.5)
-        text(slide, side_x + 0.28, y + 0.24, side_w - 0.5, 0.9, [
-            {'text': title, 'size': 13, 'bold': True, 'color': INK,
-             'font': HEAD_FONT, 'space_after': 5},
-            {'text': body, 'size': 10.8, 'color': SLATE, 'line': 1.16},
-        ])
-        y += 1.44
-    note_bar(slide, FOOTER_Y - 0.82, [
-        ('Design decision: ', {'size': 12, 'bold': True, 'color': WHITE}),
-        ('two roles instead of many. Enough to demonstrate real authorisation and '
-         'data confidentiality, simple enough to stay verifiable.',
-         {'size': 12, 'color': RGBColor(0xD6, 0xDF, 0xEC)}),
-    ], height=0.56)
-    return slide
-
-
-def slide_i18n(prs):
-    slide = head(prs, 10, 'Internationalisation', kicker='English ⇄ Polish, end to end')
-    left_w = 6.62
-    tiles = [('269', 'translatable\nstrings', ACCENT),
-             ('2', 'interface\nlanguages', VIOLET),
-             ('0', 'hardcoded\nUI strings', GREEN)]
-    tw = (left_w - 0.44) / 3
-    for i, (value, label, color) in enumerate(tiles):
-        stat_tile(slide, MARGIN + i * (tw + 0.22), BODY_TOP, tw, 1.0,
-                  value, label, color=color, value_size=24, label_size=10)
-    panel(slide, MARGIN, BODY_TOP + 1.2, left_w, 3.18, 'How it is done', [
-        ('Templates —', 'every string in {% trans %} or {% blocktrans %}'),
-        ('At the source —', 'model choices, placeholders, flash messages'),
-        ('Dates —', 'locale formats: 26/08/2025 or 26.08.2025'),
-        ('Catalogue —', 'stored programmes and courses via a trans_db filter'),
-        ('Numbers —', 'unlocalised for JavaScript, then Intl.NumberFormat'),
-        ('Continuity —', 'the switch keeps the page and persists per session'),
-    ], accent=VIOLET, size=12, gap=9)
-
-    shot = SHOTS / 'dashboard-pl.png'
-    if shot.exists():
-        picture_frame(slide, MARGIN + left_w + 0.34, BODY_TOP + 0.42,
-                      CONTENT_W - left_w - 0.34, shot,
-                      caption='The dashboard in Polish — labels, catalogue values '
-                              'and number formats all follow the active locale.')
-    note_bar(slide, FOOTER_Y - 0.82, [
-        ('Polish is not a bolt-on: ', {'size': 12, 'bold': True, 'color': WHITE}),
-        ('the catalogue is compiled during the build, committed as django.mo, and '
-         'guarded by LocalizationTests.',
-         {'size': 12, 'color': RGBColor(0xD6, 0xDF, 0xEC)}),
-    ], height=0.56)
-    return slide
-
-
-def slide_quality(prs):
-    slide = head(prs, 11, 'Quality Assurance & CI', kicker='Correctness kept honest')
-    tiles = [('50', 'automated tests', ACCENT),
-             ('14', 'test classes', VIOLET),
-             ('4', 'CI gates per push', GREEN),
-             ('0', 'known failing tests', TEAL)]
-    tw = (CONTENT_W - 3 * 0.22) / 4
-    for i, (value, label, color) in enumerate(tiles):
-        stat_tile(slide, MARGIN + i * (tw + 0.22), BODY_TOP, tw, 0.92,
-                  value, label, color=color, value_size=25, label_size=11)
-
-    suites = [
-        ('SmokeRenderTests', 'pages render for both roles'),
-        ('TeacherDataIsolationTests', 'scoping and IDOR'),
-        ('CrudFlowTests', 'create, edit, delete end to end'),
-        ('GradeAuditTests', 'assigned_by always recorded'),
-        ('EnrollmentCapacityTests', 'max_students enforced'),
-        ('LocalizationTests', 'EN ⇄ PL, database values'),
-        ('PaginationTests', 'filters survive paging'),
-        ('LogoutSafetyTests', 'logout is POST-only'),
-        ('DashboardApiTests', 'payload differs per role'),
-        ('PasswordResetEmailTests', 'reset mail is signed'),
-        ('DeploymentSeedTests', 'seeding is idempotent'),
-        ('CoreModelTests', 'letter grades and invariants'),
-    ]
-    y0 = BODY_TOP + 1.14
-    card(slide, MARGIN, y0, 7.66, 3.5)
-    eyebrow(slide, MARGIN + 0.3, y0 + 0.26, 5.0, 'Test suite', color=ACCENT)
-    for i, (name, sub) in enumerate(suites):
-        row, col = divmod(i, 2)
-        x = MARGIN + 0.3 + col * 3.62
-        y = y0 + 0.68 + row * 0.45
-        text(slide, x, y, 3.5, 0.4, [
-            {'runs': [(name, {'size': 11.2, 'bold': True, 'color': INK}),
-                      ('  ' + sub, {'size': 10.2, 'color': MUTED})], 'line': 1.06},
-        ])
-
-    px = MARGIN + 7.96
-    pw = CONTENT_W - 7.96
-    card(slide, px, y0, pw, 3.5)
-    eyebrow(slide, px + 0.3, y0 + 0.26, 3.0, 'CI pipeline', color=GREEN)
-    steps = [
-        ('git push', 'GitHub Actions starts'),
-        ('manage.py test', 'the full suite must pass'),
-        ('makemigrations --check', 'no model drift allowed'),
-        ('check --deploy', 'production security audit'),
-        ('collectstatic', 'assets build cleanly'),
-        ('build.sh on Render', 'migrate, compile PL, seed, serve'),
-    ]
-    for i, (name, sub) in enumerate(steps):
-        y = y0 + 0.66 + i * 0.44
-        rect(slide, px + 0.32, y + 0.08, 0.11, 0.11, fill=GREEN,
-             shape=MSO_SHAPE.OVAL)
-        if i < len(steps) - 1:
-            rect(slide, px + 0.372, y + 0.2, 0.008, 0.32, fill=LINE,
-                 shape=MSO_SHAPE.RECTANGLE)
-        text(slide, px + 0.6, y, pw - 0.9, 0.4, [
-            {'runs': [(name, {'size': 11.2, 'bold': True, 'color': INK}),
-                      ('   ' + sub, {'size': 10, 'color': MUTED})], 'line': 1.06},
-        ])
-    return slide
-
-
-def slide_ui_one(prs):
-    slide = head(prs, 12, 'Interface — Analytics', kicker='Application screenshots')
-    w = (CONTENT_W - 0.34) / 2
-    for i, (name, caption) in enumerate([
-        ('dashboard-light.png',
-         'Administrator dashboard — four KPI tiles and three Chart.js views'),
-        ('dashboard-dark.png',
-         'The same dashboard in dark theme, driven by CSS custom properties'),
-    ]):
-        shot = SHOTS / name
-        if shot.exists():
-            picture_frame(slide, MARGIN + i * (w + 0.34), BODY_TOP + 0.5, w,
-                          shot, caption=caption)
-    return slide
-
-
-def slide_ui_two(prs):
-    slide = head(prs, 13, 'Interface — Records',
-                 kicker='Application screenshots')
+def slide_ui(prs):
+    slide = head(prs, 9, 'Application Screenshots', kicker='The running interface')
     shot_w = 4.96
     mob_h = shot_w / 1.6
     mob_w = mob_h * 430 / 932
     total = 2 * shot_w + mob_w + 2 * 0.34
     x0 = MARGIN + (CONTENT_W - total) / 2
-    y0 = BODY_TOP + 0.44
+    y0 = BODY_TOP + 0.22
 
     for i, (name, caption) in enumerate([
+        ('dashboard-light.png',
+         'Dashboard — KPI tiles and three Chart.js views'),
         ('students-list.png',
-         'Student register — search, programme and status filters, pagination'),
-        ('student-detail.png',
-         'Student profile — enrollments, grades and attendance in one view'),
+         'Student register — search, filters, pagination'),
     ]):
         shot = SHOTS / name
         if shot.exists():
@@ -884,85 +743,64 @@ def slide_ui_two(prs):
 
     note_bar(slide, FOOTER_Y - 0.86, [
         ('Every table is role-aware: ', {'size': 12, 'bold': True, 'color': WHITE}),
-        ('a teacher opening the same page sees only the students enrolled in the '
-         'courses they teach, and the action buttons disappear.',
+        ('a teacher opening the same page sees only students in their own courses, '
+         'and the action buttons disappear.',
          {'size': 12, 'color': RGBColor(0xD6, 0xDF, 0xEC)}),
     ], height=0.56)
     return slide
 
 
 def slide_deployment(prs):
-    slide = head(prs, 14, 'Deployment & Live Application',
+    slide = head(prs, 10, 'Deployment & Results',
                  kicker='In production, not on a laptop')
-    chip_w = 6.4
-    rect(slide, MARGIN, BODY_TOP, chip_w, 0.62, fill=INK, radius=0.14)
+    chip_w = 6.15
+    chip = rect(slide, MARGIN, BODY_TOP, chip_w, 0.62, fill=INK, radius=0.14)
+    chip.click_action.hyperlink.address = LIVE_HREF
     rect(slide, MARGIN + 0.24, BODY_TOP + 0.19, 0.16, 0.16, fill=GREEN,
          shape=MSO_SHAPE.OVAL)
     text(slide, MARGIN + 0.52, BODY_TOP + 0.06, chip_w - 0.7, 0.5,
          [{'runs': [('LIVE   ', {'size': 10, 'bold': True, 'color': GREEN,
                                  'spacing': 1.4}),
-                    ('https://' + LIVE_URL,
-                     {'size': 12.5, 'bold': True, 'color': WHITE})]}],
+                    (LIVE_HREF, {'size': 11.5, 'bold': True, 'color': WHITE,
+                                 'url': LIVE_HREF})]}],
          anchor=MSO_ANCHOR.MIDDLE)
 
+    login_x = MARGIN + chip_w + 0.22
+    login_w = CONTENT_W - chip_w - 0.22
+    card(slide, login_x, BODY_TOP, login_w, 0.62, fill=WHITE)
+    text(slide, login_x + 0.18, BODY_TOP + 0.08, login_w - 0.36, 0.48, [
+        {'text': 'DEFENCE LOGIN  (teacher)', 'size': 8.5, 'bold': True,
+         'color': MUTED, 'spacing': 0.8, 'space_after': 2},
+        {'runs': [
+            (f'{DEMO_TEACHER}  /  {DEMO_PASSWORD}',
+             {'size': 12, 'bold': True, 'color': INK}),
+        ]},
+    ])
+
     tiles = [('25', 'students', ACCENT), ('8', 'courses', VIOLET),
-             ('87', 'enrollments', TEAL), ('53', 'grades', AMBER),
+             ('87', 'enrollments', TEAL), ('87', 'grades', AMBER),
              ('€0', 'monthly cost', GREEN)]
     tw = (CONTENT_W - 4 * 0.2) / 5
     for i, (value, label, color) in enumerate(tiles):
-        stat_tile(slide, MARGIN + i * (tw + 0.2), BODY_TOP + 0.82, tw, 0.92,
-                  value, label, color=color, value_size=25, label_size=11)
+        stat_tile(slide, MARGIN + i * (tw + 0.2), BODY_TOP + 0.78, tw, 0.86,
+                  value, label, color=color, value_size=24, label_size=10.5)
 
     pw = (CONTENT_W - 0.28) / 2
-    py = BODY_TOP + 1.96
-    panel(slide, MARGIN, py, pw, 2.56, 'Deployment pipeline', [
-        ('Push to main —', 'GitHub Actions runs the suite and the deploy gates'),
-        ('Render build.sh —', 'installs dependencies, compiles the Polish catalogue'),
-        ('collectstatic —', 'WhiteNoise fingerprints and compresses every asset'),
-        ('migrate + seed_demo —', 'schema applied, demo data only if empty'),
-        ('Gunicorn —', 'serves the WSGI application behind Render TLS'),
-    ], accent=ACCENT, size=11.8, gap=8)
-    panel(slide, MARGIN + pw + 0.28, py, pw, 2.56, 'Production hardening', [
-        ('HTTPS everywhere —', 'redirect plus HSTS for one year, preload enabled'),
-        ('Cookies —', 'Secure and HttpOnly for session and CSRF'),
-        ('Headers —', 'nosniff, same-origin referrer, X-Frame-Options DENY'),
-        ('Secrets —', 'SECRET_KEY, database URL and SMTP come from the environment'),
-        ('DEBUG off —', 'settings validated by manage.py check --deploy'),
-    ], accent=GREEN, size=11.8, gap=8)
-    return slide
-
-
-def slide_results(prs):
-    slide = head(prs, 15, 'Results & Future Work', kicker='What was achieved')
-    pw = (CONTENT_W - 0.28) / 2
-    panel(slide, MARGIN, BODY_TOP, pw, 3.9, 'Delivered', [
-        ('Live deployment —', 'HTTPS, managed PostgreSQL, automated builds'),
-        ('Six-model schema —', 'constraints and referential integrity in the database'),
-        ('Role isolation —', 'administrators and teachers see strictly their own data'),
-        ('Audited gradebook —', 'grade authorship recorded on every entry'),
-        ('Attendance register —', 'four statuses, one record per day per enrollment'),
-        ('Analytics —', 'KPI tiles, three charts, CSV export, JSON endpoint'),
-        ('Bilingual interface —', '269 strings, locale-aware dates and numbers'),
-        ('50 automated tests —', 'green in continuous integration'),
-        ('Offline-ready —', 'no CDN, every asset vendored in the repository'),
-    ], accent=GREEN, size=11.9, gap=8.6)
-    panel(slide, MARGIN + pw + 0.28, BODY_TOP, pw, 3.9, 'Future development', [
+    py = BODY_TOP + 1.82
+    panel(slide, MARGIN, py, pw, 2.72, 'Delivered', [
+        ('Live on Render + Neon —', 'HTTPS, HSTS, managed PostgreSQL'),
+        ('Six-model schema —', 'constraints and an audit trail in the database'),
+        ('Role isolation —', 'admins and teachers see strictly their own data'),
+        ('Bilingual interface —', '308 strings, locale-aware dates and numbers'),
+        ('77 tests, four CI gates —', 'green on every push, then build.sh deploys'),
+    ], accent=GREEN, size=11.6, gap=8)
+    panel(slide, MARGIN + pw + 0.28, py, pw, 2.72, 'Future work', [
         ('Student portal —', 'a third role with read-only access to own results'),
         ('Semester transcripts —', 'generated PDF reports per student'),
-        ('Email notifications —', 'automatic alerts on new grades and absences'),
-        ('REST API —', 'a documented, token-authenticated public interface'),
-        ('Timetabling —', 'room and slot scheduling with conflict detection'),
-        ('LMS integration —', 'import and export against Moodle and USOS'),
-        ('Audit log —', 'a full change history beyond grade authorship'),
+        ('Email notifications —', 'alerts on new grades and absences'),
+        ('Documented REST API —', 'token-authenticated public interface'),
         ('Two-factor login —', 'TOTP for administrator accounts'),
-        ('Progressive web app —', 'installable offline attendance taking'),
-    ], accent=ACCENT, size=11.9, gap=8.6)
-    note_bar(slide, FOOTER_Y - 0.9, [
-        ('Student Management System: ', {'size': 12.5, 'bold': True, 'color': WHITE}),
-        ('an engineering project that left the laptop — deployed, tested, '
-         'localised, and ready to run in a real department.',
-         {'size': 12.5, 'color': RGBColor(0xD6, 0xDF, 0xEC)}),
-    ])
+    ], accent=ACCENT, size=11.6, gap=8)
     return slide
 
 
@@ -983,9 +821,10 @@ def slide_thanks(prs):
          'space_after': 4},
         {'text': f'Computer Science · Index: {INDEX_NO}', 'size': 11.5,
          'color': MUTED, 'space_after': 4},
-        {'text': 'https://' + LIVE_URL, 'size': 11.5, 'bold': True,
-         'color': ACCENT},
+        {'text': LIVE_HREF, 'size': 11.5, 'bold': True,
+         'color': ACCENT, 'url': LIVE_HREF},
     ])
+    add_logo(slide, LOGO_DARK_V, 9.35, 4.55, 3.2)
     footer(slide, dark=True)
     return slide
 
@@ -1003,13 +842,8 @@ def main():
     slide_architecture(prs)
     slide_database(prs)
     slide_features(prs)
-    slide_access(prs)
-    slide_i18n(prs)
-    slide_quality(prs)
-    slide_ui_one(prs)
-    slide_ui_two(prs)
+    slide_ui(prs)
     slide_deployment(prs)
-    slide_results(prs)
     slide_thanks(prs)
 
     prs.save(OUTPUT)

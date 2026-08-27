@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 
 from .models import Student, Course, Enrollment, Grade, User, Attendance
@@ -184,6 +186,100 @@ class AttendanceForm(forms.ModelForm):
         if user and user.is_teacher():
             qs = qs.filter(course__teacher=user)
         self.fields['enrollment'].queryset = qs
+
+
+class TeacherForm(forms.ModelForm):
+    """Create or edit a teacher account. Password is required only on create."""
+
+    password1 = forms.CharField(
+        label=_('Password'),
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'new-password',
+        }),
+    )
+    password2 = forms.CharField(
+        label=_('Confirm password'),
+        required=False,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'new-password',
+        }),
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'username', 'first_name', 'last_name', 'email',
+            'department', 'is_active',
+        ]
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'autocomplete': 'off',
+            }),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'department': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': _('e.g., Computer Science'),
+            }),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        creating = self.instance.pk is None
+        self.fields['password1'].required = creating
+        self.fields['password2'].required = creating
+        if not creating:
+            self.fields['username'].disabled = True
+            self.fields['password1'].help_text = _(
+                'Leave blank to keep the current password.'
+            )
+
+    def clean_email(self):
+        email = (self.cleaned_data.get('email') or '').strip()
+        if not email:
+            return email
+        qs = User.objects.filter(email__iexact=email)
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise forms.ValidationError(
+                _('A staff account with this email already exists.')
+            )
+        return email
+
+    def clean(self):
+        cleaned = super().clean()
+        password1 = cleaned.get('password1') or ''
+        password2 = cleaned.get('password2') or ''
+        creating = self.instance.pk is None
+
+        if password1 or password2:
+            if password1 != password2:
+                self.add_error('password2', _('The two passwords do not match.'))
+            elif password1:
+                try:
+                    validate_password(password1, user=self.instance)
+                except DjangoValidationError as exc:
+                    self.add_error('password1', exc)
+        elif creating:
+            self.add_error('password1', _('This field is required.'))
+        return cleaned
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = 'teacher'
+        password = self.cleaned_data.get('password1')
+        if password:
+            user.set_password(password)
+        if commit:
+            user.save()
+        return user
 
 
 class ProfileForm(forms.ModelForm):

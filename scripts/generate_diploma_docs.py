@@ -10,8 +10,11 @@ from docx.oxml.ns import qn
 from docx.shared import Pt, Cm
 
 
+ROOT = Path(__file__).resolve().parent.parent
+SHOTS = ROOT / 'docs' / 'screenshots'
+
 OUT_PATHS = [
-    Path('/Users/maksym/DiplomCode/docs/SMS_Diploma_Documentation_Shpak_Maksym.docx'),
+    ROOT / 'docs' / 'SMS_Diploma_Documentation_Shpak_Maksym.docx',
     Path('/Users/maksym/Diploma/Documentation for the diploma project - Student Management System - Shpak Maksym.docx'),
 ]
 
@@ -37,6 +40,21 @@ def add_para(doc: Document, text: str, bold: bool = False) -> None:
     run.bold = bold
     run.font.name = 'Times New Roman'
     run.font.size = Pt(12)
+
+
+def add_figure(doc: Document, filename: str, caption: str) -> None:
+    """Embed a PNG from docs/screenshots, or fall back to the caption alone."""
+    path = SHOTS / filename
+    if path.exists():
+        picture = doc.add_paragraph()
+        picture.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        picture.add_run().add_picture(str(path), width=Cm(15.5))
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap.paragraph_format.space_after = Pt(14)
+    run = cap.add_run(caption)
+    run.italic = True
+    _set_run_font(run, size=Pt(10))
 
 
 def _set_run_font(run, *, bold: bool = False, size: Pt = Pt(12)) -> None:
@@ -122,7 +140,7 @@ def build() -> Document:
         '',
         'Documentation for the diploma project',
         'prepared under the direction of',
-        '[Supervisor / Promotor]',
+        'Marcin Kacprowicz',
         '',
         '',
         'Warsaw, 2026 r.',
@@ -142,16 +160,15 @@ def build() -> Document:
 
     tech_list = (
         'Backend:\n'
-        'Python 3.10+, Django 6, Django Auth (session-based), Gunicorn, WhiteNoise, '
-        'dj-database-url, PostgreSQL (production) / SQLite (development), SMTP email '
-        'for password reset\n'
+        'Python 3.12, Django 6, Django Auth (session-based), Gunicorn, WhiteNoise, '
+        'dj-database-url, PostgreSQL (production) / SQLite (development)\n'
         'Frontend:\n'
         'Django Templates, HTML5, CSS custom properties, vanilla JavaScript, '
-        'dashboard JSON endpoint (/api/dashboard/)\n'
+        'Chart.js, Turbo, Bootstrap Icons, dashboard JSON endpoint (/api/dashboard/)\n'
         'Infrastructure:\n'
-        'Render-ready build (build.sh: migrate + collectstatic), environment-based '
-        'configuration (.env), HTTPS-oriented security settings when DEBUG=False, '
-        'optional Mailtrap / Gmail SMTP for transactional mail'
+        'Render + Neon (build.sh: migrate + collectstatic + seed_demo), '
+        'English/Polish i18n, HTTPS-oriented security settings when DEBUG=False, '
+        'live at https://diploma-project-sms-management-system.onrender.com'
     )
 
     add_basic_info_table(doc, [
@@ -167,8 +184,10 @@ def build() -> Document:
             'often kept in spreadsheets or fragmented paper files. This leads to duplicated '
             'data, weak access control, and slow reporting for teachers and administrators. '
             'SMS centralises these processes in a single web application with role-based '
-            'access (Administrator, Teacher, Student), structured CRUD workflows, dashboard '
-            'analytics, CSV export, and password-reset via email. The system is implemented '
+            'access (Administrator, Teacher), structured CRUD workflows, dashboard '
+            'analytics, CSV export. Staff accounts are created by an administrator '
+            '(there is no public registration). Students are records in the system, '
+            'not user accounts. The system is implemented '
             'as a complete engineering deliverable — not only a conceptual design.',
         ),
         (
@@ -177,11 +196,11 @@ def build() -> Document:
             'and manages academic data related to students, courses, enrolments, grades and '
             'attendance. Administrators maintain the institutional catalogue of students and '
             'courses; teachers manage grades and attendance for their own courses; students '
-            'view personal academic information. The presentation layer uses Django templates '
+            'are academic records, not login accounts. The presentation layer uses Django templates '
             'with custom CSS and JavaScript; the application layer implements business rules '
             'and RBAC; the data layer uses a relational schema (SQLite locally, PostgreSQL in '
-            'production via DATABASE_URL). The application is production-ready for deployment '
-            'on platforms such as Render (Gunicorn + WhiteNoise + optional managed Postgres).',
+            'production via DATABASE_URL). The application is live at '
+            'https://diploma-project-sms-management-system.onrender.com.',
         ),
         (
             'Competitor analysis',
@@ -206,14 +225,17 @@ def build() -> Document:
             'The stack follows a classic three-tier architecture: Browser (HTML/CSS/JS) → '
             'Django views & forms (business logic, authentication, RBAC) → Relational database. '
             'Django was selected because it provides batteries-included authentication, CSRF '
-            'protection, ORM migrations, and an admin site — essential for an academic records '
-            'system delivered within an engineering diploma timeframe. Session authentication '
+            'protection, ORM migrations, and a dedicated Teachers screen for issuing lecturer '
+            'accounts — essential for an academic records system delivered within an engineering '
+            'diploma timeframe. Session authentication '
             'fits server-rendered pages better than JWT (no separate SPA). PostgreSQL is preferred '
             'in production for ACID transactions and concurrent multi-user access; SQLite keeps '
             'local development simple. WhiteNoise serves compressed static assets behind Gunicorn, '
-            'which matches typical PaaS deployments without a separate Nginx container. SMTP-based '
-            'password reset uses Django’s built-in auth views, avoiding custom token plumbing while '
-            'remaining compatible with Mailtrap sandbox or real providers.',
+            'which matches typical PaaS deployments without a separate Nginx container. '
+            'There is no public registration: an administrator creates teacher accounts '
+            'and issues credentials. The Teachers screen inside SMS is used to set a '
+            'forgotten password, which matches a faculty-office workflow better than '
+            'self-service email recovery.',
         ),
     ])
 
@@ -224,10 +246,11 @@ def build() -> Document:
     add_para(
         doc,
         'The custom User model extends AbstractUser with a role field '
-        '(admin / teacher / student). View decorators enforce permissions: administrators '
-        'manage all records; teachers see only students and grades related to their courses; '
-        'students are blocked from institutional lists and redirected to their personal '
-        'dashboard. This prevents privilege escalation while keeping URLs simple.',
+        '(admin / teacher). View decorators enforce permissions: administrators '
+        'manage all records; teachers see only students, grades and attendance related '
+        'to their own courses. A guessed URL outside that scope returns 404. '
+        'Students are not users — they have no login. This prevents privilege '
+        'escalation while keeping URLs simple.',
     )
     add_para(doc, 'Code snippet (decorator, simplified):', bold=True)
     add_para(
@@ -246,10 +269,12 @@ def build() -> Document:
     add_para(
         doc,
         'The schema comprises six core models: User, Student, Course, Enrollment, Grade, '
-        'Attendance. Enrolment links students and courses (many-to-many with status). Grade '
-        'is one-to-one with Enrolment (scale 2.0–5.0 with letter mapping). Attendance is unique '
-        'per (enrolment, date) to avoid duplicate daily marks. Foreign keys and unique '
-        'constraints protect referential integrity at the database level.',
+        'Attendance. Enrolment links students and courses (many-to-many with status). A '
+        'Grade is one weighted component of an enrolment (coursework, midterm, final exam '
+        'or retake); Enrollment.final_grade is their weighted mean on the 2.0–5.0 scale '
+        'with letter mapping, and assigned_by records which teacher last saved the mark. '
+        'Attendance is unique per (enrolment, date). Foreign keys and unique constraints '
+        'protect referential integrity at the database level.',
     )
 
     add_heading(doc, '2.3 Dashboard Analytics and REST JSON Endpoint', 2)
@@ -267,65 +292,81 @@ def build() -> Document:
         "'course_labels': [...], 'course_data': [...]}",
     )
 
-    add_heading(doc, '2.4 Password Reset via Email', 2)
+    add_heading(doc, '2.4 Staff Account Provisioning', 2)
     add_para(
         doc,
-        'Password recovery uses Django’s auth URLs under /accounts/ with custom email '
-        'templates. In development, EMAIL_BACKEND=console prints messages to the terminal. '
-        'In production, SMTP settings (Mailtrap, Gmail, SendGrid, etc.) send a signed reset '
-        'link. Unknown emails still redirect (no user enumeration), matching Django defaults.',
+        'The application has no public registration. An administrator creates teacher '
+        'accounts (username, role, initial password) on the Teachers screen inside SMS '
+        'and issues those credentials out of band. Lecturers sign in with the issued '
+        'username and password; students are data records, not users. If a teacher '
+        'forgets a password, the administrator sets a new one on that same screen. '
+        'This matches the real workflow of a faculty office and avoids an email-based '
+        'recovery flow that would be unused without self-service sign-up.',
     )
 
     add_heading(doc, '2.5 Production Configuration and Security Hardening', 2)
     add_para(
         doc,
         'Configuration is driven by environment variables: SECRET_KEY, DEBUG, ALLOWED_HOSTS, '
-        'DATABASE_URL, EMAIL_*. When DEBUG=False the application enforces HTTPS redirects, '
-        'secure cookies, HSTS, and refuses insecure default SECRET_KEY values. WhiteNoise '
+        'DATABASE_URL, DJANGO_ADMIN_PASSWORD. When DEBUG=False the application enforces HTTPS '
+        'redirects, secure cookies, HSTS, and refuses insecure default SECRET_KEY values. '
+        'DJANGO_ADMIN_PASSWORD replaces the published demo password on the admin account at '
+        'deploy time, so that password is not left on the public internet. WhiteNoise '
         'serves hashed/compressed static files. This allows the same codebase to run locally '
-        'on SQLite and on a hosted PostgreSQL instance without code changes.',
+        'on SQLite and on a hosted PostgreSQL instance without code changes. '
+        'The public service is https://diploma-project-sms-management-system.onrender.com. '
+        'A live demonstration uses the teacher account prof.martinez / demo1234; a second '
+        'teacher, prof.chen / demo1234, shows that each lecturer sees only their own courses.',
+    )
+
+    add_heading(doc, '2.6 Internationalisation (English / Polish)', 2)
+    add_para(
+        doc,
+        'The interface is bilingual. Templates, model choices, flash messages and CSV '
+        'headers go through Django i18n. The language switch keeps the current page and '
+        'stores the choice in the session. The compiled Polish catalogue (django.mo) is '
+        'committed so the deploy image does not depend on gettext. LocalizationTests '
+        'guard that English and Polish pages actually differ.',
     )
 
     # 3. Screenshots
     add_heading(doc, '3. Screenshots, visualizations, etc.', 1)
     add_para(
         doc,
-        'This section describes representative screens of the Student Management System. '
-        'Replace the figure placeholders with actual captures from the running application '
-        'before the final submission / defence.',
+        'The figures below are captures of the running Student Management System '
+        '(local interface, English locale, light theme unless noted).',
     )
-    add_para(
-        doc,
-        'Fig. 1 — Login page: username/password form with link to password reset.',
+    add_figure(
+        doc, 'login.png',
+        'Fig. 1 — Login page. Accounts are issued by an administrator; there is no public registration.',
     )
-    add_para(
-        doc,
-        'Fig. 2 — Administrator / Teacher dashboard: KPI cards, grade distribution chart, '
-        'recent enrolments.',
+    add_figure(
+        doc, 'dashboard-light.png',
+        'Fig. 2 — Administrator dashboard: KPI tiles and Chart.js analytics.',
     )
-    add_para(
-        doc,
-        'Fig. 3 — Student list with search and filters (program, active status).',
+    add_figure(
+        doc, 'students-list.png',
+        'Fig. 3 — Student register with search, programme and status filters.',
     )
-    add_para(
-        doc,
-        'Fig. 4 — Course detail: enrolled students, capacity, teacher assignment.',
+    add_figure(
+        doc, 'courses-list.png',
+        'Fig. 4 — Course catalogue: code, semester, teacher assignment and capacity.',
     )
-    add_para(
-        doc,
-        'Fig. 5 — Grade entry form with validation (2.0–5.0) and comments.',
+    add_figure(
+        doc, 'grades-list.png',
+        'Fig. 5 — Grade register: weighted components, letter bands and the teacher who saved the mark.',
     )
-    add_para(
-        doc,
+    add_figure(
+        doc, 'attendance-list.png',
         'Fig. 6 — Attendance register with present / absent / late statuses.',
     )
-    add_para(
-        doc,
-        'Fig. 7 — Password reset email (console or SMTP) containing the secure confirmation link.',
+    add_figure(
+        doc, 'teachers-list.png',
+        'Fig. 7 — Teachers screen: the administrator issues lecturer accounts and can set a new password.',
     )
-    add_para(
-        doc,
-        'Fig. 8 — JSON response from GET /api/dashboard/ (browser or HTTP client).',
+    add_figure(
+        doc, 'student-detail.png',
+        'Fig. 8 — Student profile: enrolments, grades and attendance in one view.',
     )
 
     # 4. Conclusions
@@ -335,17 +376,19 @@ def build() -> Document:
         'The primary goal — to design and implement a functional web-based Student '
         'Management System for educational administration — was achieved. The application '
         'covers authentication with RBAC, student and course administration, enrolments, '
-        'grading, attendance, analytics dashboard, CSV export, password reset mail, and '
-        'production-oriented configuration.',
+        'weighted grade components, bulk attendance marking, a bilingual EN/PL interface, '
+        'analytics dashboard, CSV export, and production-oriented configuration.',
     )
     add_para(doc, 'All core objectives were met:', bold=True)
     for item in [
-        'Role-based access for Administrator, Teacher and Student',
+        'Role-based access for Administrator and Teacher (students are records, not users)',
         'Relational schema with integrity constraints for academic entities',
         'CRUD workflows with form validation and flash messages',
+        'Weighted grade components, authorship audit, bulk class attendance',
         'Dashboard KPIs and role-scoped REST endpoint /api/dashboard/',
-        'Email-based password reset (console locally, SMTP in production)',
-        'Automated test suite covering models, auth, API, CRUD and mail',
+        'Bilingual interface (English / Polish, 308 translatable strings)',
+        'Staff accounts provisioned by an administrator (no public registration)',
+        'Automated test suite covering models, auth, API and CRUD',
         'Deployment-ready settings (Gunicorn, WhiteNoise, Postgres via DATABASE_URL)',
     ]:
         doc.add_paragraph(item, style='List Bullet')
@@ -359,12 +402,12 @@ def build() -> Document:
 
     add_para(doc, 'Future development priorities:', bold=True)
     for item in [
-        'Multi-language UI (EN/PL) using Django i18n',
+        'Student portal — a third role with read-only access to own results',
         'PDF report generation for transcripts and attendance sheets',
-        'Calendar view for classes and attendance sessions',
-        'REST API tokens for mobile clients',
-        'LDAP / Google SSO for institutional login',
-        'Soft-delete audit log for grade changes',
+        'Email notifications on new grades and absences',
+        'Documented REST API with token authentication for mobile clients',
+        'Two-factor login (TOTP) for administrator accounts',
+        'Timetabling with room and slot conflict detection',
     ]:
         doc.add_paragraph(item, style='List Bullet')
 
@@ -384,10 +427,8 @@ def build() -> Document:
         '[9] MDN Web Docs — HTML / CSS / HTTP — https://developer.mozilla.org',
         '[10] OWASP Foundation — OWASP Top Ten — https://owasp.org/www-project-top-ten/',
         '[11] Jazzband — dj-database-url — https://github.com/jazzband/dj-database-url',
-        '[12] Django Software Foundation — Sending email — https://docs.djangoproject.com/en/stable/topics/email/',
-        '[13] Mailtrap — Email Testing for Developers — https://mailtrap.io',
-        '[14] Bootstrap Icons — https://icons.getbootstrap.com',
-        '[15] Uniwersytet VIZJA / AEH — study programme materials for Computer Science (engineering profile)',
+        '[12] Bootstrap Icons — https://icons.getbootstrap.com',
+        '[13] Uniwersytet VIZJA / AEH — study programme materials for Computer Science (engineering profile)',
     ]
     for r in refs:
         add_para(doc, r)

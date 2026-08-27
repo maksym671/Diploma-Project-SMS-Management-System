@@ -107,6 +107,10 @@
                 {% if user.is_admin %}
                 <div class="sidebar-section">
                     <div class="sidebar-section-title">{% trans "System" %}</div>
+                    <a href="{% url 'teacher_list' %}" class="sidebar-link {% if 'teacher' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>{% trans "Teachers" %}</span>
+                    </a>
                     <a href="{% url 'admin:index' %}" class="sidebar-link" target="_blank">
                         <i class="bi bi-gear-fill"></i>
                         <span>{% trans "Admin Panel" %}</span>

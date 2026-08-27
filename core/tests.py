@@ -1,13 +1,11 @@
 import json
 import os
 import re
-import urllib.error
 from datetime import date
 from decimal import Decimal
 from io import StringIO
 from unittest import mock
 
-from django.core import mail
 from django.core.management import call_command
 from django.conf import settings
 from django.test import TestCase, Client, override_settings
@@ -170,6 +168,19 @@ class AuthAndAccessTests(TestCase):
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
 
+    def test_login_does_not_offer_self_service_password_reset(self):
+        page = self.client.get(reverse('login'))
+        self.assertNotContains(page, 'Forgot your password')
+        self.assertNotContains(page, '/accounts/password_reset/')
+        self.assertContains(
+            page,
+            'Accounts and passwords are issued by an administrator',
+        )
+
+    def test_password_reset_routes_are_absent(self):
+        self.assertEqual(self.client.get('/accounts/password_reset/').status_code, 404)
+        self.assertEqual(self.client.get('/accounts/password_reset/done/').status_code, 404)
+
 
 class DashboardApiTests(TestCase):
     def setUp(self):
@@ -222,95 +233,6 @@ class DashboardApiTests(TestCase):
         self.assertEqual(data['total_courses'], 1)
 
 
-
-@override_settings(
-    EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
-    DEFAULT_FROM_EMAIL='sms@test.local',
-)
-class PasswordResetEmailTests(TestCase):
-    def setUp(self):
-        self.client = Client()
-        User.objects.create_user(
-            username='resetme',
-            password='pass12345',
-            email='resetme@example.com',
-            role='teacher',
-        )
-
-    def test_password_reset_sends_email(self):
-        response = self.client.post(
-            reverse('password_reset'),
-            {'email': 'resetme@example.com'},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertIn('password', mail.outbox[0].subject.lower())
-        self.assertIn('resetme@example.com', mail.outbox[0].to)
-
-    def test_password_reset_unknown_email_still_redirects(self):
-        response = self.client.post(
-            reverse('password_reset'),
-            {'email': 'nobody@example.com'},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(mail.outbox), 0)
-
-    def _reset_link(self):
-        """Request a reset and pull the confirmation URL out of the email."""
-        self.client.post(reverse('password_reset'), {'email': 'resetme@example.com'})
-        match = re.search(r'https?://[^/]+(/accounts/reset/\S+)', mail.outbox[0].body)
-        self.assertIsNotNone(match, 'the email must carry a reset link')
-        return match.group(1)
-
-    def test_reset_link_sets_a_new_password_and_revokes_the_old_one(self):
-        # Django redirects the raw token to a /set-password/ URL that holds the
-        # token in the session, so follow it before posting the new password.
-        page = self.client.get(self._reset_link(), follow=True)
-        self.assertTrue(page.context['validlink'])
-
-        response = self.client.post(page.request['PATH_INFO'], {
-            'new_password1': 'BrandNewPass!9876',
-            'new_password2': 'BrandNewPass!9876',
-        })
-        self.assertRedirects(response, reverse('password_reset_complete'))
-
-        user = User.objects.get(username='resetme')
-        self.assertTrue(user.check_password('BrandNewPass!9876'))
-        self.assertFalse(user.check_password('pass12345'))
-
-        self.assertTrue(self.client.login(
-            username='resetme', password='BrandNewPass!9876'
-        ))
-
-    def test_reset_link_cannot_be_used_twice(self):
-        link = self._reset_link()
-        page = self.client.get(link, follow=True)
-        self.client.post(page.request['PATH_INFO'], {
-            'new_password1': 'BrandNewPass!9876',
-            'new_password2': 'BrandNewPass!9876',
-        })
-
-        # The token is consumed once the password changes.
-        second = self.client.get(link, follow=True)
-        self.assertFalse(second.context['validlink'])
-        self.assertContains(second, 'Invalid Link')
-
-    def test_reset_email_follows_the_interface_language(self):
-        self.client.post(reverse('set_language'), {'language': 'pl', 'next': '/'})
-        self.client.post(reverse('password_reset'), {'email': 'resetme@example.com'})
-
-        self.assertIn('hasła', mail.outbox[0].subject)
-        self.assertIn('Otwórz poniższy link', mail.outbox[0].body)
-
-    def test_reset_pages_render_for_a_signed_in_visitor(self):
-        """These pages sit outside the app shell, so they must not come back blank."""
-        self.client.login(username='resetme', password='pass12345')
-
-        for url in [reverse('password_reset'), reverse('password_reset_done')]:
-            with self.subTest(url=url):
-                response = self.client.get(url)
-                self.assertEqual(response.status_code, 200)
-                self.assertContains(response, 'login-card')
 
 
 class WeightedGradeTests(TestCase):
@@ -554,191 +476,12 @@ class BulkAttendanceTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
-class MailConfigurationTests(TestCase):
-    """The deploy check must catch a mail setup that silently drops resets."""
-
-    def _run_checks(self, **overrides):
-        from core.checks import check_email_configuration
-
-        with override_settings(**overrides):
-            return {w.id for w in check_email_configuration(None)}
-
-    def test_debug_deployment_is_not_nagged(self):
-        self.assertEqual(self._run_checks(DEBUG=True), set())
-
-    def test_console_backend_in_production_is_flagged(self):
-        found = self._run_checks(
-            DEBUG=False,
-            EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend',
-        )
-        self.assertIn('mail.W001', found)
-
-    def test_smtp_without_credentials_is_flagged(self):
-        found = self._run_checks(
-            DEBUG=False,
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
-            EMAIL_HOST_USER='',
-            EMAIL_HOST_PASSWORD='',
-            DEFAULT_FROM_EMAIL='noreply@sms.local',
-        )
-        self.assertEqual(found, {'mail.W002', 'mail.W003', 'mail.W004'})
-
-    def test_fully_configured_smtp_is_clean(self):
-        found = self._run_checks(
-            DEBUG=False,
-            EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend',
-            EMAIL_HOST_USER='sms@gmail.com',
-            EMAIL_HOST_PASSWORD='app-password',
-            DEFAULT_FROM_EMAIL='SMS <sms@gmail.com>',
-        )
-        self.assertEqual(found, set())
-
-
-@override_settings(
-    EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend',
-)
-class PasswordResetResilienceTests(TestCase):
-    """A dead mail server must not turn the reset page into a 500."""
-
-    def setUp(self):
-        self.client = Client()
-        User.objects.create_user(
-            username='resilient', password='pass12345',
-            email='resilient@example.com', role='teacher',
-        )
-
-    def test_smtp_failure_still_shows_the_confirmation_page(self):
-        import smtplib
-
-        with mock.patch(
-            'django.contrib.auth.forms.PasswordResetForm.save',
-            side_effect=smtplib.SMTPAuthenticationError(535, b'auth failed'),
-        ):
-            with self.assertLogs('core.views', level='ERROR') as captured:
-                response = self.client.post(
-                    reverse('password_reset'),
-                    {'email': 'resilient@example.com'},
-                )
-
-        self.assertRedirects(response, reverse('password_reset_done'))
-        self.assertIn('could not be delivered', '\n'.join(captured.output))
-
-    def test_working_mail_server_is_unaffected(self):
-        response = self.client.post(
-            reverse('password_reset'),
-            {'email': 'resilient@example.com'},
-        )
-        self.assertRedirects(response, reverse('password_reset_done'))
-        self.assertEqual(len(mail.outbox), 1)
-
-
-@override_settings(
-    EMAIL_BACKEND='core.mail.BrevoAPIBackend',
-    BREVO_API_KEY='test-key',
-    DEFAULT_FROM_EMAIL='Student Management System <sms@example.com>',
-)
-class BrevoBackendTests(TestCase):
-    """Delivery over HTTPS, because the host firewalls outbound SMTP."""
-
-    def setUp(self):
-        self.client = Client()
-        User.objects.create_user(
-            username='brevo-user', password='pass12345',
-            email='brevo@example.com', role='teacher',
-        )
-
-    def _capture(self):
-        """Patch urlopen and hand back the request it was given."""
-        captured = {}
-
-        class _Response:
-            def read(self):
-                return b'{"messageId":"1"}'
-
-            def __enter__(self):
-                return self
-
-            def __exit__(self, *exc):
-                return False
-
-        def fake_urlopen(request, timeout=None):
-            captured['request'] = request
-            captured['body'] = json.loads(request.data.decode('utf-8'))
-            return _Response()
-
-        return captured, mock.patch('core.mail.urllib.request.urlopen', fake_urlopen)
-
-    def test_reset_mail_goes_out_as_an_https_api_call(self):
-        captured, patcher = self._capture()
-        with patcher:
-            response = self.client.post(
-                reverse('password_reset'), {'email': 'brevo@example.com'}
-            )
-
-        self.assertRedirects(response, reverse('password_reset_done'))
-        request = captured['request']
-        self.assertEqual(request.full_url, 'https://api.brevo.com/v3/smtp/email')
-        self.assertEqual(request.get_header('Api-key'), 'test-key')
-
-    def test_the_payload_carries_sender_recipient_and_the_reset_link(self):
-        captured, patcher = self._capture()
-        with patcher:
-            self.client.post(reverse('password_reset'), {'email': 'brevo@example.com'})
-
-        body = captured['body']
-        self.assertEqual(body['sender'],
-                         {'name': 'Student Management System', 'email': 'sms@example.com'})
-        self.assertEqual(body['to'], [{'email': 'brevo@example.com'}])
-        self.assertIn('/accounts/reset/', body['textContent'])
-
-    def test_a_provider_outage_does_not_become_a_500(self):
-        """An unreachable provider must not surface as a server error.
-
-        Django 6 already traps a delivery failure inside
-        `PasswordResetForm.save()` and logs it, so the visitor still gets the
-        ordinary confirmation page. This pins that behaviour down for this
-        backend too, since the failure arrives as a URLError rather than an
-        SMTP one.
-        """
-        def boom(request, timeout=None):
-            raise urllib.error.URLError('brevo unreachable')
-
-        with mock.patch('core.mail.urllib.request.urlopen', boom):
-            with self.assertLogs('django.contrib.auth', level='ERROR') as captured:
-                response = self.client.post(
-                    reverse('password_reset'), {'email': 'brevo@example.com'}
-                )
-
-        self.assertRedirects(response, reverse('password_reset_done'))
-        self.assertIn('Failed to send password reset email',
-                      '\n'.join(captured.output))
-
-    def test_a_missing_api_key_is_reported_not_swallowed(self):
-        from core.mail import BrevoAPIBackend
-        from django.core.mail import EmailMessage
-
-        backend = BrevoAPIBackend(api_key='')
-        message = EmailMessage('subject', 'body', 'a@example.com', ['b@example.com'])
-        with self.assertRaises(urllib.error.URLError):
-            backend.send_messages([message])
-
-    def test_deploy_check_flags_a_missing_key(self):
-        from core.checks import check_email_configuration
-
-        with override_settings(DEBUG=False, BREVO_API_KEY=''):
-            found = {w.id for w in check_email_configuration(None)}
-        self.assertIn('mail.W005', found)
-
 
 class DemoAccountTests(TestCase):
-    def test_every_seeded_account_can_receive_a_reset_email(self):
-        """An account with no e-mail address can never recover its password."""
+    def test_seed_demo_creates_staff_who_can_sign_in(self):
         call_command('seed_demo', stdout=StringIO())
-
-        without_email = list(
-            User.objects.filter(email='').values_list('username', flat=True)
-        )
-        self.assertEqual(without_email, [])
+        self.assertTrue(User.objects.filter(username='admin', role='admin').exists())
+        self.assertTrue(self.client.login(username='admin', password='demo1234'))
 
 
 class TeacherDataIsolationTests(TestCase):
@@ -1119,6 +862,10 @@ class SmokeRenderTests(TestCase):
             reverse('grade_update', args=[self.grade.pk]),
             reverse('attendance_create'),
             reverse('attendance_update', args=[self.attendance.pk]),
+            reverse('teacher_list'),
+            reverse('teacher_create'),
+            reverse('teacher_update', args=[self.teacher.pk]),
+            reverse('teacher_delete', args=[self.teacher.pk]),
         ]
         for url in urls:
             with self.subTest(url=url):
@@ -1132,6 +879,8 @@ class SmokeRenderTests(TestCase):
             reverse('enrollment_create'),
             reverse('enrollment_update', args=[self.enrollment.pk]),
             reverse('enrollment_delete', args=[self.enrollment.pk]),
+            reverse('teacher_list'),
+            reverse('teacher_create'),
         ]:
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 302)
@@ -1193,6 +942,51 @@ class CrudFlowTests(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Course.objects.filter(course_code='DB101').exists())
+
+    def test_create_teacher_and_they_can_sign_in(self):
+        response = self.client.post(reverse('teacher_create'), {
+            'username': 'newlecturer',
+            'first_name': 'Ewa',
+            'last_name': 'Nowak',
+            'email': 'ewa.nowak@sms.edu',
+            'department': 'Computer Science',
+            'password1': 'BrandNewPass!9876',
+            'password2': 'BrandNewPass!9876',
+            'is_active': True,
+        })
+        self.assertEqual(response.status_code, 302)
+        teacher = User.objects.get(username='newlecturer')
+        self.assertEqual(teacher.role, 'teacher')
+        self.assertTrue(teacher.check_password('BrandNewPass!9876'))
+
+        self.client.logout()
+        self.assertTrue(self.client.login(
+            username='newlecturer', password='BrandNewPass!9876'
+        ))
+
+    def test_admin_can_set_a_new_teacher_password(self):
+        response = self.client.post(
+            reverse('teacher_update', args=[self.teacher.pk]),
+            {
+                'first_name': 'Jane',
+                'last_name': 'Wilson',
+                'email': 'j.wilson@sms.edu',
+                'department': 'Computer Science',
+                'password1': 'ResetPass!4321',
+                'password2': 'ResetPass!4321',
+                'is_active': True,
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.teacher.refresh_from_db()
+        self.assertTrue(self.teacher.check_password('ResetPass!4321'))
+        self.assertFalse(self.teacher.check_password('pass12345'))
+
+    def test_teacher_list_does_not_show_administrators(self):
+        page = self.client.get(reverse('teacher_list'))
+        listed = [teacher.username for teacher in page.context['teachers']]
+        self.assertIn(self.teacher.username, listed)
+        self.assertNotIn(self.admin.username, listed)
 
 
 class DeploymentSeedTests(TestCase):

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load i18n sms_extras %}
+
+{% block title %}{% trans "Teachers" %}{% endblock %}
+{% block breadcrumb %}{% trans "Teachers" %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{% trans "Teachers" %}</h1>
+        <p class="page-subtitle">{% trans "Issue lecturer accounts and set their passwords" %}</p>
+    </div>
+    <a href="{% url 'teacher_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        {% trans "Add Teacher" %}
+    </a>
+</div>
+
+<form method="get" class="filter-bar">
+    <div class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search teachers...' %}" id="teacher-search">
+    </div>
+    <select name="status" class="form-select" onchange="this.form.submit()" id="filter-status">
+        <option value="">{% trans "All Status" %}</option>
+        <option value="active" {% if selected_status == 'active' %}selected{% endif %}>{% trans "Active" %}</option>
+        <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>{% trans "Inactive" %}</option>
+    </select>
+    <button type="submit" class="btn btn-outline btn-sm">
+        <i class="bi bi-funnel"></i> {% trans "Filter" %}
+    </button>
+</form>
+
+<div class="card">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>{% trans "Teacher" %}</th>
+                    <th>{% trans "Username" %}</th>
+                    <th>{% trans "Department" %}</th>
+                    <th>{% trans "Courses" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                <tr>
+                    <td>
+                        {% url 'teacher_update' teacher.pk as teacher_url %}
+                        {% include "partials/person_cell.html" with name=teacher.get_full_name|default:teacher.username sub=teacher.email url=teacher_url %}
+                    </td>
+                    <td>{{ teacher.username }}</td>
+                    <td>
+                        {% if teacher.department %}
+                        {{ teacher.department|trans_db }}
+                        {% else %}
+                        <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-info">{{ teacher.annotated_course_count }}</span>
+                    </td>
+                    <td>
+                        {% if teacher.is_active %}
+                        <span class="badge badge-active">{% trans "Active" %}</span>
+                        {% else %}
+                        <span class="badge badge-inactive">{% trans "Inactive" %}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{% url 'teacher_update' teacher.pk %}" class="btn-icon" title="{% trans 'Edit' %}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'teacher_delete' teacher.pk %}" class="btn-icon danger" title="{% trans 'Delete' %}">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-person-badge"></i>
+                            <h5>{% trans "No Teachers Found" %}</h5>
+                            <p>
+                                {% if query %}
+                                {% blocktrans %}No teachers matching "{{ query }}"{% endblocktrans %}
+                                {% else %}
+                                {% trans "Get started by adding your first teacher" %}
+                                {% endif %}
+                            </p>
+                            <a href="{% url 'teacher_create' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-lg"></i> {% trans "Add Teacher" %}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "partials/pagination.html" %}
+</div>
+{% endblock %}

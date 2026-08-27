@@ -9,7 +9,6 @@
 - Gunicorn + WhiteNoise
 - Session auth + RBAC (admin / teacher)
 - Polish / English interface (`django.po`, `set_language`)
-- SMTP / console email for password reset
 - Self-hosted front-end assets — no CDN, no internet needed at runtime
 
 ## Quick start
@@ -41,12 +40,10 @@ editing `style.css` or `main.js` and reload to no visible effect. Hard-reload
 python manage.py test
 ```
 
-84 tests cover models, authentication, role-based access and data isolation,
-pagination, the dashboard JSON API, the full password-reset cycle (including a
-dead mail server and the language of the message), enrolment capacity rules,
-weighted grade components, bulk attendance marking, grade authorship, the mail
-deployment checks, Polish localisation, the deployment seed step, and a smoke
-render of every page for both roles.
+77 tests cover models, authentication, role-based access and data isolation,
+pagination, the dashboard JSON API, enrolment capacity rules, weighted grade
+components, bulk attendance marking, grade authorship, Polish localisation,
+the deployment seed step, and a smoke render of every page for both roles.
 
 `.github/workflows/ci.yml` runs the same suite on every push, plus a check for
 missing migrations and `manage.py check --deploy` against production settings.
@@ -82,9 +79,6 @@ Set environment variables (see `.env.example`):
 | `ALLOWED_HOSTS` | Comma-separated hosts |
 | `DATABASE_URL` | Postgres connection string |
 | `DJANGO_ADMIN_PASSWORD` | Replaces the published demo password on the `admin` account |
-| `EMAIL_BACKEND` | `console`, `brevo` or `smtp` |
-| `BREVO_API_KEY` | API key when `EMAIL_BACKEND=brevo` |
-| `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | SMTP |
 | `CSRF_TRUSTED_ORIGINS` | e.g. `https://your-app.onrender.com` |
 
 ## Deployment
@@ -104,40 +98,11 @@ Demo accounts shipped in the fixture use the password `demo1234`. Set
 `DJANGO_ADMIN_PASSWORD` on the platform to give the `admin` account a private
 password without committing it.
 
-### Password-reset email
-
-`EMAIL_BACKEND=console` only writes the message to the platform log, so nobody
-receives a reset link.
-
-On Render's free plan outbound SMTP is firewalled, so `EMAIL_BACKEND=smtp`
-hangs until the worker times out and the reset page returns a 500. Use
-`EMAIL_BACKEND=brevo` there: it sends the same message over HTTPS through
-`core.mail.BrevoAPIBackend`. Set `BREVO_API_KEY` (from brevo.com → SMTP & API →
-API keys) and a `DEFAULT_FROM_EMAIL` verified under Brevo's *Senders & IPs*.
-With no key the reset page still responds normally and logs a warning.
-
-On a host that permits outbound SMTP, `EMAIL_BACKEND=smtp` also works with
-`EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` and a matching
-`DEFAULT_FROM_EMAIL`. Keep every secret in the platform dashboard, never in the
-repository.
-
-`manage.py check --deploy` names whichever piece is missing (`mail.W001`–`W004`)
-and CI fails on it, so a half-configured mailer cannot reach production
-unnoticed. Verify a live deployment from the platform shell with:
-
-```bash
-python manage.py sendtestemail you@example.com
-```
-
-If the mail server is unreachable at runtime the reset page still renders its
-normal confirmation and the SMTP error goes to the log, so a broken mailer
-never turns into a 500 for the visitor.
-
 ### Free-plan sleep
 
 Render's free plan stops the service after ~15 minutes without traffic, and the
 next visitor waits ~30 s for it to boot. `.github/workflows/keepalive.yml` pings
-it every 5 minutes to avoid that, but GitHub's scheduler is best-effort and
+it every 10 minutes to avoid that, but GitHub's scheduler is best-effort and
 disables scheduled workflows after 60 days of repository inactivity. For a
 demonstration that must not stall, add an external monitor (UptimeRobot's free
 plan checks every 5 minutes) or run the service on a plan that never sleeps.
@@ -162,7 +127,7 @@ student login, by design.
 ## Main features
 
 - Login / logout / profile
-- Password reset by email (`/accounts/password_reset/`)
+- Teachers (admin issues lecturer accounts and passwords)
 - Students, courses, enrolments, grades, attendance
 - **Grades by component** — a course mark is built from several weighted
   parts (coursework, midterm, final exam, retake) rather than a single number;
@@ -212,3 +177,7 @@ in the grade list and the CSV export.
 English diploma documentation (BloomTime-style structure):
 
 `docs/SMS_Diploma_Documentation_Shpak_Maksym.docx`
+
+Defence rehearsal (5-minute demo path and likely oral questions):
+
+`docs/defense-prep.md`

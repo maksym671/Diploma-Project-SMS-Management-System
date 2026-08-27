@@ -1,5 +1,4 @@
 import json
-import logging
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -7,7 +6,6 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordResetView
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Count, Avg, Q, Sum, F, FloatField
@@ -17,12 +15,18 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 import csv
 
-from .models import Student, Course, Enrollment, Grade, Attendance, weighted_average
-from .forms import LoginForm, StudentForm, CourseForm, EnrollmentForm, GradeForm, AttendanceForm, ProfileForm
+from .models import User, Student, Course, Enrollment, Grade, Attendance, weighted_average
+from .forms import (
+    LoginForm,
+    StudentForm,
+    CourseForm,
+    EnrollmentForm,
+    GradeForm,
+    AttendanceForm,
+    TeacherForm,
+    ProfileForm,
+)
 from .decorators import admin_required, teacher_or_admin_required
-
-
-logger = logging.getLogger(__name__)
 
 PAGE_SIZE = 20
 
@@ -69,29 +73,6 @@ def login_view(request):
         form = LoginForm()
 
     return render(request, 'auth/login.html', {'form': form})
-
-
-class ResilientPasswordResetView(PasswordResetView):
-    """Password reset that survives an unreachable mail server.
-
-    Django lets the SMTP error bubble up, which turns a mis-typed host or an
-    expired app password into a 500 page. The reset response is deliberately
-    identical for known and unknown addresses anyway, so on a delivery failure
-    show that same page and put the real reason in the server log.
-    """
-
-    def form_valid(self, form):
-        try:
-            return super().form_valid(form)
-        except OSError:
-            # SMTPException, socket and TLS errors all derive from OSError.
-            logger.exception(
-                'Password reset email could not be delivered to %r. '
-                'Check EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER and '
-                'EMAIL_HOST_PASSWORD.',
-                form.cleaned_data.get('email'),
-            )
-            return redirect(self.get_success_url())
 
 
 @require_POST
@@ -380,6 +361,112 @@ def student_delete(request, pk):
         return redirect('student_list')
 
     return render(request, 'students/confirm_delete.html', {'student': student})
+
+
+# ─── Teachers ────────────────────────────────────────────────────────
+
+def _teacher_display_name(teacher):
+    return teacher.get_full_name() or teacher.username
+
+
+@login_required
+@admin_required
+def teacher_list(request):
+    """Staff accounts issued to lecturers — created here, not by self-registration."""
+    query = request.GET.get('q', '')
+    status = request.GET.get('status', '')
+
+    teachers = User.objects.filter(role='teacher').annotate(
+        annotated_course_count=Count('courses', filter=Q(courses__is_active=True)),
+    ).order_by('last_name', 'first_name', 'username')
+
+    if query:
+        teachers = teachers.filter(
+            Q(username__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(department__icontains=query)
+        )
+    if status == 'active':
+        teachers = teachers.filter(is_active=True)
+    elif status == 'inactive':
+        teachers = teachers.filter(is_active=False)
+
+    page_obj = paginate(request, teachers)
+    return render(request, 'teachers/list.html', {
+        'teachers': page_obj,
+        'page_obj': page_obj,
+        'query': query,
+        'selected_status': status,
+    })
+
+
+@login_required
+@admin_required
+def teacher_create(request):
+    """Issue a new teacher account and an initial password."""
+    if request.method == 'POST':
+        form = TeacherForm(request.POST)
+        if form.is_valid():
+            teacher = form.save()
+            messages.success(
+                request,
+                _('Teacher "%(name)s" has been created.') % {
+                    'name': _teacher_display_name(teacher),
+                },
+            )
+            return redirect('teacher_list')
+    else:
+        form = TeacherForm()
+
+    return render(request, 'teachers/form.html', {
+        'form': form,
+        'title': _('Add Teacher'),
+    })
+
+
+@login_required
+@admin_required
+def teacher_update(request, pk):
+    """Edit a teacher profile or set a new password."""
+    teacher = get_object_or_404(User, pk=pk, role='teacher')
+    if request.method == 'POST':
+        form = TeacherForm(request.POST, instance=teacher)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                _('Teacher "%(name)s" has been updated.') % {
+                    'name': _teacher_display_name(teacher),
+                },
+            )
+            return redirect('teacher_list')
+    else:
+        form = TeacherForm(instance=teacher)
+
+    return render(request, 'teachers/form.html', {
+        'form': form,
+        'title': _('Edit Teacher'),
+        'teacher': teacher,
+    })
+
+
+@login_required
+@admin_required
+def teacher_delete(request, pk):
+    """Remove a teacher. Their courses stay, unassigned."""
+    teacher = get_object_or_404(User, pk=pk, role='teacher')
+    if request.method == 'POST':
+        name = _teacher_display_name(teacher)
+        teacher.delete()
+        messages.success(
+            request,
+            _('Teacher "%(name)s" has been deleted.') % {'name': name},
+        )
+        return redirect('teacher_list')
+
+    return render(request, 'teachers/confirm_delete.html', {'teacher': teacher})
 
 
 # ─── Courses ─────────────────────────────────────────────────────────

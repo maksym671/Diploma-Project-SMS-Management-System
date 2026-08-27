@@ -55,6 +55,8 @@ await shot(page, '/', 'dashboard-dark', { dark: true });
 await shot(page, '/students/', 'students-list');
 await shot(page, '/grades/', 'grades-list');
 await shot(page, '/courses/', 'courses-list');
+await shot(page, '/attendance/', 'attendance-list');
+await shot(page, '/teachers/', 'teachers-list');
 await shot(page, '/students/1/', 'student-detail');
 await shot(page, '/', 'dashboard-pl', { lang: 'pl' });
 

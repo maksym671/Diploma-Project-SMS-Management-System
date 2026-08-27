@@ -1568,9 +1568,6 @@ textarea.form-control {
     margin-top: 4px;
 }
 
-/* Django's built-in password-reset views render their own widgets, which carry
-   no .form-control class, so style them by position instead. */
-.login-card input[type="email"],
 .login-card input[type="password"],
 .login-card input[type="text"] {
     background: var(--surface-1);
@@ -1584,7 +1581,6 @@ textarea.form-control {
     width: 100%;
 }
 
-.login-card input[type="email"]:focus,
 .login-card input[type="password"]:focus,
 .login-card input[type="text"]:focus {
     outline: none;

@@ -6,7 +6,7 @@
 <p>Design and Implementation of a Web-Based Student Management System for Educational Institutions</p>
 <p>Documentation for the diploma project</p>
 <p>prepared under the direction of</p>
-<p>[Supervisor / Promotor]</p>
+<p>Marcin Kacprowicz</p>
 <p>Warsaw, 2026 r.</p>
 <h1>1. Basic information</h1>
 <table>
@@ -16,11 +16,11 @@
 </tr>
 <tr>
 <td>Purpose of the project</td>
-<td>The project addresses a recurring problem in small and medium educational units: academic records for students, courses, grades and attendance are still often kept in spreadsheets or fragmented paper files. This leads to duplicated data, weak access control, and slow reporting for teachers and administrators. SMS centralises these processes in a single web application with role-based access (Administrator, Teacher, Student), structured CRUD workflows, dashboard analytics, CSV export, and password-reset via email. The system is implemented as a complete engineering deliverable — not only a conceptual design.</td>
+<td>The project addresses a recurring problem in small and medium educational units: academic records for students, courses, grades and attendance are still often kept in spreadsheets or fragmented paper files. This leads to duplicated data, weak access control, and slow reporting for teachers and administrators. SMS centralises these processes in a single web application with role-based access (Administrator, Teacher), structured CRUD workflows, dashboard analytics, CSV export. Staff accounts are created by an administrator (there is no public registration). Students are records in the system, not user accounts. The system is implemented as a complete engineering deliverable — not only a conceptual design.</td>
 </tr>
 <tr>
 <td>Brief description of the project</td>
-<td>Student Management System is a full-stack Django web application that stores and manages academic data related to students, courses, enrolments, grades and attendance. Administrators maintain the institutional catalogue of students and courses; teachers manage grades and attendance for their own courses; students view personal academic information. The presentation layer uses Django templates with custom CSS and JavaScript; the application layer implements business rules and RBAC; the data layer uses a relational schema (SQLite locally, PostgreSQL in production via DATABASE_URL). The application is production-ready for deployment on platforms such as Render (Gunicorn + WhiteNoise + optional managed Postgres).</td>
+<td>Student Management System is a full-stack Django web application that stores and manages academic data related to students, courses, enrolments, grades and attendance. Administrators maintain the institutional catalogue of students and courses; teachers manage grades and attendance for their own courses; students are academic records, not login accounts. The presentation layer uses Django templates with custom CSS and JavaScript; the application layer implements business rules and RBAC; the data layer uses a relational schema (SQLite locally, PostgreSQL in production via DATABASE_URL). The application is live at https://diploma-project-sms-management-system.onrender.com.</td>
 </tr>
 <tr>
 <td>Competitor analysis</td>
@@ -28,16 +28,16 @@
 </tr>
 <tr>
 <td>List of technologies used</td>
-<td>Backend:<br>Python 3.10+, Django 6, Django Auth (session-based), Gunicorn, WhiteNoise, dj-database-url, PostgreSQL (production) / SQLite (development), SMTP email for password reset<br>Frontend:<br>Django Templates, HTML5, CSS custom properties, vanilla JavaScript, dashboard JSON endpoint (/api/dashboard/)<br>Infrastructure:<br>Render-ready build (build.sh: migrate + collectstatic), environment-based configuration (.env), HTTPS-oriented security settings when DEBUG=False, optional Mailtrap / Gmail SMTP for transactional mail</td>
+<td>Backend:<br>Python 3.12, Django 6, Django Auth (session-based), Gunicorn, WhiteNoise, dj-database-url, PostgreSQL (production) / SQLite (development)<br>Frontend:<br>Django Templates, HTML5, CSS custom properties, vanilla JavaScript, Chart.js, Turbo, Bootstrap Icons, dashboard JSON endpoint (/api/dashboard/)<br>Infrastructure:<br>Render + Neon (build.sh: migrate + collectstatic + seed_demo), English/Polish i18n, HTTPS-oriented security settings when DEBUG=False, live at https://diploma-project-sms-management-system.onrender.com</td>
 </tr>
 <tr>
 <td>Description of the technology stack and justification of selected technologies</td>
-<td>The stack follows a classic three-tier architecture: Browser (HTML/CSS/JS) → Django views &amp; forms (business logic, authentication, RBAC) → Relational database. Django was selected because it provides batteries-included authentication, CSRF protection, ORM migrations, and an admin site — essential for an academic records system delivered within an engineering diploma timeframe. Session authentication fits server-rendered pages better than JWT (no separate SPA). PostgreSQL is preferred in production for ACID transactions and concurrent multi-user access; SQLite keeps local development simple. WhiteNoise serves compressed static assets behind Gunicorn, which matches typical PaaS deployments without a separate Nginx container. SMTP-based password reset uses Django’s built-in auth views, avoiding custom token plumbing while remaining compatible with Mailtrap sandbox or real providers.</td>
+<td>The stack follows a classic three-tier architecture: Browser (HTML/CSS/JS) → Django views &amp; forms (business logic, authentication, RBAC) → Relational database. Django was selected because it provides batteries-included authentication, CSRF protection, ORM migrations, and a dedicated Teachers screen for issuing lecturer accounts — essential for an academic records system delivered within an engineering diploma timeframe. Session authentication fits server-rendered pages better than JWT (no separate SPA). PostgreSQL is preferred in production for ACID transactions and concurrent multi-user access; SQLite keeps local development simple. WhiteNoise serves compressed static assets behind Gunicorn, which matches typical PaaS deployments without a separate Nginx container. There is no public registration: an administrator creates teacher accounts and issues credentials. The Teachers screen inside SMS is used to set a forgotten password, which matches a faculty-office workflow better than self-service email recovery.</td>
 </tr>
 </table>
 <h1>2. Key issues related to the implementation of the project</h1>
 <h2>2.1 Role-Based Access Control (RBAC)</h2>
-<p>The custom User model extends AbstractUser with a role field (admin / teacher / student). View decorators enforce permissions: administrators manage all records; teachers see only students and grades related to their courses; students are blocked from institutional lists and redirected to their personal dashboard. This prevents privilege escalation while keeping URLs simple.</p>
+<p>The custom User model extends AbstractUser with a role field (admin / teacher). View decorators enforce permissions: administrators manage all records; teachers see only students, grades and attendance related to their own courses. A guessed URL outside that scope returns 404. Students are not users — they have no login. This prevents privilege escalation while keeping URLs simple.</p>
 <p>Code snippet (decorator, simplified):</p>
 <p>def role_required(allowed_roles):
     def decorator(view_func):
@@ -48,43 +48,71 @@
         return wrapper
     return decorator</p>
 <h2>2.2 Relational Academic Schema</h2>
-<p>The schema comprises six core models: User, Student, Course, Enrollment, Grade, Attendance. Enrolment links students and courses (many-to-many with status). Grade is one-to-one with Enrolment (scale 2.0–5.0 with letter mapping). Attendance is unique per (enrolment, date) to avoid duplicate daily marks. Foreign keys and unique constraints protect referential integrity at the database level.</p>
+<p>The schema comprises six core models: User, Student, Course, Enrollment, Grade, Attendance. Enrolment links students and courses (many-to-many with status). A Grade is one weighted component of an enrolment (coursework, midterm, final exam or retake); Enrollment.final_grade is their weighted mean on the 2.0–5.0 scale with letter mapping, and assigned_by records which teacher last saved the mark. Attendance is unique per (enrolment, date). Foreign keys and unique constraints protect referential integrity at the database level.</p>
 <h2>2.3 Dashboard Analytics and REST JSON Endpoint</h2>
 <p>The HTML dashboard aggregates KPIs (students, courses, enrolments, average grade) and chart series (grade distribution, enrolments per course). Endpoint GET /api/dashboard/ returns the same metrics as JSON, scoped by role, so charts or future SPA clients can refresh data without reloading the page.</p>
 <p>Example response fields:</p>
 <p>{&#x27;role&#x27;: &#x27;teacher&#x27;, &#x27;total_students&#x27;: …, &#x27;grade_distribution&#x27;: {&#x27;A&#x27;: …}, &#x27;course_labels&#x27;: [...], &#x27;course_data&#x27;: [...]}</p>
-<h2>2.4 Password Reset via Email</h2>
-<p>Password recovery uses Django’s auth URLs under /accounts/ with custom email templates. In development, EMAIL_BACKEND=console prints messages to the terminal. In production, SMTP settings (Mailtrap, Gmail, SendGrid, etc.) send a signed reset link. Unknown emails still redirect (no user enumeration), matching Django defaults.</p>
+<h2>2.4 Staff Account Provisioning</h2>
+<p>The application has no public registration. An administrator creates teacher accounts (username, role, initial password) on the Teachers screen inside SMS and issues those credentials out of band. Lecturers sign in with the issued username and password; students are data records, not users. If a teacher forgets a password, the administrator sets a new one on that same screen. This matches the real workflow of a faculty office and avoids an email-based recovery flow that would be unused without self-service sign-up.</p>
 <h2>2.5 Production Configuration and Security Hardening</h2>
-<p>Configuration is driven by environment variables: SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASE_URL, EMAIL_*. When DEBUG=False the application enforces HTTPS redirects, secure cookies, HSTS, and refuses insecure default SECRET_KEY values. WhiteNoise serves hashed/compressed static files. This allows the same codebase to run locally on SQLite and on a hosted PostgreSQL instance without code changes.</p>
+<p>Configuration is driven by environment variables: SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASE_URL, DJANGO_ADMIN_PASSWORD. When DEBUG=False the application enforces HTTPS redirects, secure cookies, HSTS, and refuses insecure default SECRET_KEY values. DJANGO_ADMIN_PASSWORD replaces the published demo password on the admin account at deploy time, so that password is not left on the public internet. WhiteNoise serves hashed/compressed static files. This allows the same codebase to run locally on SQLite and on a hosted PostgreSQL instance without code changes. The public service is https://diploma-project-sms-management-system.onrender.com. A live demonstration uses the teacher account prof.martinez / demo1234; a second teacher, prof.chen / demo1234, shows that each lecturer sees only their own courses.</p>
+<h2>2.6 Internationalisation (English / Polish)</h2>
+<p>The interface is bilingual. Templates, model choices, flash messages and CSV headers go through Django i18n. The language switch keeps the current page and stores the choice in the session. The compiled Polish catalogue (django.mo) is committed so the deploy image does not depend on gettext. LocalizationTests guard that English and Polish pages actually differ.</p>
 <h1>3. Screenshots, visualizations, etc.</h1>
-<p>This section describes representative screens of the Student Management System. Replace the figure placeholders with actual captures from the running application before the final submission / defence.</p>
-<p>Fig. 1 — Login page: username/password form with link to password reset.</p>
-<p>Fig. 2 — Administrator / Teacher dashboard: KPI cards, grade distribution chart, recent enrolments.</p>
-<p>Fig. 3 — Student list with search and filters (program, active status).</p>
-<p>Fig. 4 — Course detail: enrolled students, capacity, teacher assignment.</p>
-<p>Fig. 5 — Grade entry form with validation (2.0–5.0) and comments.</p>
-<p>Fig. 6 — Attendance register with present / absent / late statuses.</p>
-<p>Fig. 7 — Password reset email (console or SMTP) containing the secure confirmation link.</p>
-<p>Fig. 8 — JSON response from GET /api/dashboard/ (browser or HTTP client).</p>
+<p>The figures below are captures of the running Student Management System (local interface, English locale, light theme unless noted).</p>
+<figure>
+<img src="screenshots/login.png" alt="Login page" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 1 — Login page. Accounts are issued by an administrator; there is no public registration.</figcaption>
+</figure>
+<figure>
+<img src="screenshots/dashboard-light.png" alt="Administrator dashboard" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 2 — Administrator dashboard: KPI tiles and Chart.js analytics.</figcaption>
+</figure>
+<figure>
+<img src="screenshots/students-list.png" alt="Student register" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 3 — Student register with search, programme and status filters.</figcaption>
+</figure>
+<figure>
+<img src="screenshots/courses-list.png" alt="Course catalogue" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 4 — Course catalogue: code, semester, teacher assignment and capacity.</figcaption>
+</figure>
+<figure>
+<img src="screenshots/grades-list.png" alt="Grade register" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 5 — Grade register: weighted components, letter bands and the teacher who saved the mark.</figcaption>
+</figure>
+<figure>
+<img src="screenshots/attendance-list.png" alt="Attendance register" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 6 — Attendance register with present / absent / late statuses.</figcaption>
+</figure>
+<figure>
+<img src="screenshots/teachers-list.png" alt="Teachers screen" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 7 — Teachers screen: the administrator issues lecturer accounts and can set a new password.</figcaption>
+</figure>
+<figure>
+<img src="screenshots/student-detail.png" alt="Student profile" style="max-width:100%;height:auto;border:1px solid #e3e9f0;border-radius:8px;">
+<figcaption>Fig. 8 — Student profile: enrolments, grades and attendance in one view.</figcaption>
+</figure>
 <h1>4. Conclusions and development prospects</h1>
-<p>The primary goal — to design and implement a functional web-based Student Management System for educational administration — was achieved. The application covers authentication with RBAC, student and course administration, enrolments, grading, attendance, analytics dashboard, CSV export, password reset mail, and production-oriented configuration.</p>
+<p>The primary goal — to design and implement a functional web-based Student Management System for educational administration — was achieved. The application covers authentication with RBAC, student and course administration, enrolments, weighted grade components, bulk attendance marking, a bilingual EN/PL interface, analytics dashboard, CSV export, and production-oriented configuration.</p>
 <p>All core objectives were met:</p>
-<p>Role-based access for Administrator, Teacher and Student</p>
+<p>Role-based access for Administrator and Teacher (students are records, not users)</p>
 <p>Relational schema with integrity constraints for academic entities</p>
 <p>CRUD workflows with form validation and flash messages</p>
+<p>Weighted grade components, authorship audit, bulk class attendance</p>
 <p>Dashboard KPIs and role-scoped REST endpoint /api/dashboard/</p>
-<p>Email-based password reset (console locally, SMTP in production)</p>
-<p>Automated test suite covering models, auth, API, CRUD and mail</p>
+<p>Bilingual interface (English / Polish, 308 translatable strings)</p>
+<p>Staff accounts provisioned by an administrator (no public registration)</p>
+<p>Automated test suite covering models, auth, API and CRUD</p>
 <p>Deployment-ready settings (Gunicorn, WhiteNoise, Postgres via DATABASE_URL)</p>
 <p>The project demonstrates that a production-capable academic administration system can be delivered by a single developer within an engineering diploma timeframe, using a coherent Django monolith suitable for oral examination and further maintenance.</p>
 <p>Future development priorities:</p>
-<p>Multi-language UI (EN/PL) using Django i18n</p>
+<p>Student portal — a third role with read-only access to own results</p>
 <p>PDF report generation for transcripts and attendance sheets</p>
-<p>Calendar view for classes and attendance sessions</p>
-<p>REST API tokens for mobile clients</p>
-<p>LDAP / Google SSO for institutional login</p>
-<p>Soft-delete audit log for grade changes</p>
+<p>Email notifications on new grades and absences</p>
+<p>Documented REST API with token authentication for mobile clients</p>
+<p>Two-factor login (TOTP) for administrator accounts</p>
+<p>Timetabling with room and slot conflict detection</p>
 <h1>5. Bibliography / Resources</h1>
 <p>Official Documentation</p>
 <p>[1] Django Software Foundation — Django Documentation — https://docs.djangoproject.com</p>
@@ -98,8 +126,6 @@
 <p>[9] MDN Web Docs — HTML / CSS / HTTP — https://developer.mozilla.org</p>
 <p>[10] OWASP Foundation — OWASP Top Ten — https://owasp.org/www-project-top-ten/</p>
 <p>[11] Jazzband — dj-database-url — https://github.com/jazzband/dj-database-url</p>
-<p>[12] Django Software Foundation — Sending email — https://docs.djangoproject.com/en/stable/topics/email/</p>
-<p>[13] Mailtrap — Email Testing for Developers — https://mailtrap.io</p>
-<p>[14] Bootstrap Icons — https://icons.getbootstrap.com</p>
-<p>[15] Uniwersytet VIZJA / AEH — study programme materials for Computer Science (engineering profile)</p>
+<p>[12] Bootstrap Icons — https://icons.getbootstrap.com</p>
+<p>[13] Uniwersytet VIZJA / AEH — study programme materials for Computer Science (engineering profile)</p>
 </body></html>

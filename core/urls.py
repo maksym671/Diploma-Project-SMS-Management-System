@@ -43,6 +43,12 @@ urlpatterns = [
     path('attendance/<int:pk>/edit/', views.attendance_update, name='attendance_update'),
     path('attendance/<int:pk>/delete/', views.attendance_delete, name='attendance_delete'),
 
+    # Teachers (admin issues accounts — there is no public registration)
+    path('teachers/', views.teacher_list, name='teacher_list'),
+    path('teachers/add/', views.teacher_create, name='teacher_create'),
+    path('teachers/<int:pk>/edit/', views.teacher_update, name='teacher_update'),
+    path('teachers/<int:pk>/delete/', views.teacher_delete, name='teacher_delete'),
+
     # Profile
     path('profile/', views.profile_view, name='profile'),
 

@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Student Management System 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 21:09+0200\n"
+"POT-Creation-Date: 2026-08-27 13:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Maksym Shpak\n"
 "Language-Team: Polish\n"
@@ -24,84 +23,105 @@ msgstr ""
 msgid "You do not have permission to access this page."
 msgstr "Nie masz uprawnień do tej strony."
 
-#: core/forms.py:13 templates/auth/login.html:26
+#: core/forms.py:15 templates/auth/login.html:26
+#: templates/teachers/form.html:38 templates/teachers/list.html:40
 msgid "Username"
 msgstr "Nazwa użytkownika"
 
-#: core/forms.py:21 templates/auth/login.html:30
+#: core/forms.py:23 core/forms.py:195 templates/auth/login.html:30
+#: templates/teachers/form.html:75
 msgid "Password"
 msgstr "Hasło"
 
-#: core/forms.py:38 core/views.py:872 templates/profile/index.html:22
-#: templates/students/form.html:32
+#: core/forms.py:40 core/views.py:959 templates/profile/index.html:22
+#: templates/students/form.html:32 templates/teachers/form.html:52
 msgid "First Name"
 msgstr "Imię"
 
-#: core/forms.py:39 core/views.py:872 templates/profile/index.html:26
-#: templates/students/form.html:39
+#: core/forms.py:41 core/views.py:959 templates/profile/index.html:26
+#: templates/students/form.html:39 templates/teachers/form.html:59
 msgid "Last Name"
 msgstr "Nazwisko"
 
-#: core/forms.py:40 templates/profile/index.html:32
-#: templates/registration/password_reset_form.html:25
-#: templates/students/form.html:46
+#: core/forms.py:42 templates/profile/index.html:32
+#: templates/students/form.html:46 templates/teachers/form.html:45
 msgid "Email Address"
 msgstr "Adres e-mail"
 
-#: core/forms.py:41
+#: core/forms.py:43
 msgid "e.g., STU-2025-001"
 msgstr "np. STU-2025-001"
 
-#: core/forms.py:42
+#: core/forms.py:44 core/forms.py:227
 msgid "e.g., Computer Science"
 msgstr "np. Informatyka"
 
-#: core/forms.py:44
+#: core/forms.py:46
 msgid "Phone Number"
 msgstr "Numer telefonu"
 
-#: core/forms.py:45 templates/students/detail.html:76
+#: core/forms.py:47 templates/students/detail.html:76
 #: templates/students/form.html:84
 msgid "Address"
 msgstr "Adres"
 
-#: core/forms.py:60 core/views.py:892 templates/courses/form.html:32
+#: core/forms.py:62 core/views.py:979 templates/courses/form.html:32
 msgid "Course Name"
 msgstr "Nazwa kursu"
 
-#: core/forms.py:61
+#: core/forms.py:63
 msgid "e.g., CS101"
 msgstr "np. CS101"
 
-#: core/forms.py:64
+#: core/forms.py:66
 msgid "Course description..."
 msgstr "Opis kursu..."
 
-#: core/forms.py:98
+#: core/forms.py:100
 msgid "This student is already enrolled in this course."
 msgstr "Ten student jest już zapisany na ten kurs."
 
-#: core/forms.py:106
+#: core/forms.py:108
 #, python-format
 msgid ""
 "%(code)s is full (%(seats)s seats). Increase the course capacity or drop "
 "another enrollment first."
 msgstr "%(code)s jest pełny (%(seats)s miejsc). Zwiększ limit kursu lub usuń najpierw inny zapis."
 
-#: core/forms.py:131
+#: core/forms.py:133
 msgid "Optional comments..."
 msgstr "Komentarz (opcjonalnie)..."
 
-#: core/forms.py:156
+#: core/forms.py:158
 #, python-format
 msgid ""
 "The components of %(code)s already use %(used)s%% of the course weight, so "
 "this one can be at most %(free)s%%."
 msgstr "Składowe kursu %(code)s zajmują już %(used)s%% wagi, więc ta może mieć najwyżej %(free)s%%."
 
-#: core/forms.py:177
+#: core/forms.py:179
 msgid "Optional notes..."
 msgstr "Notatka (opcjonalnie)..."
+
+#: core/forms.py:203 templates/teachers/form.html:88
+msgid "Confirm password"
+msgstr "Potwierdź hasło"
+
+#: core/forms.py:240
+msgid "Leave blank to keep the current password."
+msgstr "Pozostaw puste, aby zachować obecne hasło."
+
+#: core/forms.py:252
+msgid "A staff account with this email already exists."
+msgstr "Konto pracownika z tym adresem e-mail już istnieje."
+
+#: core/forms.py:264
+msgid "The two passwords do not match."
+msgstr "Hasła nie są zgodne."
+
+#: core/forms.py:271
+msgid "This field is required."
+msgstr "To pole jest wymagane."
 
 #: core/i18n_catalog.py:9
 msgid "Computer Science"
@@ -213,13 +233,15 @@ msgstr "Administrator"
 
 #: core/models.py:47 templates/courses/detail.html:61
 #: templates/courses/form.html:60 templates/courses/list.html:54
+#: templates/teachers/list.html:39
 msgid "Teacher"
 msgstr "Prowadzący"
 
-#: core/models.py:138 core/views.py:879 templates/courses/detail.html:21
+#: core/models.py:138 core/views.py:966 templates/courses/detail.html:21
 #: templates/courses/list.html:85 templates/dashboard/index.html:98
 #: templates/enrollments/list.html:35 templates/students/detail.html:23
 #: templates/students/list.html:41 templates/students/list.html:89
+#: templates/teachers/list.html:26 templates/teachers/list.html:67
 msgid "Active"
 msgstr "Aktywny"
 
@@ -232,7 +254,6 @@ msgid "Dropped"
 msgstr "Wycofany"
 
 #: core/models.py:176
-
 msgid "Coursework"
 msgstr "Praca semestralna"
 
@@ -276,199 +297,225 @@ msgstr "Nieobecny"
 msgid "Late"
 msgstr "Spóźniony"
 
-#: core/views.py:63
+#: core/views.py:67
 #, python-format
 msgid "Welcome back, %(name)s!"
 msgstr "Witaj ponownie, %(name)s!"
 
-#: core/views.py:67
+#: core/views.py:71
 msgid "Invalid username or password."
 msgstr "Nieprawidłowa nazwa użytkownika lub hasło."
 
-#: core/views.py:101
+#: core/views.py:82
 msgid "You have been logged out."
 msgstr "Zostałeś wylogowany."
 
-#: core/views.py:342
+#: core/views.py:323
 #, python-format
 msgid "Student \"%(name)s\" has been created successfully."
 msgstr "Student \"%(name)s\" został pomyślnie dodany."
 
-#: core/views.py:348
+#: core/views.py:329
 msgid "Add New Student"
 msgstr "Dodaj studenta"
 
-#: core/views.py:362
+#: core/views.py:343
 #, python-format
 msgid "Student \"%(name)s\" has been updated."
 msgstr "Dane studenta \"%(name)s\" zostały zaktualizowane."
 
-#: core/views.py:368
+#: core/views.py:349
 msgid "Edit Student"
 msgstr "Edytuj studenta"
 
-#: core/views.py:379
+#: core/views.py:360
 #, python-format
 msgid "Student \"%(name)s\" has been deleted."
 msgstr "Student \"%(name)s\" został usunięty."
 
-#: core/views.py:443
+#: core/views.py:415
+#, python-format
+msgid "Teacher \"%(name)s\" has been created."
+msgstr "Nauczyciel \"%(name)s\" został dodany."
+
+#: core/views.py:425 templates/teachers/list.html:15
+#: templates/teachers/list.html:97
+msgid "Add Teacher"
+msgstr "Dodaj nauczyciela"
+
+#: core/views.py:440
+#, python-format
+msgid "Teacher \"%(name)s\" has been updated."
+msgstr "Dane nauczyciela \"%(name)s\" zostały zaktualizowane."
+
+#: core/views.py:450
+
+msgid "Edit Teacher"
+msgstr "Edytuj nauczyciela"
+
+#: core/views.py:465
+#, python-format
+msgid "Teacher \"%(name)s\" has been deleted."
+msgstr "Nauczyciel \"%(name)s\" został usunięty."
+
+#: core/views.py:530
 #, python-format
 msgid "Course \"%(name)s\" has been created."
 msgstr "Kurs \"%(name)s\" został utworzony."
 
-#: core/views.py:449
+#: core/views.py:536
 msgid "Add New Course"
 msgstr "Dodaj kurs"
 
-#: core/views.py:463
+#: core/views.py:550
 #, python-format
 msgid "Course \"%(name)s\" has been updated."
 msgstr "Kurs \"%(name)s\" został zaktualizowany."
 
-#: core/views.py:469
+#: core/views.py:556
 msgid "Edit Course"
 msgstr "Edytuj kurs"
 
-#: core/views.py:480
+#: core/views.py:567
 #, python-format
 msgid "Course \"%(name)s\" has been deleted."
 msgstr "Kurs \"%(name)s\" został usunięty."
 
-#: core/views.py:530
+#: core/views.py:617
 #, python-format
 msgid "%(student)s enrolled in %(course)s."
 msgstr "%(student)s został zapisany na %(course)s."
 
-#: core/views.py:539 templates/enrollments/list.html:22
+#: core/views.py:626 templates/enrollments/list.html:22
 #: templates/enrollments/list.html:121
 msgid "New Enrollment"
 msgstr "Nowy zapis"
 
-#: core/views.py:551
+#: core/views.py:638
 msgid "Enrollment updated successfully."
 msgstr "Zapis został zaktualizowany."
 
-#: core/views.py:556
+#: core/views.py:643
 msgid "Edit Enrollment"
 msgstr "Edytuj zapis"
 
-#: core/views.py:566
+#: core/views.py:653
 msgid "Enrollment has been removed."
 msgstr "Zapis został usunięty."
 
-#: core/views.py:615
+#: core/views.py:702
 #, python-format
 msgid "Grade %(value)s assigned successfully."
 msgstr "Ocena %(value)s została wystawiona."
 
-#: core/views.py:621 templates/grades/form.html:58
+#: core/views.py:708 templates/grades/form.html:58
 #: templates/grades/list.html:17 templates/grades/list.html:117
 msgid "Assign Grade"
 msgstr "Wystaw ocenę"
 
-#: core/views.py:632
+#: core/views.py:719
 msgid "You can only edit grades for your own courses."
 msgstr "Możesz edytować oceny tylko na swoich kursach."
 
-#: core/views.py:641
+#: core/views.py:728
 msgid "Grade updated successfully."
 msgstr "Ocena została zaktualizowana."
 
-#: core/views.py:646
+#: core/views.py:733
 msgid "Edit Grade"
 msgstr "Edytuj ocenę"
 
-#: core/views.py:656
+#: core/views.py:743
 msgid "You can only delete grades for your own courses."
 msgstr "Możesz usuwać oceny tylko na swoich kursach."
 
-#: core/views.py:661
+#: core/views.py:748
 msgid "Grade has been deleted."
 msgstr "Ocena została usunięta."
 
-#: core/views.py:712
+#: core/views.py:799
 msgid "That date could not be read. Using today instead."
 msgstr "Nie udało się odczytać daty. Użyto dzisiejszej."
 
-#: core/views.py:753
+#: core/views.py:840
 #, python-format
 msgid "Attendance saved for %(count)s students in %(code)s on %(date)s."
 msgstr "Zapisano obecność %(count)s studentów na kursie %(code)s w dniu %(date)s."
 
-#: core/views.py:760
+#: core/views.py:847
 msgid "Nothing to save — no students were marked."
 msgstr "Nie ma czego zapisać — żaden student nie został odnotowany."
 
-#: core/views.py:791
+#: core/views.py:878
 #, python-format
 msgid "Attendance marked for %(name)s."
 msgstr "Odnotowano obecność: %(name)s."
 
-#: core/views.py:799
+#: core/views.py:886
 msgid "Mark Attendance"
 msgstr "Odnotuj obecność"
 
-#: core/views.py:807
+#: core/views.py:894
 msgid "You can only edit attendance for your own courses."
 msgstr "Możesz edytować obecność tylko na swoich kursach."
 
-#: core/views.py:814
+#: core/views.py:901
 msgid "Attendance updated."
 msgstr "Obecność została zaktualizowana."
 
-#: core/views.py:818
+#: core/views.py:905
 msgid "Edit Attendance"
 msgstr "Edytuj obecność"
 
-#: core/views.py:828
+#: core/views.py:915
 msgid "You can only delete attendance for your own courses."
 msgstr "Możesz usuwać obecność tylko na swoich kursach."
 
-#: core/views.py:833
+#: core/views.py:920
 msgid "Attendance record deleted."
 msgstr "Wpis obecności został usunięty."
 
-#: core/views.py:847
+#: core/views.py:934
 msgid "Profile updated successfully."
 msgstr "Profil został zaktualizowany."
 
-#: core/views.py:872 templates/attendance/bulk.html:75
+#: core/views.py:959 templates/attendance/bulk.html:75
 #: templates/courses/detail.html:103 templates/students/form.html:53
 #: templates/students/list.html:56
 msgid "Student Number"
 msgstr "Numer albumu"
 
-#: core/views.py:872 templates/students/detail.html:59
+#: core/views.py:959 templates/students/detail.html:59
 msgid "Email"
 msgstr "E-mail"
 
-#: core/views.py:873 templates/courses/detail.html:104
+#: core/views.py:960 templates/courses/detail.html:104
 #: templates/dashboard/index.html:84 templates/students/list.html:57
 msgid "Program"
 msgstr "Kierunek"
 
-#: core/views.py:873 templates/attendance/form.html:49
+#: core/views.py:960 templates/attendance/form.html:49
 #: templates/attendance/list.html:52 templates/courses/detail.html:105
 #: templates/courses/list.html:56 templates/dashboard/index.html:85
 #: templates/dashboard/index.html:133 templates/enrollments/form.html:52
 #: templates/enrollments/list.html:54 templates/students/detail.html:121
-#: templates/students/list.html:61
+#: templates/students/list.html:61 templates/teachers/list.html:43
 msgid "Status"
 msgstr "Stan"
 
-#: core/views.py:873
+#: core/views.py:960
 msgid "Enrollment Date"
 msgstr "Data zapisu"
 
-#: core/views.py:879 templates/courses/detail.html:23
+#: core/views.py:966 templates/courses/detail.html:23
 #: templates/courses/list.html:87 templates/dashboard/index.html:100
 #: templates/students/detail.html:25 templates/students/list.html:42
-#: templates/students/list.html:91
+#: templates/students/list.html:91 templates/teachers/list.html:27
+#: templates/teachers/list.html:69
 msgid "Inactive"
 msgstr "Nieaktywny"
 
-#: core/views.py:892 templates/attendance/bulk.html:74
+#: core/views.py:979 templates/attendance/bulk.html:74
 #: templates/attendance/list.html:49 templates/courses/detail.html:102
 #: templates/dashboard/index.html:83 templates/dashboard/index.html:131
 #: templates/enrollments/form.html:35 templates/enrollments/list.html:50
@@ -476,45 +523,42 @@ msgstr "Nieaktywny"
 msgid "Student"
 msgstr "Student"
 
-#: core/views.py:892 templates/courses/detail.html:49
+#: core/views.py:979 templates/courses/detail.html:49
 #: templates/courses/form.html:39
 msgid "Course Code"
 msgstr "Kod kursu"
 
-#: core/views.py:892 templates/grades/list.html:40
-
+#: core/views.py:979 templates/grades/list.html:40
 msgid "Component"
 msgstr "Składowa"
 
-#: core/views.py:893
+#: core/views.py:980
 msgid "Weight %"
 msgstr "Waga %"
 
-#: core/views.py:893 templates/courses/detail.html:106
+#: core/views.py:980 templates/courses/detail.html:106
 #: templates/enrollments/list.html:55 templates/grades/list.html:41
 msgid "Grade"
 msgstr "Ocena"
 
-#: core/views.py:893 templates/grades/list.html:42
+#: core/views.py:980 templates/grades/list.html:42
 msgid "Letter"
 msgstr "Litera"
 
-#: core/views.py:893 templates/grades/list.html:43
+#: core/views.py:980 templates/grades/list.html:43
 #: templates/students/detail.html:122
-
 msgid "Course Mark"
 msgstr "Ocena końcowa"
 
-#: core/views.py:894 templates/grades/list.html:44
+#: core/views.py:981 templates/grades/list.html:44
 msgid "Date Assigned"
 msgstr "Data wystawienia"
 
-#: core/views.py:894 templates/grades/list.html:45
+#: core/views.py:981 templates/grades/list.html:45
 msgid "Assigned By"
 msgstr "Wystawił"
 
 #: templates/attendance/bulk.html:4 templates/attendance/bulk.html:10
-
 msgid "Mark Class Attendance"
 msgstr "Odnotuj obecność grupy"
 
@@ -535,12 +579,10 @@ msgid "Pick a course and a date, then mark the whole group at once."
 msgstr "Wybierz kurs i datę, a następnie odnotuj całą grupę naraz."
 
 #: templates/attendance/bulk.html:14
-
 msgid "All Records"
 msgstr "Wszystkie wpisy"
 
 #: templates/attendance/bulk.html:21
-
 msgid "Select a course…"
 msgstr "Wybierz kurs…"
 
@@ -557,7 +599,6 @@ msgid "The roster for that course loads here, ready to mark."
 msgstr "Lista studentów tego kursu pojawi się tutaj, gotowa do odnotowania."
 
 #: templates/attendance/bulk.html:46
-
 msgid "No active students on this course"
 msgstr "Brak aktywnych studentów na tym kursie"
 
@@ -575,12 +616,10 @@ msgid "Set all:"
 msgstr "Ustaw wszystkim:"
 
 #: templates/attendance/bulk.html:99
-
 msgid "Not marked"
 msgstr "Nieodnotowany"
 
 #: templates/attendance/bulk.html:111
-
 msgid "Save Attendance"
 msgstr "Zapisz obecność"
 
@@ -593,7 +632,8 @@ msgstr "Usuń obecność"
 #: templates/courses/list.html:99 templates/enrollments/list.html:97
 #: templates/grades/confirm_delete.html:5 templates/grades/list.html:103
 #: templates/students/confirm_delete.html:5 templates/students/detail.html:37
-#: templates/students/list.html:103
+#: templates/students/list.html:103 templates/teachers/confirm_delete.html:5
+#: templates/teachers/list.html:77
 msgid "Delete"
 msgstr "Usuń"
 
@@ -621,7 +661,8 @@ msgstr ""
 #: templates/courses/form.html:84 templates/enrollments/confirm_delete.html:24
 #: templates/enrollments/form.html:61 templates/grades/confirm_delete.html:23
 #: templates/grades/form.html:60 templates/students/confirm_delete.html:24
-#: templates/students/form.html:98
+#: templates/students/form.html:98 templates/teachers/confirm_delete.html:20
+#: templates/teachers/form.html:107
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -671,7 +712,6 @@ msgid "Attendance records for your courses"
 msgstr "Obecność na Twoich kursach"
 
 #: templates/attendance/list.html:24
-
 msgid "Single Record"
 msgstr "Pojedynczy wpis"
 
@@ -697,14 +737,14 @@ msgstr "Kurs"
 
 #: templates/attendance/list.html:53 templates/courses/list.html:57
 #: templates/enrollments/list.html:56 templates/grades/list.html:47
-#: templates/students/list.html:62
+#: templates/students/list.html:62 templates/teachers/list.html:44
 msgid "Actions"
 msgstr "Akcje"
 
 #: templates/attendance/list.html:79 templates/courses/detail.html:32
 #: templates/courses/list.html:96 templates/enrollments/list.html:94
 #: templates/grades/list.html:100 templates/students/detail.html:34
-#: templates/students/list.html:100
+#: templates/students/list.html:100 templates/teachers/list.html:74
 msgid "Edit"
 msgstr "Edytuj"
 
@@ -741,15 +781,11 @@ msgstr "Nieprawidłowa nazwa użytkownika lub hasło. Spróbuj ponownie."
 msgid "Sign In"
 msgstr "Zaloguj"
 
-#: templates/auth/login.html:38
-msgid "Forgot your password?"
-msgstr "Zapomniałeś hasła?"
-
-#: templates/auth/login.html:45
+#: templates/auth/login.html:42
 msgid ""
-"Accounts are issued to lecturers and administrators. Students do not sign in "
-"here."
-msgstr "Konta otrzymują wykładowcy i administratorzy. Studenci nie logują się tutaj."
+"Accounts and passwords are issued by an administrator. Students do not sign "
+"in here."
+msgstr "Konta i hasła nadaje administrator. Studenci nie logują się tutaj."
 
 #: templates/base.html:52
 msgid "Staff Portal"
@@ -779,6 +815,7 @@ msgstr "Studenci"
 #: templates/courses/detail.html:5 templates/courses/form.html:5
 #: templates/courses/list.html:4 templates/courses/list.html:5
 #: templates/courses/list.html:10 templates/students/list.html:59
+#: templates/teachers/list.html:42
 msgid "Courses"
 msgstr "Kursy"
 
@@ -811,19 +848,25 @@ msgstr "Eksportuj Oceny"
 msgid "System"
 msgstr "System"
 
-#: templates/base.html:112
-msgid "Admin Panel"
-msgstr "Panel Administratora"
+#: templates/base.html:112 templates/teachers/confirm_delete.html:5
+#: templates/teachers/form.html:5 templates/teachers/list.html:4
+#: templates/teachers/list.html:5 templates/teachers/list.html:10
+msgid "Teachers"
+msgstr "Nauczyciele"
 
-#: templates/base.html:148
+#: templates/base.html:116
+msgid "Admin Panel"
+msgstr "Panel administracyjny"
+
+#: templates/base.html:152
 msgid "Language"
 msgstr "Język"
 
-#: templates/base.html:161
+#: templates/base.html:165
 msgid "Toggle theme"
 msgstr "Przełącz motyw"
 
-#: templates/base.html:169
+#: templates/base.html:173
 msgid "Logout"
 msgstr "Wyloguj"
 
@@ -905,11 +948,13 @@ msgstr "Wypełnij poniższe dane kursu"
 
 #: templates/courses/form.html:14 templates/enrollments/form.html:14
 #: templates/grades/form.html:14 templates/students/form.html:14
+#: templates/teachers/form.html:20
 msgid "Back to List"
 msgstr "Powrót do listy"
 
 #: templates/courses/form.html:26 templates/enrollments/form.html:29
 #: templates/grades/form.html:26 templates/students/form.html:26
+#: templates/teachers/form.html:32
 msgid "Please correct the errors below."
 msgstr "Popraw poniższe błędy."
 
@@ -951,6 +996,7 @@ msgstr "Wszystkie semestry"
 
 #: templates/courses/list.html:40 templates/enrollments/list.html:40
 #: templates/grades/list.html:28 templates/students/list.html:45
+#: templates/teachers/list.html:30
 msgid "Filter"
 msgstr "Filtruj"
 
@@ -1093,6 +1139,7 @@ msgid "Student-course enrollments for your courses (read-only)"
 msgstr "Zapisy studentów na Twoje kursy (tylko do odczytu)"
 
 #: templates/enrollments/list.html:34 templates/students/list.html:40
+#: templates/teachers/list.html:25
 msgid "All Status"
 msgstr "Wszystkie statusy"
 
@@ -1235,119 +1282,9 @@ msgstr "Profil"
 msgid "Update your personal information"
 msgstr "Zaktualizuj swoje dane osobowe"
 
-#: templates/profile/index.html:37
-msgid "Security"
-msgstr "Bezpieczeństwo"
-
-#: templates/profile/index.html:39
-#: templates/registration/password_reset_form.html:4
-#: templates/registration/password_reset_form.html:12
-msgid "Reset Password"
-msgstr "Zmiana hasła"
-
-#: templates/profile/index.html:45
+#: templates/profile/index.html:38
 msgid "Save Changes"
 msgstr "Zapisz zmiany"
-
-#: templates/registration/password_reset_complete.html:4
-#: templates/registration/password_reset_complete.html:12
-msgid "Password Reset Complete"
-msgstr "Hasło zostało zmienione"
-
-#: templates/registration/password_reset_complete.html:14
-msgid "Your password has been set. You may go ahead and log in now."
-msgstr "Twoje hasło zostało ustawione. Możesz się teraz zalogować."
-
-#: templates/registration/password_reset_complete.html:17
-msgid "Log In"
-msgstr "Zaloguj się"
-
-#: templates/registration/password_reset_confirm.html:4
-#: templates/registration/password_reset_confirm.html:13
-msgid "Set New Password"
-msgstr "Ustaw nowe hasło"
-
-#: templates/registration/password_reset_confirm.html:14
-msgid ""
-"Please enter your new password twice so we can verify you typed it in "
-"correctly."
-msgstr "Wpisz nowe hasło dwukrotnie, aby potwierdzić jego poprawność."
-
-#: templates/registration/password_reset_confirm.html:21
-msgid "Change Password"
-msgstr "Zmień hasło"
-
-#: templates/registration/password_reset_confirm.html:29
-msgid "Invalid Link"
-msgstr "Nieprawidłowy link"
-
-#: templates/registration/password_reset_confirm.html:31
-msgid ""
-"The password reset link was invalid, possibly because it has already been "
-"used. Please request a new password reset."
-msgstr "Link do zmiany hasła jest nieprawidłowy — prawdopodobnie został już użyty. Poproś o nowy link."
-
-#: templates/registration/password_reset_confirm.html:34
-msgid "Request New Link"
-msgstr "Poproś o nowy link"
-
-#: templates/registration/password_reset_done.html:4
-#: templates/registration/password_reset_done.html:12
-msgid "Email Sent"
-msgstr "Wiadomość wysłana"
-
-#: templates/registration/password_reset_done.html:14
-msgid ""
-"We've emailed you instructions for setting your password, if an account "
-"exists with the email you entered. You should receive them shortly."
-msgstr "Jeśli konto z podanym adresem e-mail istnieje, wysłaliśmy instrukcję ustawienia hasła. Wiadomość powinna dotrzeć w ciągu kilku minut."
-
-#: templates/registration/password_reset_done.html:16
-msgid "Return to Login"
-msgstr "Powrót do logowania"
-
-#: templates/registration/password_reset_email.html:1
-#, python-format
-msgid "Hello %(name)s,"
-msgstr "Witaj %(name)s,"
-
-#: templates/registration/password_reset_email.html:3
-msgid ""
-"You requested a password reset for your Student Management System account."
-msgstr "Zażądano zresetowania hasła do Twojego konta w Systemie Zarządzania Studentami."
-
-#: templates/registration/password_reset_email.html:5
-msgid "Open the link below to choose a new password:"
-msgstr "Otwórz poniższy link, aby ustawić nowe hasło:"
-
-#: templates/registration/password_reset_email.html:8
-msgid "If you did not request this change, you can ignore this email."
-msgstr "Jeśli nie prosiłeś o tę zmianę, zignoruj tę wiadomość."
-
-#: templates/registration/password_reset_email.html:11
-msgid "Student Management System"
-msgstr "System Zarządzania Studentami"
-
-#: templates/registration/password_reset_form.html:13
-msgid ""
-"Enter your email address and we'll send you a link to reset your password."
-msgstr "Podaj swój adres e-mail, a wyślemy Ci link do zmiany hasła."
-
-#: templates/registration/password_reset_form.html:20
-msgid "Please correct the error below."
-msgstr "Popraw poniższy błąd."
-
-#: templates/registration/password_reset_form.html:30
-msgid "Send Reset Link"
-msgstr "Wyślij link"
-
-#: templates/registration/password_reset_form.html:34
-msgid "Back to Login"
-msgstr "Powrót do logowania"
-
-#: templates/registration/password_reset_subject.txt:1
-msgid "Password reset — Student Management System"
-msgstr "Reset hasła — System Zarządzania Studentami"
 
 #: templates/students/confirm_delete.html:4
 #: templates/students/confirm_delete.html:13
@@ -1412,7 +1349,6 @@ msgid "Your Courses & Grades for this Student"
 msgstr "Twoje kursy i oceny tego studenta"
 
 #: templates/students/detail.html:123
-
 msgid "Components"
 msgstr "Składowe"
 
@@ -1473,15 +1409,64 @@ msgstr "Brak studentów pasujących do \"%(query)s\""
 msgid "Get started by adding your first student"
 msgstr "Zacznij od dodania pierwszego studenta"
 
-#~ msgid "Sign in to Student Management System"
-#~ msgstr "Zaloguj się do Systemu Zarządzania Studentami"
+#: templates/teachers/confirm_delete.html:4
+#: templates/teachers/confirm_delete.html:13
+#: templates/teachers/confirm_delete.html:22
+msgid "Delete Teacher"
+msgstr "Usuń nauczyciela"
 
-#~ msgid "Management System"
-#~ msgstr "System Zarządzania"
-
+#: templates/teachers/confirm_delete.html:15
 #, python-format
-#~ msgid "Enrolled Students (%(count)s)"
-#~ msgstr "Zapisani studenci (%(count)s)"
+msgid ""
+"Are you sure you want to delete <strong>%(name)s</strong>? Their courses "
+"will stay in the catalogue, unassigned. This action cannot be undone."
+msgstr "Czy na pewno chcesz usunąć <strong>%(name)s</strong>? Kursy pozostaną w katalogu, bez przypisanego wykładowcy. Tej operacji nie można cofnąć."
 
-#~ msgid "Reports"
-#~ msgstr "Raporty"
+#: templates/teachers/form.html:13
+msgid "Update the lecturer details or set a new password."
+msgstr "Zaktualizuj dane wykładowcy lub ustaw nowe hasło."
+
+#: templates/teachers/form.html:15
+msgid "Create the account and give the lecturer a username and password."
+msgstr "Utwórz konto i przekaż wykładowcy nazwę użytkownika oraz hasło."
+
+#: templates/teachers/form.html:66 templates/teachers/list.html:41
+msgid "Department"
+msgstr "Katedra"
+
+#: templates/teachers/form.html:81
+msgid "New password"
+msgstr "Nowe hasło"
+
+#: templates/teachers/form.html:99
+msgid "Active account"
+msgstr "Aktywne konto"
+
+#: templates/teachers/form.html:105
+msgid "Update Teacher"
+msgstr "Zapisz nauczyciela"
+
+#: templates/teachers/form.html:105
+msgid "Create Teacher"
+msgstr "Utwórz nauczyciela"
+
+#: templates/teachers/list.html:11
+msgid "Issue lecturer accounts and set their passwords"
+msgstr "Nadawaj konta wykładowcom i ustawiaj ich hasła"
+
+#: templates/teachers/list.html:22
+msgid "Search teachers..."
+msgstr "Szukaj nauczycieli..."
+
+#: templates/teachers/list.html:88
+msgid "No Teachers Found"
+msgstr "Nie znaleziono nauczycieli"
+
+#: templates/teachers/list.html:91
+#, python-format
+msgid "No teachers matching \"%(query)s\""
+msgstr "Brak nauczycieli pasujących do \"%(query)s\""
+
+#: templates/teachers/list.html:93
+msgid "Get started by adding your first teacher"
+msgstr "Zacznij od dodania pierwszego nauczyciela"

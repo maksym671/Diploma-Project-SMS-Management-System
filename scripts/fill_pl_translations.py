@@ -23,6 +23,14 @@ TRANSLATIONS = {
         'Student \\"%(name)s\\" został pomyślnie dodany.',
     'Student \\"%(name)s\\" has been updated.': 'Dane studenta \\"%(name)s\\" zostały zaktualizowane.',
     'Student \\"%(name)s\\" has been deleted.': 'Student \\"%(name)s\\" został usunięty.',
+    'Teacher \\"%(name)s\\" has been created.': 'Nauczyciel \\"%(name)s\\" został dodany.',
+    'Teacher \\"%(name)s\\" has been updated.': 'Dane nauczyciela \\"%(name)s\\" zostały zaktualizowane.',
+    'Teacher \\"%(name)s\\" has been deleted.': 'Nauczyciel \\"%(name)s\\" został usunięty.',
+    'A staff account with this email already exists.':
+        'Konto pracownika z tym adresem e-mail już istnieje.',
+    'Leave blank to keep the current password.':
+        'Pozostaw puste, aby zachować obecne hasło.',
+    'The two passwords do not match.': 'Hasła nie są zgodne.',
     'Course \\"%(name)s\\" has been created.': 'Kurs \\"%(name)s\\" został utworzony.',
     'Course \\"%(name)s\\" has been updated.': 'Kurs \\"%(name)s\\" został zaktualizowany.',
     'Course \\"%(name)s\\" has been deleted.': 'Kurs \\"%(name)s\\" został usunięty.',
@@ -122,6 +130,35 @@ TRANSLATIONS = {
     'Get started by adding your first student': 'Zacznij od dodania pierwszego studenta',
     'No students are enrolled in your courses yet':
         'Na Twoje kursy nie zapisał się jeszcze żaden student',
+
+    # --- Teachers ----------------------------------------------------------
+    'Teachers': 'Nauczyciele',
+    'Teacher': 'Nauczyciel',
+    'Issue lecturer accounts and set their passwords':
+        'Nadawaj konta wykładowcom i ustawiaj ich hasła',
+    'Add Teacher': 'Dodaj nauczyciela',
+    'Edit Teacher': 'Edytuj nauczyciela',
+    'Search teachers...': 'Szukaj nauczycieli...',
+    'No Teachers Found': 'Nie znaleziono nauczycieli',
+    'No teachers matching \\"%(query)s\\"': 'Brak nauczycieli pasujących do \\"%(query)s\\"',
+    'Get started by adding your first teacher': 'Zacznij od dodania pierwszego nauczyciela',
+    'Update the lecturer details or set a new password.':
+        'Zaktualizuj dane wykładowcy lub ustaw nowe hasło.',
+    'Create the account and give the lecturer a username and password.':
+        'Utwórz konto i przekaż wykładowcy nazwę użytkownika oraz hasło.',
+    'New password': 'Nowe hasło',
+    'Confirm password': 'Potwierdź hasło',
+    'Password': 'Hasło',
+    'Active account': 'Aktywne konto',
+    'Update Teacher': 'Zapisz nauczyciela',
+    'Create Teacher': 'Utwórz nauczyciela',
+    'Delete Teacher': 'Usuń nauczyciela',
+    'Are you sure you want to delete <strong>%(name)s</strong>? Their courses will stay in the catalogue, unassigned. This action cannot be undone.':
+        'Czy na pewno chcesz usunąć <strong>%(name)s</strong>? Kursy pozostaną w katalogu, bez przypisanego wykładowcy. Tej operacji nie można cofnąć.',
+    'This field is required.': 'To pole jest wymagane.',
+    'Admin Panel': 'Panel administracyjny',
+    'Department': 'Katedra',
+
     'Student Information': 'Informacje o studencie',
     'Study Program': 'Program studiów',
     'Date Enrolled': 'Data zapisu',
@@ -135,8 +172,8 @@ TRANSLATIONS = {
     'Staff Portal': 'Portal wykładowcy',
     'Staff sign-in — manage your courses, grades and attendance':
         'Logowanie dla pracowników — zarządzaj kursami, ocenami i obecnością',
-    'Accounts are issued to lecturers and administrators. Students do not sign in here.':
-        'Konta otrzymują wykładowcy i administratorzy. Studenci nie logują się tutaj.',
+    'Accounts and passwords are issued by an administrator. Students do not sign in here.':
+        'Konta i hasła nadaje administrator. Studenci nie logują się tutaj.',
 
     # --- Grade components ---------------------------------------------------
     'Coursework': 'Praca semestralna',
@@ -183,18 +220,7 @@ TRANSLATIONS = {
         'Nie ma czego zapisać — żaden student nie został odnotowany.',
     'That date could not be read. Using today instead.':
         'Nie udało się odczytać daty. Użyto dzisiejszej.',
-
-    # --- Password-reset email ---------------------------------------------
-    'Hello %(name)s,': 'Witaj %(name)s,',
-    'You requested a password reset for your Student Management System account.':
-        'Zażądano zresetowania hasła do Twojego konta w Systemie Zarządzania Studentami.',
-    'Open the link below to choose a new password:':
-        'Otwórz poniższy link, aby ustawić nowe hasło:',
-    'If you did not request this change, you can ignore this email.':
-        'Jeśli nie prosiłeś o tę zmianę, zignoruj tę wiadomość.',
     'Student Management System': 'System Zarządzania Studentami',
-    'Password reset — Student Management System':
-        'Reset hasła — System Zarządzania Studentami',
     'Your Courses': 'Twoje kursy',
     'Average in Your Courses': 'Średnia na Twoich kursach',
     'Enrolled Courses & Grades': 'Kursy i oceny',
@@ -359,34 +385,9 @@ TRANSLATIONS = {
     'Update your personal information': 'Zaktualizuj swoje dane osobowe',
     'Security': 'Bezpieczeństwo',
     'Save Changes': 'Zapisz zmiany',
-
-    # --- Password reset ----------------------------------------------------
-    'Reset Password': 'Zmiana hasła',
-    "Enter your email address and we'll send you a link to reset your password.":
-        'Podaj swój adres e-mail, a wyślemy Ci link do zmiany hasła.',
-    'Send Reset Link': 'Wyślij link',
-    'Back to Login': 'Powrót do logowania',
-    'Email Sent': 'Wiadomość wysłana',
-    "We've emailed you instructions for setting your password, if an account exists with "
-    'the email you entered. You should receive them shortly.':
-        'Jeśli konto z podanym adresem e-mail istnieje, wysłaliśmy instrukcję ustawienia '
-        'hasła. Wiadomość powinna dotrzeć w ciągu kilku minut.',
-    'Return to Login': 'Powrót do logowania',
-    'Set New Password': 'Ustaw nowe hasło',
-    'Please enter your new password twice so we can verify you typed it in correctly.':
-        'Wpisz nowe hasło dwukrotnie, aby potwierdzić jego poprawność.',
-    'Change Password': 'Zmień hasło',
-    'Invalid Link': 'Nieprawidłowy link',
-    'The password reset link was invalid, possibly because it has already been used. Please '
-    'request a new password reset.':
-        'Link do zmiany hasła jest nieprawidłowy — prawdopodobnie został już użyty. '
-        'Poproś o nowy link.',
-    'Request New Link': 'Poproś o nowy link',
-    'Password Reset Complete': 'Hasło zostało zmienione',
-    'Your password has been set. You may go ahead and log in now.':
-        'Twoje hasło zostało ustawione. Możesz się teraz zalogować.',
-    'Log In': 'Zaloguj się',
     'Toggle theme': 'Przełącz motyw',
+
+    # --- Theme / chrome ----------------------------------------------------
     'Active Enrollments': 'Aktywne zapisy',
     'Enrollment Date': 'Data zapisu',
 
@@ -457,6 +458,7 @@ HEADER_FIELDS = {
 
 
 def fill_header(block: str) -> str:
+    block = re.sub(r'^#, fuzzy\n', '', block, flags=re.M)
     for field, value in HEADER_FIELDS.items():
         block = re.sub(rf'"{field}: .*?\\n"', f'"{field}: {value}\\\\n"', block)
     return block

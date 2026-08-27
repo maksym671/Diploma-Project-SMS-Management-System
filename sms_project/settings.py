@@ -201,37 +201,8 @@ STORAGES = {
 
 
 # ---------------------------------------------------------------------------
-# Email (password reset)
+# CSRF (needed behind Render's HTTPS proxy and on a custom domain)
 # ---------------------------------------------------------------------------
-# Local default: print emails to console.
-# Production: set EMAIL_BACKEND=smtp and SMTP_* / EMAIL_* env vars.
-
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', 'noreply@sms.local')
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_SUBJECT_PREFIX = '[SMS] '
-
-email_backend = env('EMAIL_BACKEND', 'console' if DEBUG else 'smtp').lower()
-if email_backend in {'console', 'django.core.mail.backends.console.EmailBackend'}:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-elif email_backend in {'file', 'django.core.mail.backends.filebased.EmailBackend'}:
-    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-    EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
-elif email_backend in {'brevo', 'core.mail.BrevoAPIBackend'}:
-    # Delivery over HTTPS. Hosts that firewall outbound SMTP (Render's free
-    # plan among them) let this through, because it is an ordinary API call
-    # on port 443.
-    EMAIL_BACKEND = 'core.mail.BrevoAPIBackend'
-    BREVO_API_KEY = env('BREVO_API_KEY', '')
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = env('EMAIL_HOST', 'smtp.gmail.com')
-    EMAIL_PORT = int(env('EMAIL_PORT', '587'))
-    EMAIL_HOST_USER = env('EMAIL_HOST_USER', '')
-    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', '')
-    EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
-    EMAIL_USE_SSL = env_bool('EMAIL_USE_SSL', False)
-
-# Public site URL used in password-reset emails
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in env('CSRF_TRUSTED_ORIGINS', '').split(',')
