@@ -1240,3 +1240,33 @@ class RegressionTests(TestCase):
             self.assertIn('-c', text)
             self.assertIn('--threads', text)
             self.assertIn(str(config), text)
+
+
+class DashboardScriptLoadingTests(TestCase):
+    """The dashboard fills its counters and charts from a `turbo:load` handler.
+
+    Turbo starts as soon as the document reaches readyState "interactive",
+    which happens *before* deferred scripts execute. A deferred main.js
+    therefore registers its listener after the event has already fired, and a
+    cold load — exactly what a visitor gets right after signing in — leaves
+    every counter at 0 and every chart blank.
+    """
+
+    def setUp(self):
+        self.teacher = User.objects.create_user(
+            username='script-teacher', password='pass12345', role='teacher'
+        )
+        self.client.force_login(self.teacher)
+
+    def test_app_javascript_is_not_deferred(self):
+        html = self.client.get(reverse('dashboard')).content.decode()
+        tag = re.search(r'<script[^>]*js/main[^>]*>', html)
+        self.assertIsNotNone(tag, 'main.js is not loaded at all')
+        self.assertNotIn('defer', tag.group(0))
+
+    def test_template_comments_do_not_leak_into_the_page(self):
+        """Django's {# #} is single-line; a wrapped one renders as text."""
+        html = self.client.get(reverse('dashboard')).content.decode()
+        body = html[html.index('<body'):]
+        self.assertNotIn('#}', body)
+        self.assertNotIn('{#', body)

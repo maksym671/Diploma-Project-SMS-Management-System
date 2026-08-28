@@ -35,7 +35,14 @@
     <script src="{% static 'vendor/turbo/turbo.es2017-umd.js' %}"></script>
     {# Chart.js + app JS stay in head: Turbo re-runs body scripts on each tab. #}
     <script defer src="{% static 'vendor/chartjs/chart.umd.min.js' %}"></script>
-    <script defer src="{% static 'js/main.js' %}"></script>
+    {% comment %}
+        main.js must NOT be deferred. Turbo starts on readyState "interactive",
+        which the browser reaches *before* deferred scripts run, so a deferred
+        main.js registers its turbo:load listener too late and misses the event
+        on a cold load — leaving the dashboard counters at 0 and the charts
+        blank until the first in-app navigation.
+    {% endcomment %}
+    <script src="{% static 'js/main.js' %}"></script>
 </head>
 <body>
     {% block body %}
