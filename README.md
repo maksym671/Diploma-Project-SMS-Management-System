@@ -40,13 +40,33 @@ editing `style.css` or `main.js` and reload to no visible effect. Hard-reload
 python manage.py test
 ```
 
-80 tests cover models, authentication, role-based access and data isolation,
+85 tests cover models, authentication, role-based access and data isolation,
 pagination, the dashboard JSON API, enrolment capacity rules, weighted grade
 components, bulk attendance marking, grade authorship, Polish localisation,
 the deployment seed step, and a smoke render of every page for both roles.
 
 `.github/workflows/ci.yml` runs the same suite on every push, plus a check for
 missing migrations and `manage.py check --deploy` against production settings.
+
+### Testing the live deployment
+
+The unit suite runs against a throwaway database, so it cannot catch a broken
+domain, an expired certificate or a CSRF origin that was never added. This does:
+
+```bash
+python3 scripts/live_smoke.py https://thesms.me
+```
+
+It signs in as the seeded demo teachers and asserts 43 properties of the
+running site — the TLS certificate has time left on it, HSTS and
+`X-Frame-Options` are sent, `www` redirects to the apex, anonymous pages
+redirect to the login screen, a wrong password is rejected, a POST without a
+CSRF token gets 403, each teacher sees only their own courses, `/teachers/` is
+closed to teachers, both CSV exports work, logout is POST-only, `admin` no
+longer accepts
+the published demo password, and the Polish locale switches. It only reads, so
+it is safe to run against production.
+`.github/workflows/smoke.yml` runs it every six hours and on demand.
 
 ## Translations
 

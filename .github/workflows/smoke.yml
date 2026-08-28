@@ -1,0 +1,38 @@
+name: Live smoke test
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployment to test
+        default: https://thesms.me
+        required: false
+
+jobs:
+  smoke:
+    name: Sign in to the deployed site and check it
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Wake the instance
+        # Render's free tier sleeps; the first hit can take most of a minute.
+        run: curl -sS -o /dev/null --max-time 90 "${BASE_URL}/login/" || true
+        env:
+          BASE_URL: ${{ inputs.base_url || 'https://thesms.me' }}
+
+      - name: Run the smoke test
+        run: python scripts/live_smoke.py "${BASE_URL}"
+        env:
+          BASE_URL: ${{ inputs.base_url || 'https://thesms.me' }}

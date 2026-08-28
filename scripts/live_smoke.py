@@ -5,7 +5,12 @@
 Signs in with the seeded demo teachers, checks authentication, CSRF, RBAC
 isolation, CSV export and logout, and never writes to the remote database.
 """
-import re, sys, requests
+import re, socket, ssl, sys
+from datetime import datetime, timezone
+from urllib.parse import urlparse
+
+import certifi
+import requests
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "https://thesms.me"
 PW = "demo1234"  # seeded demo password from core/management/commands/seed_data.py
@@ -27,7 +32,34 @@ def login(user):
                headers={"Referer": f"{BASE}/login/"}, allow_redirects=True)
     return s, r
 
-print(f"== anonymous access ({BASE}) ==")
+def cert_days_left(host):
+    # certifi's bundle, because a stock macOS Python has no system CA store.
+    ctx = ssl.create_default_context(cafile=certifi.where())
+    with ctx.wrap_socket(socket.create_connection((host, 443), timeout=20), server_hostname=host) as sock:
+        not_after = sock.getpeercert()["notAfter"]
+    expires = datetime.strptime(not_after, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+    return (expires - datetime.now(timezone.utc)).days
+
+
+print(f"== domain and transport ({BASE}) ==")
+host = urlparse(BASE).hostname
+try:
+    days = cert_days_left(host)
+    check("TLS certificate valid for >10 more days", days > 10, f"{days} days left")
+except Exception as exc:  # noqa: BLE001 - report, do not crash the run
+    check("TLS certificate readable", False, repr(exc))
+
+r = requests.get(f"{BASE}/login/", timeout=30)
+check("HSTS header present", "strict-transport-security" in {k.lower() for k in r.headers})
+check("clickjacking header present", r.headers.get("x-frame-options") == "DENY",
+      r.headers.get("x-frame-options", "missing"))
+
+if host and not host.startswith("www."):
+    r = requests.get(f"https://www.{host}/", timeout=30, allow_redirects=False)
+    check("www redirects to the apex", r.status_code in (301, 302) and host in r.headers.get("location", ""),
+          f"[{r.status_code}] {r.headers.get('location', '')}")
+
+print(f"\n== anonymous access ({BASE}) ==")
 for path in ["/", "/students/", "/courses/", "/grades/", "/attendance/", "/teachers/"]:
     r = requests.get(f"{BASE}{path}", timeout=30, allow_redirects=False)
     check(f"{path} blocked for anon", r.status_code in (301, 302) and "/login/" in r.headers.get("location", ""),
