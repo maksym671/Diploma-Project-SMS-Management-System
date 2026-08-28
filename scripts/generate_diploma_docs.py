@@ -168,7 +168,8 @@ def build() -> Document:
         'Infrastructure:\n'
         'Render + Neon (build.sh: migrate + collectstatic + seed_demo), '
         'English/Polish i18n, HTTPS-oriented security settings when DEBUG=False, '
-        'live at https://diploma-project-sms-management-system.onrender.com'
+        'live at https://thesms.me (Render backup: '
+        'https://diploma-project-sms-management-system.onrender.com)'
     )
 
     add_basic_info_table(doc, [
@@ -200,7 +201,8 @@ def build() -> Document:
             'with custom CSS and JavaScript; the application layer implements business rules '
             'and RBAC; the data layer uses a relational schema (SQLite locally, PostgreSQL in '
             'production via DATABASE_URL). The application is live at '
-            'https://diploma-project-sms-management-system.onrender.com.',
+            'https://thesms.me (Render backup: '
+            'https://diploma-project-sms-management-system.onrender.com).',
         ),
         (
             'Competitor analysis',
@@ -314,7 +316,8 @@ def build() -> Document:
         'deploy time, so that password is not left on the public internet. WhiteNoise '
         'serves hashed/compressed static files. This allows the same codebase to run locally '
         'on SQLite and on a hosted PostgreSQL instance without code changes. '
-        'The public service is https://diploma-project-sms-management-system.onrender.com. '
+        'The public service is https://thesms.me (Render backup: '
+        'https://diploma-project-sms-management-system.onrender.com). '
         'A live demonstration uses the teacher account prof.martinez / demo1234; a second '
         'teacher, prof.chen / demo1234, shows that each lecturer sees only their own courses.',
     )

@@ -68,6 +68,9 @@ machine with no internet connection. Refresh the fonts with:
 python scripts/vendor_fonts.py
 ```
 
+Live: https://thesms.me  
+Backup: https://diploma-project-sms-management-system.onrender.com
+
 ## Production notes
 
 Set environment variables (see `.env.example`):

@@ -220,12 +220,12 @@ Advanced DNS (TTL 1 min), без AAAA:
 | Type | Host | Value |
 |------|------|--------|
 | A | `@` | `216.24.57.1` |
-| CNAME | `www` | `diploma-project-sms-management-system.onrender.com.` |
+| CNAME | `www` | `thesms.me.` |
 
-Render → SMS → Settings → Custom Domains → Add `thesms.me` → Verify.  
+Render → SMS → Settings → Custom Domains: `thesms.me` and `www` verified, TLS issued.  
 Environment: `CUSTOM_DOMAIN=thesms.me`.
 
-Пока Verify красный — Render-URL. Слайды уже с `https://thesms.me`.
+Домен живой. Запасной адрес — Render-URL выше.
 
 ---
 
