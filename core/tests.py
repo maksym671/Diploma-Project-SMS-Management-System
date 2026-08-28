@@ -533,9 +533,19 @@ class BulkAttendanceTests(TestCase):
 
 class DemoAccountTests(TestCase):
     def test_seed_demo_creates_staff_who_can_sign_in(self):
-        call_command('seed_demo', stdout=StringIO())
+        # Clear the override so the result does not depend on the developer's .env.
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop('DJANGO_ADMIN_PASSWORD', None)
+            call_command('seed_demo', stdout=StringIO())
         self.assertTrue(User.objects.filter(username='admin', role='admin').exists())
         self.assertTrue(self.client.login(username='admin', password='demo1234'))
+
+    def test_seed_demo_replaces_the_published_admin_password(self):
+        """In production DJANGO_ADMIN_PASSWORD must retire the documented one."""
+        with mock.patch.dict(os.environ, {'DJANGO_ADMIN_PASSWORD': 'not-the-demo-one'}):
+            call_command('seed_demo', stdout=StringIO())
+        self.assertFalse(self.client.login(username='admin', password='demo1234'))
+        self.assertTrue(self.client.login(username='admin', password='not-the-demo-one'))
 
 
 class TeacherDataIsolationTests(TestCase):
