@@ -181,6 +181,17 @@ TRANSLATIONS = {
     'Final exam': 'Egzamin',
     'Retake': 'Poprawka',
     'Component': 'Składowa',
+    'Weight': 'Waga',
+    'Back to the dashboard': 'Powrót do panelu głównego',
+    'An enrolment can carry several graded components':
+        'Jeden zapis może mieć kilka ocenianych składowych',
+    'Page not found': 'Nie znaleziono strony',
+    'That address does not lead anywhere in the portal.':
+        'Ten adres nie prowadzi nigdzie w portalu.',
+    'That address does not lead anywhere in the portal. It may have been '
+    'mistyped, or the record behind it is gone.':
+        'Ten adres nie prowadzi nigdzie w portalu. Mógł zostać błędnie wpisany '
+        'albo rekord, którego dotyczył, już nie istnieje.',
     'Components': 'Składowe',
     'Course Mark': 'Ocena końcowa',
     'Weight %': 'Waga %',

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Page not found" %}{% endblock %}
+{% block breadcrumb %}{% trans "Page not found" %}{% endblock %}
+
+{% block content %}{% include "partials/error_card.html" with code="404" heading=_("Page not found") message=_("That address does not lead anywhere in the portal. It may have been mistyped, or the record behind it is gone.") %}{% endblock %}
+
+{% block content_noauth %}
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
+    {% include "partials/error_card.html" with code="404" heading=_("Page not found") message=_("That address does not lead anywhere in the portal.") %}
+</div>
+{% endblock %}

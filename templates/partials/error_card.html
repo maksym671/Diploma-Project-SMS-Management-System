@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="card" style="max-width: 520px; margin: 48px auto; text-align: center;">
+    <div class="card-body" style="padding: 40px 32px;">
+        <div style="font-size: 56px; font-weight: 700; line-height: 1; color: var(--accent);">{{ code }}</div>
+        <h1 class="page-title" style="margin-top: 12px;">{{ heading }}</h1>
+        <p class="page-subtitle" style="margin-top: 8px;">{{ message }}</p>
+        <a href="/" class="btn btn-primary mt-2" style="margin-top: 24px;">
+            <i class="bi bi-house-door"></i> {% trans "Back to the dashboard" %}
+        </a>
+    </div>
+</div>

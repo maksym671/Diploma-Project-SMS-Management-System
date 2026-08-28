@@ -12,7 +12,8 @@ from django.db import connection
 from django.test import TestCase, Client, override_settings
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
+from django.utils.translation import gettext
 
 from core.forms import GradeForm
 from core.models import (
@@ -1310,3 +1311,57 @@ class TurboFormStatusTests(TestCase):
             with self.subTest(view=name):
                 response = self.client.post(reverse(name), {})
                 self.assertEqual(response.status_code, 422)
+
+
+class ErrorPageTests(TestCase):
+    """A mistyped URL in production must not drop the visitor onto bare text."""
+
+    @override_settings(DEBUG=False, ALLOWED_HOSTS=['*'])
+    def test_404_uses_the_branded_template(self):
+        response = self.client.get('/definitely-not-a-page/')
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, 'Page not found', status_code=404)
+        self.assertContains(response, 'Back to the dashboard', status_code=404)
+
+    @override_settings(DEBUG=False, ALLOWED_HOSTS=['*'])
+    def test_404_is_branded_for_a_signed_in_user_too(self):
+        user = User.objects.create_user(
+            username='lost-teacher', password='pass12345', role='teacher'
+        )
+        self.client.force_login(user)
+        response = self.client.get('/definitely-not-a-page/')
+        self.assertContains(response, 'Page not found', status_code=404)
+
+    def test_500_template_renders_without_a_request(self):
+        """Django renders 500.html with an empty context — it must not need one."""
+        from django.template.loader import get_template
+
+        html = get_template('500.html').render({})
+        self.assertIn('Something went wrong', html)
+
+
+class TranslationCatalogueTests(TestCase):
+    """A fuzzy or empty entry silently falls back to English on a Polish page."""
+
+    def setUp(self):
+        self.catalogue = (
+            settings.BASE_DIR / 'locale' / 'pl' / 'LC_MESSAGES' / 'django.po'
+        ).read_text(encoding='utf-8')
+
+    def test_no_entry_is_marked_fuzzy(self):
+        """msgfmt drops fuzzy entries, so the English string ships instead."""
+        self.assertNotIn('#, fuzzy', self.catalogue)
+
+    def test_every_message_is_translated(self):
+        entries = re.findall(
+            r'\nmsgid "((?:[^"\\]|\\.)+)"\nmsgstr ""\n(?!")', self.catalogue
+        )
+        self.assertEqual(entries, [], f'untranslated: {entries[:5]}')
+
+    def test_the_new_pages_speak_polish(self):
+        with translation.override('pl'):
+            self.assertEqual(gettext('Page not found'), 'Nie znaleziono strony')
+            self.assertEqual(gettext('Weight'), 'Waga')
+            self.assertEqual(
+                gettext('Back to the dashboard'), 'Powrót do panelu głównego'
+            )
