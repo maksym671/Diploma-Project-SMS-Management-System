@@ -50,6 +50,18 @@ def visible_courses(user):
     return Course.objects.all()
 
 
+def render_form(request, template, context):
+    """Re-render a form page after a failed submission.
+
+    Turbo discards a 200 response to a form submission — "Form responses must
+    redirect to another location" — so an invalid form sent back with 200
+    leaves the visitor staring at an unchanged page with no error on it.
+    422 is the status Turbo renders, and it is the honest one for input that
+    was well-formed but did not validate.
+    """
+    status = 422 if request.method == 'POST' else 200
+    return render(request, template, context, status=status)
+
 # ─── Authentication ─────────────────────────────────────────────────
 
 def login_view(request):
@@ -72,7 +84,7 @@ def login_view(request):
     else:
         form = LoginForm()
 
-    return render(request, 'auth/login.html', {'form': form})
+    return render_form(request, 'auth/login.html', {'form': form})
 
 
 @require_POST
@@ -307,7 +319,7 @@ def student_create(request):
     else:
         form = StudentForm()
 
-    return render(request, 'students/form.html', {'form': form, 'title': _('Add New Student')})
+    return render_form(request, 'students/form.html', {'form': form, 'title': _('Add New Student')})
 
 
 @login_required
@@ -327,7 +339,7 @@ def student_update(request, pk):
     else:
         form = StudentForm(instance=student)
 
-    return render(request, 'students/form.html', {'form': form, 'title': _('Edit Student'), 'student': student})
+    return render_form(request, 'students/form.html', {'form': form, 'title': _('Edit Student'), 'student': student})
 
 
 @login_required
@@ -401,7 +413,7 @@ def teacher_create(request):
     else:
         form = TeacherForm()
 
-    return render(request, 'teachers/form.html', {
+    return render_form(request, 'teachers/form.html', {
         'form': form,
         'title': _('Add Teacher'),
     })
@@ -426,7 +438,7 @@ def teacher_update(request, pk):
     else:
         form = TeacherForm(instance=teacher)
 
-    return render(request, 'teachers/form.html', {
+    return render_form(request, 'teachers/form.html', {
         'form': form,
         'title': _('Edit Teacher'),
         'teacher': teacher,
@@ -514,7 +526,7 @@ def course_create(request):
     else:
         form = CourseForm()
 
-    return render(request, 'courses/form.html', {'form': form, 'title': _('Add New Course')})
+    return render_form(request, 'courses/form.html', {'form': form, 'title': _('Add New Course')})
 
 
 @login_required
@@ -534,7 +546,7 @@ def course_update(request, pk):
     else:
         form = CourseForm(instance=course)
 
-    return render(request, 'courses/form.html', {'form': form, 'title': _('Edit Course'), 'course': course})
+    return render_form(request, 'courses/form.html', {'form': form, 'title': _('Edit Course'), 'course': course})
 
 
 @login_required
@@ -604,7 +616,7 @@ def enrollment_create(request):
     else:
         form = EnrollmentForm()
 
-    return render(request, 'enrollments/form.html', {'form': form, 'title': _('New Enrollment')})
+    return render_form(request, 'enrollments/form.html', {'form': form, 'title': _('New Enrollment')})
 
 
 @login_required
@@ -621,7 +633,7 @@ def enrollment_update(request, pk):
     else:
         form = EnrollmentForm(instance=enrollment)
 
-    return render(request, 'enrollments/form.html', {'form': form, 'title': _('Edit Enrollment'), 'enrollment': enrollment})
+    return render_form(request, 'enrollments/form.html', {'form': form, 'title': _('Edit Enrollment'), 'enrollment': enrollment})
 
 
 @login_required
@@ -686,7 +698,7 @@ def grade_create(request):
     else:
         form = GradeForm(user=request.user)
 
-    return render(request, 'grades/form.html', {'form': form, 'title': _('Assign Grade')})
+    return render_form(request, 'grades/form.html', {'form': form, 'title': _('Assign Grade')})
 
 
 @login_required
@@ -711,7 +723,7 @@ def grade_update(request, pk):
     else:
         form = GradeForm(instance=grade, user=request.user)
 
-    return render(request, 'grades/form.html', {'form': form, 'title': _('Edit Grade'), 'grade': grade})
+    return render_form(request, 'grades/form.html', {'form': form, 'title': _('Edit Grade'), 'grade': grade})
 
 
 @login_required
@@ -864,7 +876,7 @@ def attendance_create(request):
     else:
         form = AttendanceForm(user=request.user)
     
-    return render(request, 'attendance/form.html', {'form': form, 'title': _('Mark Attendance')})
+    return render_form(request, 'attendance/form.html', {'form': form, 'title': _('Mark Attendance')})
 
 
 @login_required
@@ -883,7 +895,7 @@ def attendance_update(request, pk):
             return redirect('attendance_list')
     else:
         form = AttendanceForm(instance=att, user=request.user)
-    return render(request, 'attendance/form.html', {'form': form, 'title': _('Edit Attendance'), 'att': att})
+    return render_form(request, 'attendance/form.html', {'form': form, 'title': _('Edit Attendance'), 'att': att})
 
 
 @login_required

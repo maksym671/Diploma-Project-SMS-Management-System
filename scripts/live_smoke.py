@@ -74,7 +74,9 @@ s = requests.Session()
 t = re.search(r'name="csrfmiddlewaretoken" value="([^"]+)"', s.get(f"{BASE}/login/", timeout=30).text).group(1)
 r = s.post(f"{BASE}/login/", data={"csrfmiddlewaretoken": t, "username": "prof.martinez", "password": "wrong-pass"},
            headers={"Referer": f"{BASE}/login/"}, timeout=30, allow_redirects=False)
-check("wrong password not authenticated", r.status_code == 200 and "sessionid" not in s.cookies)
+# 422, not 200: Turbo only renders a form's error page on a 4xx.
+check("wrong password not authenticated", r.status_code == 422 and "sessionid" not in s.cookies,
+      f"[{r.status_code}]")
 
 print("\n== CSRF protection (POST without token) ==")
 r = requests.post(f"{BASE}/login/", data={"username": "prof.martinez", "password": PW}, timeout=30)

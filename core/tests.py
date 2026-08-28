@@ -183,8 +183,10 @@ class AuthAndAccessTests(TestCase):
             reverse('login'),
             {'username': 'teacher', 'password': 'wrong'},
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Invalid username or password')
+        # 422, not 200: Turbo discards a 200 answer to a form POST, and the
+        # rejection notice would never reach the screen.
+        self.assertEqual(response.status_code, 422)
+        self.assertContains(response, 'Invalid username or password', status_code=422)
 
     def test_dashboard_requires_login(self):
         response = self.client.get(reverse('dashboard'))
@@ -830,8 +832,8 @@ class EnrollmentCapacityTests(TestCase):
         response = self.client.post(reverse('enrollment_create'), {
             'student': self.second.pk, 'course': self.course.pk, 'status': 'active',
         })
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'is full')
+        self.assertEqual(response.status_code, 422)
+        self.assertContains(response, 'is full', status_code=422)
         self.assertEqual(self.course.enrollments.count(), 1)
         self.assertEqual(self.course.available_seats, 0)
 
@@ -853,7 +855,7 @@ class EnrollmentCapacityTests(TestCase):
         response = self.client.post(reverse('enrollment_create'), {
             'student': self.first.pk, 'course': big.pk, 'status': 'active',
         })
-        self.assertContains(response, 'already enrolled')
+        self.assertContains(response, 'already enrolled', status_code=422)
 
 
 class SmokeRenderTests(TestCase):
@@ -1270,3 +1272,41 @@ class DashboardScriptLoadingTests(TestCase):
         body = html[html.index('<body'):]
         self.assertNotIn('#}', body)
         self.assertNotIn('{#', body)
+
+
+class TurboFormStatusTests(TestCase):
+    """An invalid submission must come back as 422, never 200.
+
+    Turbo Drive refuses to render a 200 response to a form POST — it logs
+    "Form responses must redirect to another location" and leaves the old page
+    on screen. Every validation message in the application would be invisible.
+    """
+
+    FORM_VIEWS = [
+        'student_create', 'course_create', 'enrollment_create',
+        'grade_create', 'attendance_create', 'teacher_create',
+    ]
+
+    def setUp(self):
+        self.admin = User.objects.create_user(
+            username='turbo-admin', password='pass12345', role='admin'
+        )
+
+    def test_invalid_login_is_unprocessable(self):
+        response = self.client.post(
+            reverse('login'), {'username': 'turbo-admin', 'password': 'nope'}
+        )
+        self.assertEqual(response.status_code, 422)
+
+    def test_form_pages_answer_get_with_200(self):
+        self.client.force_login(self.admin)
+        for name in self.FORM_VIEWS:
+            with self.subTest(view=name):
+                self.assertEqual(self.client.get(reverse(name)).status_code, 200)
+
+    def test_invalid_submissions_are_unprocessable(self):
+        self.client.force_login(self.admin)
+        for name in self.FORM_VIEWS:
+            with self.subTest(view=name):
+                response = self.client.post(reverse(name), {})
+                self.assertEqual(response.status_code, 422)
