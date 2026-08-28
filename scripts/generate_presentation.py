@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SHOTS = ROOT / 'docs' / 'screenshots'
 OUTPUT = ROOT / 'Maksym_Shpak_Diploma_Presentation.pptx'
 
-LIVE_URL = 'diploma-project-sms-management-system.onrender.com'
+LIVE_URL = 'thesms.me'
 LIVE_HREF = 'https://' + LIVE_URL
 UNI_URL = 'https://www.vizja.pl'
 DEMO_TEACHER = 'prof.martinez'

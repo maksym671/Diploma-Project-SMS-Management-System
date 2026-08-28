@@ -20,7 +20,7 @@ services:
       - key: DEBUG
         value: "False"
 
-      # Apex + www of the Namecheap .me (e.g. sms-shpak.me). Also add it under
+      # Apex + www of the Namecheap .me (e.g. thesms.me). Also add it under
       # Settings → Custom Domains, then point DNS at this service.
       - key: CUSTOM_DOMAIN
         sync: false
