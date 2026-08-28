@@ -11,6 +11,25 @@
     if (window.__smsAppLoaded) return;
     window.__smsAppLoaded = true;
 
+/* Turbo runs every visit inside a view transition but never attaches a
+   rejection handler to the promises the API hands back. The browser rejects
+   them with InvalidStateError whenever the transition cannot run — most
+   often because the document is not visible, i.e. the page is loading in a
+   background tab — and that surfaced as an uncaught rejection per visit.
+   Attach the missing handlers, and only those, so real errors still show. */
+if (typeof document.startViewTransition === 'function') {
+    const startViewTransition = document.startViewTransition.bind(document);
+    document.startViewTransition = function (callback) {
+        const transition = startViewTransition(callback);
+        ['ready', 'finished', 'updateCallbackDone'].forEach(name => {
+            if (transition[name] && typeof transition[name].catch === 'function') {
+                transition[name].catch(() => {});
+            }
+        });
+        return transition;
+    };
+}
+
 /* Turbo fires `turbo:load` on the initial load too. Chart.js lives in <head>
    (evaluated once); this file also lives there, so listeners register once.
    Page widgets re-run on every visit because the main column is replaced. */
