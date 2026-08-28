@@ -115,7 +115,9 @@ CSV справа — тоже только её данные.
 
 Переключатель EN → PL в шапке. Студенты → Studenci, курсы → Kursy, выход → Wyloguj.
 
-Сказать: *«312 strings, session locale, no page reload of the whole app — Turbo keeps the URL.»*
+Сказать: *«312 strings; the choice is kept in the `django_language` cookie and
+LocaleMiddleware reads it on every request. Turbo swaps the page without a full
+reload.»*
 
 Вернуть EN, чтобы комиссия читала дальше по-английски.
 
@@ -221,8 +223,10 @@ Unique `(enrollment, date)`. Статусы present / absent / late. Mark Class 
 
 ### Как сделан польский?
 
-`gettext` в шаблонах, моделях, сообщениях, заголовках CSV. `set_language`,
-локаль в сессии. `django.mo` в репозитории — деплой не требует gettext на
+`gettext` в шаблонах, моделях, сообщениях, заголовках CSV. `set_language`
+пишет выбор в cookie `django_language` — **не** в сессию: хранение локали в
+сессии Django убрал в 4.0, а здесь 6.0. Читает его `LocaleMiddleware`, дальше
+идёт заголовок `Accept-Language`. `django.mo` в репозитории — деплой не требует gettext на
 сервере. 312 строк, 0 непереведённых и 0 помеченных `fuzzy` — последнее важно:
 `msgfmt` выбрасывает fuzzy-записи, и такая строка молча вышла бы по-английски.
 Это стерегёт тест.

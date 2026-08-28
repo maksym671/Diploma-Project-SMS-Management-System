@@ -283,9 +283,12 @@ def build() -> Document:
     add_para(
         doc,
         'The HTML dashboard aggregates KPIs (students, courses, enrolments, average grade) '
-        'and chart series (grade distribution, enrolments per course). Endpoint '
-        'GET /api/dashboard/ returns the same metrics as JSON, scoped by role, so charts '
-        'or future SPA clients can refresh data without reloading the page.',
+        'and chart series (grade distribution, enrolments per course). The page itself is '
+        'server-rendered: both the tiles and the chart series arrive in the HTML, so no '
+        'request is needed before the dashboard is readable. Endpoint GET /api/dashboard/ '
+        'exposes the same figures as JSON for external clients. Both call one function, '
+        'dashboard_metrics(), which applies the role scoping, so the two views of the data '
+        'cannot drift apart.',
     )
     add_para(doc, 'Example response fields:', bold=True)
     add_para(
@@ -327,9 +330,12 @@ def build() -> Document:
         doc,
         'The interface is bilingual. Templates, model choices, flash messages and CSV '
         'headers go through Django i18n. The language switch keeps the current page and '
-        'stores the choice in the session. The compiled Polish catalogue (django.mo) is '
-        'committed so the deploy image does not depend on gettext. LocalizationTests '
-        'guard that English and Polish pages actually differ.',
+        'stores the choice in the django_language cookie, which LocaleMiddleware reads '
+        'on every request. The compiled Polish catalogue (django.mo) is committed so the '
+        'deploy image does not depend on gettext. LocalizationTests guard that English '
+        'and Polish pages actually differ, and TranslationCatalogueTests fail on any '
+        'fuzzy or untranslated entry, because msgfmt drops fuzzy messages and they would '
+        'ship as English.',
     )
 
     # 3. Screenshots
