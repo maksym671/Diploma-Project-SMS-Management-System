@@ -116,9 +116,9 @@ All core objectives were met:
 - CRUD workflows with form validation and flash messages
 - Weighted grade components, authorship audit, bulk class attendance
 - Dashboard KPIs and role-scoped REST endpoint /api/dashboard/
-- Bilingual interface (English / Polish, 308 translatable strings)
+- Bilingual interface (English / Polish, 312 translatable strings)
 - Staff accounts provisioned by an administrator (no public registration)
-- Automated test suite (80 tests) covering models, auth, API and CRUD
+- Automated test suite (96 tests) covering models, auth, API and CRUD
 - Deployment-ready settings (Gunicorn, WhiteNoise, Postgres via DATABASE_URL)
 The project demonstrates that a production-capable academic administration system can be delivered by a single developer within an engineering diploma timeframe, using a coherent Django monolith suitable for oral examination and further maintenance.
 Future development priorities:

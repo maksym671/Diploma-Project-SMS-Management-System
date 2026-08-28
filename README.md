@@ -70,7 +70,7 @@ it is safe to run against production.
 
 ## Translations
 
-The interface is fully translated into Polish (308 messages, 0 untranslated).
+The interface is fully translated into Polish (312 messages, 0 untranslated).
 
 ```bash
 python manage.py makemessages -l pl --ignore=.venv --ignore=staticfiles
