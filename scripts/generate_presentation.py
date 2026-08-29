@@ -402,7 +402,7 @@ def slide_agenda(prs):
         ('02', 'Comparative Analysis',
          'Moodle, USOS, Google Classroom — and the gap'),
         ('03', 'Technology Stack',
-         'Django 6, Python 3.12, PostgreSQL 16'),
+         'Django 6, Python 3.12, PostgreSQL 18'),
         ('04', 'System Architecture',
          'Browser › Render TLS › Gunicorn › PostgreSQL'),
         ('05', 'Database Design',
@@ -521,7 +521,7 @@ def slide_stack(prs):
     slide = head(prs, 5, 'Technology Stack', kicker='Chosen for a maintainable monolith')
     groups = [
         ('Backend', 'Runtime · data · authentication', ACCENT, [
-            'Python 3.12', 'Django 6.0.6', 'PostgreSQL 16 (Neon)',
+            'Python 3.12', 'Django 6.0.6', 'PostgreSQL 18 (Neon)',
             'SQLite 3 for development', 'Django session authentication',
             'Custom user model with roles', 'Django ORM · 6 migrations',
             'dj-database-url 2.1',
@@ -571,7 +571,7 @@ def slide_architecture(prs):
         ('CLIENT', 'Browser', 'HTML · CSS · ES6\nTurbo navigation', ACCENT),
         ('EDGE', 'Render · TLS 443', 'HTTPS, HSTS\nstatic via WhiteNoise', TEAL),
         ('APPLICATION', 'Gunicorn + Django 6', 'URL › View › Template\nORM aggregation', VIOLET),
-        ('DATA', 'PostgreSQL 16', 'Neon managed\nDATABASE_URL, one codebase', GREEN),
+        ('DATA', 'PostgreSQL 18', 'Neon managed\nDATABASE_URL, one codebase', GREEN),
     ]
     bw = 2.82
     gap = (CONTENT_W - 4 * bw) / 3
