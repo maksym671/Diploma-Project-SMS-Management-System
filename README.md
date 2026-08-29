@@ -48,6 +48,17 @@ the deployment seed step, and a smoke render of every page for both roles.
 `.github/workflows/ci.yml` runs the same suite on every push, plus a check for
 missing migrations and `manage.py check --deploy` against production settings.
 
+The defence deck and the submitted documentation quote counts from this
+repository, and those counts drift as soon as the project moves on. Before
+sending either of them anywhere, re-measure:
+
+```bash
+./pptx_env/bin/python scripts/check_artifacts.py
+```
+
+It recomputes every quoted figure and names any artefact still claiming an old
+one.
+
 ### Testing the live deployment
 
 The unit suite runs against a throwaway database, so it cannot catch a broken
