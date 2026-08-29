@@ -2,7 +2,9 @@ name: Keep Render Awake
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    # The managed Postgres suspends after about five idle minutes, so a
+    # ten-minute ping left it asleep for half of every gap.
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:

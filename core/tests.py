@@ -1484,3 +1484,28 @@ class DashboardCountsTests(TestCase):
                    for alias in ('kpi_students', 'kpi_courses', 'kpi_enrollments'))
         ]
         self.assertEqual(len(carrying_all_three), 1)
+
+
+class ServerTimingTests(TestCase):
+    """Attribution for a slow page, measured on the deployed site rather than guessed."""
+
+    def test_every_response_reports_where_the_time_went(self):
+        response = self.client.get(reverse('healthz'))
+        timing = response.headers.get('Server-Timing', '')
+        self.assertIn('app;dur=', timing)
+        self.assertIn('db;dur=', timing)
+        self.assertIn('statements', timing)
+
+    def test_the_statement_count_reflects_the_page(self):
+        user = User.objects.create_user(
+            username='timing-admin', password='pass12345', role='admin'
+        )
+        self.client.force_login(user)
+        response = self.client.get(reverse('dashboard'))
+        match = re.search(r'sql;desc="(\d+) statements"', response.headers['Server-Timing'])
+        self.assertIsNotNone(match)
+        self.assertGreater(int(match.group(1)), 1)
+
+    def test_the_header_carries_no_query_text(self):
+        response = self.client.get(reverse('healthz'))
+        self.assertNotIn('SELECT', response.headers['Server-Timing'].upper())

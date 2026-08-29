@@ -136,6 +136,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # Outermost, so its measurement covers everything below it.
+    'core.middleware.ServerTimingMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
