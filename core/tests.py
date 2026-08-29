@@ -6,6 +6,7 @@ from decimal import Decimal
 from io import StringIO
 from unittest import mock
 
+from django.contrib.sessions.models import Session
 from django.core.management import call_command
 from django.conf import settings
 from django.db import connection
@@ -1509,3 +1510,37 @@ class ServerTimingTests(TestCase):
     def test_the_header_carries_no_query_text(self):
         response = self.client.get(reverse('healthz'))
         self.assertNotIn('SELECT', response.headers['Server-Timing'].upper())
+
+
+class SessionCachingTests(TestCase):
+    """The session read is the one query every authenticated request repeats."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='cache-teacher', password='pass12345', role='teacher'
+        )
+
+    def test_a_repeat_visit_does_not_re_read_the_session_row(self):
+        self.client.force_login(self.user)
+        self.client.get(reverse('dashboard'))  # warm the cache
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get(reverse('dashboard'))
+        session_reads = [
+            q for q in queries if 'django_session' in q['sql']
+        ]
+        self.assertEqual(session_reads, [])
+
+    def test_logging_out_still_ends_the_session_everywhere(self):
+        """Caching must not keep a flushed session alive."""
+        self.client.force_login(self.user)
+        self.client.get(reverse('dashboard'))
+        self.client.post(reverse('logout'))
+        response = self.client.get(reverse('dashboard'))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login/', response['Location'])
+
+    def test_the_session_is_still_written_to_the_database(self):
+        """A restart empties the cache; nobody may be logged out by that."""
+        self.client.force_login(self.user)
+        self.client.get(reverse('dashboard'))
+        self.assertTrue(Session.objects.exists())

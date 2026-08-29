@@ -194,6 +194,25 @@ if database_url:
     DATABASES['default'] = database_config(database_url, debug=DEBUG)
 
 
+
+# ---------------------------------------------------------------------------
+# Sessions
+# ---------------------------------------------------------------------------
+# Every authenticated request reads the session and then the user — two
+# statements, and on the deployed site a statement costs far more than the
+# query itself. `cached_db` answers the session read from memory and still
+# writes through to the table, so a restart loses the cache and nobody's
+# session. Gunicorn runs a single worker here, so one local cache serves every
+# thread; with several workers each keeps its own and simply misses more often.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'sms-session-cache',
+        'TIMEOUT': 3600,
+    }
+}
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
 # ---------------------------------------------------------------------------
 # Auth / passwords
 # ---------------------------------------------------------------------------
