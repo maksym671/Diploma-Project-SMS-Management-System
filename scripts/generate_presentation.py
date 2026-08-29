@@ -715,27 +715,33 @@ def slide_features(prs):
 
 def slide_ui(prs):
     slide = head(prs, 9, 'Application Screenshots', kicker='The running interface')
-    shot_w = 4.96
-    mob_h = shot_w / 1.6
-    mob_w = mob_h * 430 / 932
-    total = 2 * shot_w + mob_w + 2 * 0.34
-    x0 = MARGIN + (CONTENT_W - total) / 2
-    y0 = BODY_TOP + 0.22
-
-    for i, (name, caption) in enumerate([
+    wide = [
         ('dashboard-light.png',
          'Dashboard — KPI tiles and three Chart.js views'),
         ('students-list.png',
          'Student register — search, filters, pagination'),
-    ]):
+        ('attendance-mark-class.png',
+         'Mark Class — a whole roster saved in one request'),
+    ]
+    # Three landscape panels plus the phone, sized to fill the content width.
+    gap = 0.26
+    mob_ratio = (430 / 932) / 1.6
+    shot_w = (CONTENT_W - len(wide) * gap) / (len(wide) + mob_ratio)
+    mob_h = shot_w / 1.6
+    mob_w = mob_h * 430 / 932
+    total = len(wide) * shot_w + mob_w + len(wide) * gap
+    x0 = MARGIN + (CONTENT_W - total) / 2
+    y0 = BODY_TOP + 0.22
+
+    for i, (name, caption) in enumerate(wide):
         shot = SHOTS / name
         if shot.exists():
-            picture_frame(slide, x0 + i * (shot_w + 0.34), y0, shot_w, shot,
+            picture_frame(slide, x0 + i * (shot_w + gap), y0, shot_w, shot,
                           caption=caption)
 
     mobile = SHOTS / 'dashboard-mobile.png'
     if mobile.exists():
-        mx = x0 + 2 * (shot_w + 0.34)
+        mx = x0 + len(wide) * (shot_w + gap)
         card(slide, mx - 0.055, y0 - 0.055, mob_w + 0.11, mob_h + 0.11)
         slide.shapes.add_picture(str(mobile), Inches(mx), Inches(y0),
                                  Inches(mob_w), Inches(mob_h))

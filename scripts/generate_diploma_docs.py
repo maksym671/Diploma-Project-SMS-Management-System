@@ -338,6 +338,33 @@ def build() -> Document:
         'ship as English.',
     )
 
+    add_heading(doc, '2.7 Bulk Attendance Marking', 2)
+    add_para(
+        doc,
+        'Attendance is the highest-volume operation in the system: a lecturer records a '
+        'status for every student in a group after every class. Marking students one at '
+        'a time would mean a separate form submission per student, so the Mark Class '
+        'screen loads the whole roster for a chosen course and date and saves it in a '
+        'single POST. Quick actions set the entire group to present, absent or late '
+        'before individual corrections. The view iterates the submitted statuses and '
+        'uses update_or_create per enrolment, so re-marking the same class corrects the '
+        'existing rows instead of duplicating them. "Not marked" is treated as a '
+        'deliberate state rather than a missing one: choosing it removes the stored '
+        'record, so the screen keeps telling the truth about that date.',
+    )
+    add_para(
+        doc,
+        'Correctness does not rest on the interface. Attendance carries a unique '
+        'constraint on (enrollment, date) in the schema, so a second record for the same '
+        'student on the same day cannot be created by any path — the bulk screen, the '
+        'single-record form, the Django admin or a direct SQL insert. A teacher may only '
+        'load rosters for courses they teach, enforced by the same queryset scoping as '
+        'the rest of the application. BulkAttendanceTests cover the group save, a '
+        'repeated save against the unique rule, clearing a record, the pre-selected '
+        'roster, active enrolments only, an unparsable date falling back to today, and '
+        'a teacher trying to read or mark a colleague\'s course.',
+    )
+
     # 3. Screenshots
     add_heading(doc, '3. Screenshots, visualizations, etc.', 1)
     add_para(

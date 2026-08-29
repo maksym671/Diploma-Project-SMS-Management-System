@@ -71,6 +71,12 @@ Configuration is driven by environment variables: SECRET_KEY, DEBUG, ALLOWED_HOS
 
 The interface is bilingual. Templates, model choices, flash messages and CSV headers go through Django i18n. The language switch keeps the current page and stores the choice in the django_language cookie, which LocaleMiddleware reads on every request. The compiled Polish catalogue (django.mo) is committed so the deploy image does not depend on gettext. LocalizationTests guard that English and Polish pages actually differ, and TranslationCatalogueTests fail on any fuzzy or untranslated entry, because msgfmt drops fuzzy messages and they would ship as English.
 
+## 2.7 Bulk Attendance Marking
+
+Attendance is the highest-volume operation in the system: a lecturer records a status for every student in a group after every class. Marking students one at a time would mean a separate form submission per student, so the Mark Class screen loads the whole roster for a chosen course and date and saves it in a single POST. Quick actions set the entire group to present, absent or late before individual corrections. The view iterates the submitted statuses and uses update_or_create per enrolment, so re-marking the same class corrects the existing rows instead of duplicating them. "Not marked" is treated as a deliberate state rather than a missing one: choosing it removes the stored record, so the screen keeps telling the truth about that date.
+
+Correctness does not rest on the interface. Attendance carries a unique constraint on (enrollment, date) in the schema, so a second record for the same student on the same day cannot be created by any path — the bulk screen, the single-record form, the Django admin or a direct SQL insert. A teacher may only load rosters for courses they teach, enforced by the same queryset scoping as the rest of the application. BulkAttendanceTests cover the group save, a repeated save against the unique rule, clearing a record, the pre-selected roster, active enrolments only, an unparsable date falling back to today, and a teacher trying to read or mark a colleague's course.
+
 # 3. Screenshots, visualizations, etc.
 
 The figures below are captures of the running Student Management System (local interface, English locale, light theme unless noted).
