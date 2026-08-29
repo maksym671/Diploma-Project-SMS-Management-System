@@ -94,11 +94,12 @@ JSON endpoint, so they cannot drift apart.»*
 
 Сказать: *«The course mark is a weighted mean, not a single number. Components of one course cannot exceed 100 %. Each row stores who saved it — assigned_by.»*
 
-**Показать вес вживую** — Alexander Kowalski / MATH101. Сейчас там один
-Final exam, 100 %, 3.5. Карандаш → Weight = 60 → Save. Затем `Assign Grade`:
-та же запись, Component = Midterm, Weight = 40, Grade = 5.0. Course Mark
-станет **4.10**, не 4.25 (простое среднее). Сказать: *«Sixty percent of 3.5
-plus forty percent of 5.0 is 4.10, not the arithmetic mean.»*
+**Показать вес вживую** — поиск Kowalski → MATH101. Там уже две строки:
+Final exam 60 % × 3.5 и Midterm 40 % × 5.0, Course Mark **4.10**.
+Не среднее (3.5 + 5.0) / 2 = 4.25: вес экзамена больше.
+Сказать: *«Sixty percent of 3.5 plus forty percent of 5.0 is 4.10,
+not the arithmetic mean.»*
+Не менять эти две оценки на защите — рецепт уже на проде.
 
 Дальше — потолок 100 %. `Assign Grade` на ту же запись с весом 100. Форма
 ответит: *«The components of MATH101 already use 100 % of the course weight,
