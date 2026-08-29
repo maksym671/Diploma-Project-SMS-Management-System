@@ -2,9 +2,12 @@ name: Keep Render Awake
 
 on:
   schedule:
-    # The managed Postgres suspends after about five idle minutes, so a
-    # ten-minute ping left it asleep for half of every gap.
-    - cron: "*/5 * * * *"
+    # Not more often than this. GitHub bills a private repository in whole
+    # minutes per job, and the free allowance is 2000 a month: every five
+    # minutes would cost 8640 and take CI down with it when the allowance ran
+    # out. What actually keeps both the service and its database warm is
+    # Render polling /healthz/, which runs a statement; this is the backup.
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 jobs:
