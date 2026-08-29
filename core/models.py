@@ -42,6 +42,15 @@ def weighted_average(grades):
     return (total / weight).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
 
+def weighted_mean(total, weight):
+    """Round a summed product and summed weight into a course mark."""
+    if not weight:
+        return None
+    return Decimal(str(total / weight)).quantize(
+        Decimal('0.01'), rounding=ROUND_HALF_UP,
+    )
+
+
 def weighted_average_qs(qs):
     """Same figure as `weighted_average`, computed in SQL instead of Python.
 
@@ -53,12 +62,7 @@ def weighted_average_qs(qs):
         total=Cast(Sum(F('grade_value') * F('weight')), FloatField()),
         weight=Cast(Sum('weight'), FloatField()),
     )
-    total, weight = row['total'], row['weight']
-    if not weight:
-        return None
-    return Decimal(str(total / weight)).quantize(
-        Decimal('0.01'), rounding=ROUND_HALF_UP,
-    )
+    return weighted_mean(row['total'], row['weight'])
 
 
 class User(AbstractUser):

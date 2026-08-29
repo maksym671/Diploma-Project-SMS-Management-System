@@ -16,7 +16,10 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 import csv
 
-from .models import User, Student, Course, Enrollment, Grade, Attendance, weighted_average_qs
+from .models import (
+    User, Student, Course, Enrollment, Grade, Attendance,
+    weighted_average_qs, weighted_mean,
+)
 from .forms import (
     LoginForm,
     StudentForm,
@@ -96,16 +99,28 @@ def logout_view(request):
     return redirect('login')
 
 
-def _grade_distribution(grade_qs):
-    """Letter-band counts in one query instead of five separate COUNTs."""
+def _grade_summary(grade_qs):
+    """How many grades, their weighted mean and the letter bands — in one query.
+
+    These were three aggregates over the same rows, and therefore three
+    statements. On a laptop that is invisible; against a managed database each
+    one is a separate network round trip, on the page a visitor lands on first.
+    """
     row = grade_qs.aggregate(
+        total=Count('id'),
+        weighted=Cast(Sum(F('grade_value') * F('weight')), FloatField()),
+        weight=Cast(Sum('weight'), FloatField()),
         A=Count('id', filter=Q(grade_value__gte=4.5)),
         B=Count('id', filter=Q(grade_value__gte=4.0, grade_value__lt=4.5)),
         C=Count('id', filter=Q(grade_value__gte=3.5, grade_value__lt=4.0)),
         D=Count('id', filter=Q(grade_value__gte=3.0, grade_value__lt=3.5)),
         F=Count('id', filter=Q(grade_value__lt=3.0)),
     )
-    return {band: row[band] for band in ('A', 'B', 'C', 'D', 'F')}
+    return {
+        'total': row['total'],
+        'average': weighted_mean(row['weighted'], row['weight']),
+        'distribution': {band: row[band] for band in ('A', 'B', 'C', 'D', 'F')},
+    }
 
 
 def dashboard_metrics(user):
@@ -150,6 +165,7 @@ def dashboard_metrics(user):
             count=Count('id'),
         ).order_by('-count')[:6]
 
+    grades = _grade_summary(grade_qs)
     course_stats = list(
         course_qs.annotate(
             enrollment_count=Count(
@@ -163,9 +179,9 @@ def dashboard_metrics(user):
         'total_students': student_qs.count(),
         'total_courses': course_qs.count(),
         'total_enrollments': enrollment_qs.count(),
-        'total_grades': grade_qs.count(),
-        'avg_grade': weighted_average_qs(grade_qs) or 0,
-        'grade_distribution': _grade_distribution(grade_qs),
+        'total_grades': grades['total'],
+        'avg_grade': grades['average'] or 0,
+        'grade_distribution': grades['distribution'],
         'course_labels': [c.course_code for c in course_stats],
         'course_data': [c.enrollment_count for c in course_stats],
         'program_labels': [str(_(p['study_program'])) for p in programs],

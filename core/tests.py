@@ -266,14 +266,18 @@ class DashboardApiTests(TestCase):
         self.assertEqual(data['total_courses'], 1)
 
     def test_html_dashboard_stays_within_a_query_budget(self):
-        """KPI + charts used to load every Grade row; keep this a handful of aggregates."""
+        """KPI + charts used to load every Grade row; keep this a handful of aggregates.
+
+        The budget is tight on purpose. Against a managed database every query
+        is a network round trip, and this is the page a visitor lands on first.
+        """
         self.client.login(username='admin', password='pass12345')
         self.client.get(reverse('dashboard'))
         with CaptureQueriesContext(connection) as captured:
             response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
         self.assertLessEqual(
-            len(captured), 18,
+            len(captured), 12,
             'Dashboard issued %d queries:\n%s' % (
                 len(captured),
                 '\n'.join(q['sql'] for q in captured),
