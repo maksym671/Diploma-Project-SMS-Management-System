@@ -42,6 +42,32 @@ def env_bool(key, default=False):
     return value.strip().lower() in {'1', 'true', 'yes', 'on'}
 
 
+def database_config(database_url, *, debug):
+    """Translate DATABASE_URL into Django's DATABASES entry.
+
+    Kept as a function so the connection policy can be tested without a
+    database: reconnecting on every request costs a TCP and TLS handshake
+    before anything renders, which on a free tier is most of the wait.
+    """
+    is_postgres = database_url.startswith(('postgres://', 'postgresql://'))
+    # PgBouncer in transaction mode hands each statement whatever backend is
+    # free, so nothing may outlive a single statement: no server-side cursors
+    # and no prepared statements. With those off, the connection itself can
+    # still be kept.
+    uses_pooler = '-pooler' in database_url
+    config = dj_database_url.parse(
+        database_url,
+        conn_max_age=600 if is_postgres else 0,
+        ssl_require=is_postgres and not debug,
+    )
+    if is_postgres:
+        config['CONN_HEALTH_CHECKS'] = True
+        if uses_pooler:
+            config['DISABLE_SERVER_SIDE_CURSORS'] = True
+            config.setdefault('OPTIONS', {})['prepare_threshold'] = None
+    return config
+
+
 def hosts_for_custom_domain(domain):
     """Apex + www so a Namecheap .me works whether the user typed either."""
     domain = (domain or '').strip().lower()
@@ -163,18 +189,7 @@ if database_url:
     # TLS is mandatory for the managed Postgres we deploy against, but passing
     # sslmode to any other backend (e.g. a SQLite URL used to rehearse the
     # production build locally) raises a connection error.
-    is_postgres = database_url.startswith(('postgres://', 'postgresql://'))
-    # Neon’s pooler (and PgBouncer in transaction mode) cannot keep a
-    # Django connection open. Direct Neon hosts can, and that avoids a
-    # fresh TLS handshake on every tab switch.
-    uses_pooler = '-pooler' in database_url
-    DATABASES['default'] = dj_database_url.parse(
-        database_url,
-        conn_max_age=600 if is_postgres and not uses_pooler else 0,
-        ssl_require=is_postgres and not DEBUG,
-    )
-    if is_postgres:
-        DATABASES['default']['CONN_HEALTH_CHECKS'] = True
+    DATABASES['default'] = database_config(database_url, debug=DEBUG)
 
 
 # ---------------------------------------------------------------------------

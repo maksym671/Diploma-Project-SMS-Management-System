@@ -15,6 +15,8 @@ from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import gettext
 
+from sms_project.settings import database_config
+
 from core.forms import GradeForm
 from core.models import (
     User, Student, Course, Enrollment, Grade, Attendance,
@@ -1365,3 +1367,49 @@ class TranslationCatalogueTests(TestCase):
             self.assertEqual(
                 gettext('Back to the dashboard'), 'Powrót do panelu głównego'
             )
+
+
+class HealthProbeTests(TestCase):
+    """The probe exists to keep a suspended database awake, so it must query."""
+
+    def test_probe_is_open_and_reports_ok(self):
+        response = self.client.get(reverse('healthz'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'ok'})
+
+    def test_probe_actually_touches_the_database(self):
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get(reverse('healthz'))
+        self.assertGreaterEqual(len(queries), 1)
+
+    def test_the_login_page_would_not_have_kept_it_awake(self):
+        """Why the probe exists: /login/ renders without a single query."""
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get(reverse('login'))
+        self.assertEqual(len(queries), 0)
+
+
+class DatabaseConnectionPolicyTests(TestCase):
+    """Reconnecting per request costs a TCP and TLS handshake before any page."""
+
+    def test_a_direct_postgres_host_keeps_its_connection(self):
+        config = database_config(
+            'postgresql://u:p@ep-x.eu-central-1.aws.neon.tech/db', debug=False
+        )
+        self.assertEqual(config['CONN_MAX_AGE'], 600)
+        self.assertTrue(config['CONN_HEALTH_CHECKS'])
+        self.assertNotIn('DISABLE_SERVER_SIDE_CURSORS', config)
+
+    def test_a_pooled_host_keeps_it_too_but_on_the_pooler_s_terms(self):
+        config = database_config(
+            'postgresql://u:p@ep-x-pooler.eu-central-1.aws.neon.tech/db', debug=False
+        )
+        self.assertEqual(config['CONN_MAX_AGE'], 600)
+        self.assertTrue(config['DISABLE_SERVER_SIDE_CURSORS'])
+        self.assertIsNone(config['OPTIONS']['prepare_threshold'])
+
+    def test_sqlite_is_left_alone(self):
+        config = database_config('sqlite:///db.sqlite3', debug=True)
+        self.assertEqual(config['CONN_MAX_AGE'], 0)
+        self.assertFalse(config['CONN_HEALTH_CHECKS'])
+        self.assertNotIn('DISABLE_SERVER_SIDE_CURSORS', config)

@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Count, Avg, Q, Sum, F, FloatField
 from django.db.models.functions import Cast
+from django.db import connection
 from django.http import JsonResponse, HttpResponse
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
@@ -189,6 +190,23 @@ def dashboard(request):
         'program_data': json.dumps(metrics['program_data']),
     }
     return render(request, 'dashboard/index.html', context)
+
+
+# ─── Health check ────────────────────────────────────────────────────
+
+def healthz(request):
+    """Liveness probe that deliberately touches the database.
+
+    The managed Postgres this deploys against suspends its compute after a few
+    idle minutes, and waking it costs the first visitor a multi-second pause —
+    which lands squarely on whoever opens the site to look at it. Pinging a
+    page that renders without a query keeps only the web service warm, so this
+    probe runs a trivial statement and keeps the database awake too.
+    """
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT 1')
+        cursor.fetchone()
+    return JsonResponse({'status': 'ok'})
 
 
 # ─── API endpoints for charts ────────────────────────────────────────

@@ -12,5 +12,7 @@ jobs:
       - name: Ping live SMS
         run: |
           hit() { curl -sS -o /dev/null -w "%{http_code}\n" --max-time 45 "$1" || true; }
-          hit "https://thesms.me/login/"
-          hit "https://diploma-project-sms-management-system.onrender.com/login/"
+          # /healthz/ runs a statement, so this keeps the managed Postgres awake
+          # as well as the web service; /login/ renders without touching it.
+          hit "https://thesms.me/healthz/"
+          hit "https://diploma-project-sms-management-system.onrender.com/healthz/"

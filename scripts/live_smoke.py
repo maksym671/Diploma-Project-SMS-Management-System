@@ -65,6 +65,10 @@ for path in ["/", "/students/", "/courses/", "/grades/", "/attendance/", "/teach
     check(f"{path} blocked for anon", r.status_code in (301, 302) and "/login/" in r.headers.get("location", ""),
           f"[{r.status_code}]")
 
+r = requests.get(f"{BASE}/healthz/", timeout=60)
+check("health probe answers", r.status_code == 200 and r.json().get("status") == "ok",
+      f"[{r.status_code}]")
+
 r = requests.get(f"{BASE}/login/", timeout=30)
 check("login page has CSRF token", 'csrfmiddlewaretoken' in r.text)
 check("csrftoken cookie is Secure", "Secure" in r.headers.get("set-cookie", ""))

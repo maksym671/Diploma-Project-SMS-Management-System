@@ -114,6 +114,15 @@ Set environment variables (see `.env.example`):
 | `CUSTOM_DOMAIN` | Apex of the Namecheap `.me` (adds www + CSRF automatically) |
 | `CSRF_TRUSTED_ORIGINS` | e.g. `https://your-app.onrender.com` |
 
+`/healthz/` runs `SELECT 1` and returns `{"status": "ok"}`. It is what
+`healthCheckPath` and the keepalive workflow poll: the login page renders
+without touching the database, so pinging it kept only the web service awake
+while the managed Postgres suspended itself and charged the next visitor a
+multi-second wake-up. Database connections are kept for ten minutes rather
+than reopened per request — through a transaction pooler as well, with
+server-side cursors and prepared statements disabled as such a pooler
+requires.
+
 ## Deployment
 
 `render.yaml` describes the whole service as code, so the deploy is reproducible:

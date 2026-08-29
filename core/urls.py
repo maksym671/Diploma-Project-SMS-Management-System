@@ -6,6 +6,9 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
+    # Health probe for the platform and the keepalive workflow
+    path('healthz/', views.healthz, name='healthz'),
+
     # Dashboard
     path('', views.dashboard, name='dashboard'),
     path('api/dashboard/', views.api_dashboard_data, name='api_dashboard'),
