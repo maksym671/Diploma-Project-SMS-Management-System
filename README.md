@@ -88,6 +88,15 @@ machine with no internet connection. Refresh the fonts with:
 python scripts/vendor_fonts.py
 ```
 
+Nothing in the running application needs Node. The `package.json` at the root
+exists only for `scripts/capture_screenshots.mjs`, a development helper that
+drives a headless browser to re-take the screenshots used by the documentation
+and the defence slides:
+
+```bash
+npm install && node scripts/capture_screenshots.mjs <sessionid>
+```
+
 Live: https://thesms.me  
 Backup: https://diploma-project-sms-management-system.onrender.com
 

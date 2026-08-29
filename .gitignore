@@ -13,6 +13,7 @@ venv.bak/
 .venv/
 pptx_env/
 .env
+messages.mo
 sent_emails/
 
 # Django
@@ -41,3 +42,7 @@ node_modules/
 
 # CI workflow kept local until a workflow-scoped token is set
 .github/workflows/ci.yml
+
+# Another student's deck and scratch files do not belong in this repository.
+BloomTime_Diploma_Presentation_*.pptx
+parse_pptx.py
