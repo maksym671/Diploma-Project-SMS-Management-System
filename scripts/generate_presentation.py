@@ -471,7 +471,7 @@ def slide_problem(prs):
     note_bar(slide, FOOTER_Y - 0.98, [
         ('Result: ', {'size': 12.5, 'bold': True, 'color': WHITE}),
         ('one auditable, role-aware platform now managing 25 students, 8 courses, '
-         '87 enrollments and 87 grades in production.',
+         '87 enrollment records — 51 of them active — and 87 grades in production.',
          {'size': 12.5, 'color': RGBColor(0xD6, 0xDF, 0xEC)}),
     ])
     return slide
@@ -524,8 +524,8 @@ def slide_stack(prs):
             'dj-database-url 2.1',
         ]),
         ('Frontend', 'Templates · charts · theming', VIOLET, [
-            'Django Templates · 27 files', 'Semantic HTML5',
-            'CSS custom properties · 1 945 lines', 'Vanilla JavaScript ES6 · 413 lines',
+            'Django Templates · 30 files', 'Semantic HTML5',
+            'CSS custom properties · 1 945 lines', 'Vanilla JavaScript ES6 · 425 lines',
             'Chart.js 4 — doughnut and bars', 'Turbo 8 page transitions',
             'Bootstrap Icons', 'Light and dark themes',
         ]),
@@ -738,7 +738,7 @@ def slide_ui(prs):
                                  Inches(mob_w), Inches(mob_h))
         text(slide, mx - 0.45, y0 + mob_h + 0.14, mob_w + 0.9, 0.44, [
             {'text': 'Responsive', 'size': 10, 'color': MUTED, 'space_after': 2},
-            {'text': 'down to 430 px', 'size': 10, 'color': MUTED},
+            {'text': 'down to 375 px', 'size': 10, 'color': MUTED},
         ], align=PP_ALIGN.CENTER)
 
     note_bar(slide, FOOTER_Y - 0.86, [
@@ -778,7 +778,7 @@ def slide_deployment(prs):
     ])
 
     tiles = [('25', 'students', ACCENT), ('8', 'courses', VIOLET),
-             ('87', 'enrollments', TEAL), ('87', 'grades', AMBER),
+             ('87', 'enrollment records', TEAL), ('87', 'grades', AMBER),
              ('€0', 'monthly cost', GREEN)]
     tw = (CONTENT_W - 4 * 0.2) / 5
     for i, (value, label, color) in enumerate(tiles):
