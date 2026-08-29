@@ -571,7 +571,7 @@ def slide_architecture(prs):
         ('CLIENT', 'Browser', 'HTML · CSS · ES6\nTurbo navigation', ACCENT),
         ('EDGE', 'Render · TLS 443', 'HTTPS, HSTS\nstatic via WhiteNoise', TEAL),
         ('APPLICATION', 'Gunicorn + Django 6', 'URL › View › Template\nORM aggregation', VIOLET),
-        ('DATA', 'PostgreSQL 16', 'Neon managed\ndaily backups', GREEN),
+        ('DATA', 'PostgreSQL 16', 'Neon managed\nDATABASE_URL, one codebase', GREEN),
     ]
     bw = 2.82
     gap = (CONTENT_W - 4 * bw) / 3

@@ -465,6 +465,11 @@ def build() -> Document:
         '[11] Jazzband — dj-database-url — https://github.com/jazzband/dj-database-url',
         '[12] Bootstrap Icons — https://icons.getbootstrap.com',
         '[13] Uniwersytet VIZJA / AEH — study programme materials for Computer Science (engineering profile)',
+        '',
+        'Platforms compared in section 1',
+        '[14] Moodle — Moodle Docs (attendance is the contributed mod_attendance plugin) — https://docs.moodle.org',
+        '[15] MUCI — USOS, the university study service system used by Polish public HEIs — https://www.usos.edu.pl',
+        '[16] Google — Classroom Help Centre — https://support.google.com/edu/classroom',
     ]
     for r in refs:
         add_para(doc, r)
