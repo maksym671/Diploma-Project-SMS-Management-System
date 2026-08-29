@@ -17,6 +17,8 @@ from django.utils.translation import gettext
 
 from sms_project.settings import database_config
 
+from core.views import dashboard_metrics
+
 from core.forms import GradeForm
 from core.models import (
     User, Student, Course, Enrollment, Grade, Attendance,
@@ -277,7 +279,7 @@ class DashboardApiTests(TestCase):
             response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
         self.assertLessEqual(
-            len(captured), 12,
+            len(captured), 9,
             'Dashboard issued %d queries:\n%s' % (
                 len(captured),
                 '\n'.join(q['sql'] for q in captured),
@@ -1417,3 +1419,68 @@ class DatabaseConnectionPolicyTests(TestCase):
         self.assertEqual(config['CONN_MAX_AGE'], 0)
         self.assertFalse(config['CONN_HEALTH_CHECKS'])
         self.assertNotIn('DISABLE_SERVER_SIDE_CURSORS', config)
+
+
+class DashboardCountsTests(TestCase):
+    """The KPI counts travel in one statement; they must still be the old numbers."""
+
+    def setUp(self):
+        self.teacher = User.objects.create_user(
+            username='kpi-teacher', password='pass12345', role='teacher'
+        )
+        other = User.objects.create_user(
+            username='kpi-other', password='pass12345', role='teacher'
+        )
+        self.mine = Course.objects.create(
+            course_name='Mine', course_code='KPI1', semester='Fall', credits=5,
+            teacher=self.teacher, max_students=30,
+        )
+        second = Course.objects.create(
+            course_name='Second', course_code='KPI2', semester='Fall', credits=5,
+            teacher=self.teacher, max_students=30,
+        )
+        theirs = Course.objects.create(
+            course_name='Theirs', course_code='KPI3', semester='Fall', credits=5,
+            teacher=other, max_students=30,
+        )
+        for i in range(3):
+            student = Student.objects.create(
+                first_name=f'S{i}', last_name='Counted', email=f's{i}@example.com',
+                student_number=f'S-KPI-{i}', study_program='IT',
+                date_enrolled='2024-09-01',
+            )
+            Enrollment.objects.create(student=student, course=self.mine)
+            # The same student on a second course of the same teacher must not
+            # be counted twice — that was the bug the DISTINCT guards against.
+            Enrollment.objects.create(student=student, course=second)
+        stranger = Student.objects.create(
+            first_name='Not', last_name='Mine', email='not@example.com',
+            student_number='S-KPI-X', study_program='IT', date_enrolled='2024-09-01',
+        )
+        Enrollment.objects.create(student=stranger, course=theirs)
+
+    def test_a_teacher_counts_their_own_rows_once(self):
+        metrics = dashboard_metrics(self.teacher)
+        self.assertEqual(metrics['total_students'], 3)
+        self.assertEqual(metrics['total_courses'], 2)
+        self.assertEqual(metrics['total_enrollments'], 6)
+
+    def test_an_administrator_counts_everything(self):
+        admin = User.objects.create_user(
+            username='kpi-admin', password='pass12345', role='admin'
+        )
+        metrics = dashboard_metrics(admin)
+        self.assertEqual(metrics['total_students'], 4)
+        self.assertEqual(metrics['total_courses'], 3)
+        self.assertEqual(metrics['total_enrollments'], 7)
+
+    def test_the_three_counts_travel_in_one_statement(self):
+        """Three round trips to a remote database was the cost worth removing."""
+        with CaptureQueriesContext(connection) as queries:
+            dashboard_metrics(self.teacher)
+        carrying_all_three = [
+            q['sql'] for q in queries
+            if all(alias in q['sql']
+                   for alias in ('kpi_students', 'kpi_courses', 'kpi_enrollments'))
+        ]
+        self.assertEqual(len(carrying_all_three), 1)

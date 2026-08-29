@@ -8,8 +8,10 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Count, Avg, Q, Sum, F, FloatField
-from django.db.models.functions import Cast
+from django.db.models import (
+    Count, Avg, Q, Sum, F, FloatField, IntegerField, Subquery, Value,
+)
+from django.db.models.functions import Cast, Coalesce
 from django.db import connection
 from django.http import JsonResponse, HttpResponse
 from django.utils.translation import gettext as _
@@ -99,6 +101,24 @@ def logout_view(request):
     return redirect('login')
 
 
+def _scalar_count(queryset, *, distinct=False):
+    """A COUNT shaped so it can ride inside another statement.
+
+    Grouping by a constant makes the subquery return exactly one row, which is
+    what a scalar subquery needs. Three of these travel with a single SELECT
+    instead of three, and against a database a round trip away that is the
+    whole cost — the query itself is trivial either way.
+    """
+    counted = (
+        queryset.order_by()
+        .annotate(_everything=Value(1))
+        .values('_everything')
+        .annotate(total=Count('id', distinct=distinct))
+        .values('total')[:1]
+    )
+    return Coalesce(Subquery(counted, output_field=IntegerField()), 0)
+
+
 def _grade_summary(grade_qs):
     """How many grades, their weighted mean and the letter bands — in one query.
 
@@ -128,9 +148,13 @@ def dashboard_metrics(user):
     if user.is_teacher():
         grade_qs = Grade.objects.filter(enrollment__course__teacher=user)
         course_qs = Course.objects.filter(teacher=user, is_active=True)
+        # Joining through enrollments repeats a student once per course they
+        # take with this teacher, so the count below asks for DISTINCT rather
+        # than the queryset carrying it.
         student_qs = Student.objects.filter(
             enrollments__course__teacher=user, is_active=True,
-        ).distinct()
+        )
+        students_are_repeated = True
         enrollment_qs = Enrollment.objects.filter(
             course__teacher=user, status='active',
         )
@@ -155,6 +179,7 @@ def dashboard_metrics(user):
         grade_qs = Grade.objects.all()
         course_qs = Course.objects.filter(is_active=True)
         student_qs = Student.objects.filter(is_active=True)
+        students_are_repeated = False
         enrollment_qs = Enrollment.objects.filter(status='active')
         recent_students = Student.objects.order_by('-created_at')[:5]
         recent_enrollments = (
@@ -166,6 +191,14 @@ def dashboard_metrics(user):
         ).order_by('-count')[:6]
 
     grades = _grade_summary(grade_qs)
+    # One row, three scalar subqueries: the KPI counts arrive together.
+    # kpi_ prefixes: `courses` and `enrollments` are reverse accessors on User.
+    totals = User.objects.filter(pk=user.pk).annotate(
+        kpi_students=_scalar_count(student_qs, distinct=students_are_repeated),
+        kpi_courses=_scalar_count(course_qs),
+        kpi_enrollments=_scalar_count(enrollment_qs),
+    ).values('kpi_students', 'kpi_courses', 'kpi_enrollments').first()
+
     course_stats = list(
         course_qs.annotate(
             enrollment_count=Count(
@@ -176,9 +209,9 @@ def dashboard_metrics(user):
 
     return {
         'role': user.role,
-        'total_students': student_qs.count(),
-        'total_courses': course_qs.count(),
-        'total_enrollments': enrollment_qs.count(),
+        'total_students': totals['kpi_students'],
+        'total_courses': totals['kpi_courses'],
+        'total_enrollments': totals['kpi_enrollments'],
         'total_grades': grades['total'],
         'avg_grade': grades['average'] or 0,
         'grade_distribution': grades['distribution'],
