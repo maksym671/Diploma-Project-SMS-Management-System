@@ -40,7 +40,7 @@ editing `style.css` or `main.js` and reload to no visible effect. Hard-reload
 python manage.py test
 ```
 
-96 tests cover models, authentication, role-based access and data isolation,
+111 tests cover models, authentication, role-based access and data isolation,
 pagination, the dashboard JSON API, enrolment capacity rules, weighted grade
 components, bulk attendance marking, grade authorship, Polish localisation,
 the deployment seed step, and a smoke render of every page for both roles.

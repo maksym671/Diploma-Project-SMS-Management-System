@@ -1,7 +1,7 @@
 """Builds the diploma defence deck for the Student Management System.
 
 Every figure quoted on the slides comes from the repository itself: 6 models,
-6 migrations, 96 tests, 312 translatable strings, and the demo dataset that
+6 migrations, 111 tests, 312 translatable strings, and the demo dataset that
 ships with the deployment.
 
     pptx_env/bin/python scripts/generate_presentation.py
@@ -408,7 +408,7 @@ def slide_agenda(prs):
         ('05', 'Database Design',
          '6 models, 6 migrations, constraints in the schema'),
         ('06', 'Key Features',
-         'Weighted grades, RBAC, EN/PL, 96 tests'),
+         'Weighted grades, RBAC, EN/PL, 111 tests'),
         ('07', 'Application Screenshots',
          'Dashboard, student records, mobile layout'),
         ('08', 'Deployment & Results',
@@ -694,7 +694,7 @@ def slide_features(prs):
          'Administrators see the institution; teachers see only their courses. '
          'Decorators guard the route, querysets filter again — a guessed URL returns nothing.'),
         ('i18n & Quality', PINK,
-         '312 strings, English ⇄ Polish, locale-aware dates. 96 automated tests and '
+         '312 strings, English ⇄ Polish, locale-aware dates. 111 automated tests and '
          'four CI gates (tests, migrations, deploy check, collectstatic) on every push.'),
     ]
     cw = (CONTENT_W - 2 * 0.22) / 3
@@ -801,7 +801,7 @@ def slide_deployment(prs):
         ('Six-model schema —', 'constraints and an audit trail in the database'),
         ('Role isolation —', 'admins and teachers see strictly their own data'),
         ('Bilingual interface —', '312 strings, locale-aware dates and numbers'),
-        ('96 tests, four CI gates —', 'green on every push, then build.sh deploys'),
+        ('111 tests, four CI gates —', 'green on every push, then build.sh deploys'),
     ], accent=GREEN, size=11.6, gap=8)
     panel(slide, MARGIN + pw + 0.28, py, pw, 2.72, 'Future work', [
         ('Student portal —', 'a third role with read-only access to own results'),

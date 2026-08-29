@@ -424,7 +424,7 @@ def build() -> Document:
         'Dashboard KPIs and role-scoped REST endpoint /api/dashboard/',
         'Bilingual interface (English / Polish, 312 translatable strings)',
         'Staff accounts provisioned by an administrator (no public registration)',
-        'Automated test suite (96 tests) covering models, auth, API and CRUD',
+        'Automated test suite (111 tests) covering models, auth, API and CRUD',
         'Deployment-ready settings (Gunicorn, WhiteNoise, Postgres via DATABASE_URL)',
     ]:
         doc.add_paragraph(item, style='List Bullet')
