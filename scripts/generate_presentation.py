@@ -435,10 +435,13 @@ def slide_agenda(prs):
 
 def slide_problem(prs):
     slide = head(prs, 3, 'Problem Statement & Purpose', kicker='Why this system')
+    # Descriptive, not statistical: every figure here is a property of the
+    # spreadsheet-and-paper workflow the system replaces, not a survey result,
+    # so none of it needs a citation the bibliography cannot supply.
     tiles = [
-        ('4–6 h', 'per week per teacher spent on\nmanual record-keeping', ACCENT),
-        ('3 places', 'a single student record is\nsplit across today', AMBER),
-        ('0', 'audit trail of who entered\nor edited a grade', PINK),
+        ('3 places', 'spreadsheet, paper register\nand email thread', ACCENT),
+        ('0', 'audit trail of who entered\nor edited a grade', AMBER),
+        ('by hand', 'every average and every\nattendance total', PINK),
     ]
     tw = (CONTENT_W - 0.44) / 3
     for i, (value, label, color) in enumerate(tiles):
