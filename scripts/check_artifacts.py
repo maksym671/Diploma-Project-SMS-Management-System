@@ -50,8 +50,7 @@ def artefact_text():
     doc = ROOT / 'docs/SMS_Diploma_Documentation_Shpak_Maksym.docx'
     if doc.exists():
         texts['doc.docx'] = '\n'.join(p.text for p in docx.Document(doc).paragraphs)
-    for name in ('docs/SMS_Diploma_Documentation_Shpak_Maksym.md',
-                 'docs/defense-prep.md', 'README.md'):
+    for name in ('docs/SMS_Diploma_Documentation_Shpak_Maksym.md', 'README.md'):
         path = ROOT / name
         if path.exists():
             texts[name] = path.read_text(encoding='utf-8')

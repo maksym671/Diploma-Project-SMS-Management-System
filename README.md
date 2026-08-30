@@ -1,6 +1,6 @@
 # Student Management System (SMS)
 
-Дипломный инженерный проект: веб-приложение на Django для управления студентами, курсами, оценками и посещаемостью.
+Diploma engineering project: a Django web application for student records, courses, grades and attendance.
 
 ## Stack
 
@@ -14,7 +14,8 @@
 ## Quick start
 
 ```bash
-cd DiplomCode
+git clone git@github.com:maksym671/Diploma-Project-SMS-Management-System.git
+cd Diploma-Project-SMS-Management-System
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -45,12 +46,12 @@ pagination, the dashboard JSON API, enrolment capacity rules, weighted grade
 components, bulk attendance marking, grade authorship, Polish localisation,
 the deployment seed step, and a smoke render of every page for both roles.
 
-`.github/workflows/ci.yml` runs the same suite on every push, plus a check for
-missing migrations and `manage.py check --deploy` against production settings.
+`.github/workflows/smoke.yml` signs in to the live site every six hours and
+checks TLS, CSRF, role isolation and the Polish locale. Run the unit suite
+locally before you push.
 
-The defence deck and the submitted documentation quote counts from this
-repository, and those counts drift as soon as the project moves on. Before
-sending either of them anywhere, re-measure:
+The slides and the submitted documentation quote counts from this repository.
+Before sending either of them anywhere, re-measure:
 
 ```bash
 ./pptx_env/bin/python scripts/check_artifacts.py
@@ -222,15 +223,15 @@ in the grade list and the CSV export.
 - `locale/pl/` — Polish message catalogue
 - `core/fixtures/demo_data.json` — demonstration data set loaded by `seed_demo`
 - `render.yaml`, `build.sh` — deployment as code
-- `docs/` — diploma documentation DOCX
+- `docs/` — diploma documentation (DOCX / PDF slides live at the repository root)
 - `scripts/` — documentation generator, font vendoring, translation helper
 
 ## Documentation
 
-English diploma documentation (BloomTime-style structure):
+English diploma documentation:
 
 `docs/SMS_Diploma_Documentation_Shpak_Maksym.docx`
 
-Defence rehearsal (5-minute demo path and likely oral questions):
+Defence slides:
 
-`docs/defense-prep.md`
+`Maksym_Shpak_Diploma_Presentation.pptx`

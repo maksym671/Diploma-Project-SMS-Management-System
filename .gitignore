@@ -31,10 +31,22 @@ staticfiles/
 # MacOS
 .DS_Store
 
-# IDEs
+# IDEs and local agent settings
 .vscode/
 .idea/
 .codegraph/
+.cursor/
+.claude/
+
+# Personal defence notes — stay on the laptop
+docs/defense-prep.md
+
+# Duplicate deck copies (canonical files are at the repo root)
+docs/Maksym_Shpak_Diploma_Presentation.pptx
+docs/Maksym_Shpak_Diploma_Presentation.pdf
+
+# Office lock files
+.~lock.*
 
 # Scratch left behind by the screenshot capture used for the defence deck
 docs/.chrome-profile/
@@ -43,6 +55,6 @@ node_modules/
 # CI workflow kept local until a workflow-scoped token is set
 .github/workflows/ci.yml
 
-# Another student's deck and scratch files do not belong in this repository.
+# Local scratch
 BloomTime_Diploma_Presentation_*.pptx
 parse_pptx.py

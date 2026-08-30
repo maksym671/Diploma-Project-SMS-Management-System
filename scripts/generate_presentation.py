@@ -8,6 +8,7 @@ ships with the deployment.
 """
 
 from pathlib import Path
+from shutil import copy2
 
 from PIL import Image
 from pptx import Presentation
@@ -30,9 +31,8 @@ DEMO_PASSWORD = 'demo1234'
 STUDENT = 'Maksym Shpak'
 INDEX_NO = '45567'
 SUPERVISOR = 'Marcin Kacprowicz'
-LOGO_DARK = ROOT / 'docs' / 'assets' / 'vizja_logo_dark.png'
-LOGO_LIGHT = ROOT / 'docs' / 'assets' / 'vizja_logo_light.png'
-LOGO_DARK_V = ROOT / 'docs' / 'assets' / 'vizja_logo_dark_vertical.png'
+# Official English lockup from LogoVIZJA_ENG (pion, podstawowe).
+LOGO = ROOT / 'docs' / 'assets' / 'vizja_logo_official.png'
 
 # --- palette -----------------------------------------------------------------
 INK = RGBColor(0x0F, 0x17, 0x2A)
@@ -61,7 +61,7 @@ CONTENT_W = W - 2 * MARGIN
 BODY_TOP = 1.62
 FOOTER_Y = 6.94
 
-TOTAL_SLIDES = 11
+TOTAL_SLIDES = 10
 
 
 # --- primitives --------------------------------------------------------------
@@ -160,24 +160,38 @@ def text(slide, x, y, w, h, blocks, anchor=MSO_ANCHOR.TOP, align=PP_ALIGN.LEFT):
 
 
 # --- slide chrome ------------------------------------------------------------
-def add_logo(slide, path, x, y, w, url=UNI_URL):
-    """Places a PNG logo and makes it open the university site on click."""
+def add_logo(slide, path, x, y, w=None, h=None, url=UNI_URL):
+    """Places the official PNG logo and makes it open the university site."""
     iw, ih = Image.open(path).size
-    h = w * ih / iw
+    if w is None and h is None:
+        raise ValueError('add_logo needs w or h')
+    if w is None:
+        w = h * iw / ih
+    if h is None:
+        h = w * ih / iw
     pic = slide.shapes.add_picture(str(path), Inches(x), Inches(y), Inches(w), Inches(h))
     pic.click_action.hyperlink.address = url
     return h
 
 
 def footer(slide, dark=False, logo=False):
+    logo_h = 0.40
+    logo_y = FOOTER_Y - 0.02
     if logo:
-        path = LOGO_DARK if dark else LOGO_LIGHT
-        add_logo(slide, path, MARGIN, FOOTER_Y - 0.02, 1.42)
+        add_logo(slide, LOGO, MARGIN, logo_y, h=logo_h)
+        # Crest sits in the top ~80%; "VIZJA UNIVERSITY" is the lower band.
+        # Keep the URL on that wordmark line, not floating next to the lions.
+        wordmark_mid = logo_y + logo_h * 0.877
+        link_h = 0.26
+        link_y = wordmark_mid - link_h / 2
+    else:
+        link_y, link_h = FOOTER_Y, 0.28
     text(
-        slide, W - MARGIN - 2.4, FOOTER_Y, 2.4, 0.28,
+        slide, W - MARGIN - 2.4, link_y, 2.4, link_h,
         [{'text': 'www.vizja.pl', 'size': 10.5,
           'color': FAINT if dark else MUTED, 'spacing': 0.6,
           'url': UNI_URL}],
+        anchor=MSO_ANCHOR.MIDDLE,
         align=PP_ALIGN.RIGHT,
     )
 
@@ -351,7 +365,7 @@ def slide_title(prs):
     rect(slide, 10.35, 3.5, 4.4, 4.4, fill=RGBColor(0x18, 0x22, 0x39), radius=0.5)
     track(slide, MARGIN, 1.42, 0.11, 0.9, color=ACCENT)
 
-    add_logo(slide, LOGO_DARK_V, 9.25, 1.72, 3.55)
+    add_logo(slide, LOGO, 9.25, 1.72, 3.55)
 
     text(slide, MARGIN + 0.32, 1.44, 8.0, 0.26,
          [{'text': 'UNIWERSYTET VIZJA  ·  SCHOOL OF COMPUTER SCIENCE & TECHNOLOGIES',
@@ -394,47 +408,8 @@ def slide_title(prs):
     return slide
 
 
-def slide_agenda(prs):
-    slide = head(prs, 2, 'Presentation Agenda', kicker='What this defence covers')
-    items = [
-        ('01', 'Problem Statement & Purpose',
-         'Spreadsheets, paper registers, no audit trail'),
-        ('02', 'Comparative Analysis',
-         'Moodle, USOS, Google Classroom — and the gap'),
-        ('03', 'Technology Stack',
-         'Django 6, Python 3.12, PostgreSQL 18'),
-        ('04', 'System Architecture',
-         'Browser › Render TLS › Gunicorn › PostgreSQL'),
-        ('05', 'Database Design',
-         '6 models, 6 migrations, constraints in the schema'),
-        ('06', 'Key Features',
-         'Weighted grades, RBAC, EN/PL, 111 tests'),
-        ('07', 'Application Screenshots',
-         'Dashboard, student records, mobile layout'),
-        ('08', 'Deployment & Results',
-         'Live on Render + Neon, then what comes next'),
-    ]
-    col_w = (CONTENT_W - 0.4) / 2
-    for i, (num, title, sub) in enumerate(items):
-        col, row = divmod(i, 4)
-        x = MARGIN + col * (col_w + 0.4)
-        y = BODY_TOP + 0.08 + row * 1.22
-        text(slide, x, y + 0.04, 0.52, 0.4,
-             [{'text': num, 'size': 22, 'bold': True, 'color': FAINT,
-               'font': HEAD_FONT}])
-        text(slide, x + 0.62, y, col_w - 0.62, 0.95, [
-            {'text': title, 'size': 16, 'bold': True, 'color': INK,
-             'space_after': 4},
-            {'text': sub, 'size': 12, 'color': SLATE, 'line': 1.14},
-        ])
-        if row < 3:
-            rect(slide, x, y + 1.04, col_w, 0.008, fill=LINE,
-                 shape=MSO_SHAPE.RECTANGLE)
-    return slide
-
-
 def slide_problem(prs):
-    slide = head(prs, 3, 'Problem Statement & Purpose', kicker='Why this system')
+    slide = head(prs, 2, 'Problem Statement & Purpose', kicker='Why this system')
     # Descriptive, not statistical: every figure here is a property of the
     # spreadsheet-and-paper workflow the system replaces, not a survey result,
     # so none of it needs a citation the bibliography cannot supply.
@@ -481,7 +456,7 @@ def slide_problem(prs):
 
 
 def slide_competitors(prs):
-    slide = head(prs, 4, 'Comparative Analysis', kicker='Existing platforms')
+    slide = head(prs, 3, 'Comparative Analysis', kicker='Existing platforms')
     headers = ['Criterion', 'Moodle', 'USOS', 'Google Classroom',
                'SMS — this project']
     rows = [
@@ -518,7 +493,7 @@ def slide_competitors(prs):
 
 
 def slide_stack(prs):
-    slide = head(prs, 5, 'Technology Stack', kicker='Chosen for a maintainable monolith')
+    slide = head(prs, 4, 'Technology Stack', kicker='Chosen for a maintainable monolith')
     groups = [
         ('Backend', 'Runtime · data · authentication', ACCENT, [
             'Python 3.12', 'Django 6.0.6', 'PostgreSQL 18 (Neon)',
@@ -566,7 +541,7 @@ def slide_stack(prs):
 
 
 def slide_architecture(prs):
-    slide = head(prs, 6, 'System Architecture', kicker='Server-rendered MTV monolith')
+    slide = head(prs, 5, 'System Architecture', kicker='Server-rendered MTV monolith')
     stages = [
         ('CLIENT', 'Browser', 'HTML · CSS · ES6\nTurbo navigation', ACCENT),
         ('EDGE', 'Render · TLS 443', 'HTTPS, HSTS\nstatic via WhiteNoise', TEAL),
@@ -627,7 +602,7 @@ def slide_architecture(prs):
 
 
 def slide_database(prs):
-    slide = head(prs, 7, 'Database Design', kicker='6 models · 6 migrations')
+    slide = head(prs, 6, 'Database Design', kicker='6 models · 6 migrations')
     entities = [
         ('User', 'extends AbstractUser', ACCENT,
          ['id', 'username · email', 'first_name · last_name',
@@ -676,7 +651,7 @@ def slide_database(prs):
 
 
 def slide_features(prs):
-    slide = head(prs, 8, 'Key Features', kicker='What the system actually does')
+    slide = head(prs, 7, 'Key Features', kicker='What the system actually does')
     features = [
         ('Academic Records', ACCENT,
          'CRUD for students, courses and enrollments. Administrators issue lecturer '
@@ -714,7 +689,7 @@ def slide_features(prs):
 
 
 def slide_ui(prs):
-    slide = head(prs, 9, 'Application Screenshots', kicker='The running interface')
+    slide = head(prs, 8, 'Application Screenshots', kicker='The running interface')
     wide = [
         ('dashboard-light.png',
          'Dashboard — KPI tiles and three Chart.js views'),
@@ -760,7 +735,7 @@ def slide_ui(prs):
 
 
 def slide_deployment(prs):
-    slide = head(prs, 10, 'Deployment & Results',
+    slide = head(prs, 9, 'Deployment & Results',
                  kicker='In production, not on a laptop')
     chip_w = 6.15
     chip = rect(slide, MARGIN, BODY_TOP, chip_w, 0.62, fill=INK, radius=0.14)
@@ -833,7 +808,7 @@ def slide_thanks(prs):
         {'text': LIVE_HREF, 'size': 11.5, 'bold': True,
          'color': ACCENT, 'url': LIVE_HREF},
     ])
-    add_logo(slide, LOGO_DARK_V, 9.35, 4.55, 3.2)
+    add_logo(slide, LOGO, 9.35, 4.55, 3.2)
     footer(slide, dark=True)
     return slide
 
@@ -844,7 +819,6 @@ def main():
     prs.slide_height = Inches(H)
 
     slide_title(prs)
-    slide_agenda(prs)
     slide_problem(prs)
     slide_competitors(prs)
     slide_stack(prs)
@@ -856,7 +830,9 @@ def main():
     slide_thanks(prs)
 
     prs.save(OUTPUT)
-    print(f'Wrote {OUTPUT.relative_to(ROOT)} — {len(prs.slides._sldIdLst)} slides')
+    docs_copy = ROOT / 'docs' / OUTPUT.name
+    copy2(OUTPUT, docs_copy)
+    print(f'Wrote {OUTPUT.relative_to(ROOT)} and docs/{OUTPUT.name} — {len(prs.slides._sldIdLst)} slides')
 
 
 if __name__ == '__main__':

@@ -81,12 +81,12 @@ def _set_cell_width(cell, width_dxa: int) -> None:
 
 
 def add_basic_info_table(doc: Document, rows: list[tuple[str, str]]) -> None:
-    """2-column table like BloomTime sample (label | content)."""
+    """2-column table (label | content) used on the documentation title block."""
     table = doc.add_table(rows=len(rows), cols=2)
     table.style = 'Table Grid'
     table.autofit = False
 
-    left_w, right_w = 2800, 6526  # dxa — same proportions as BloomTime
+    left_w, right_w = 2800, 6526  # dxa — label column | body column
 
     for i, (label, value) in enumerate(rows):
         left, right = table.rows[i].cells
@@ -155,7 +155,7 @@ def build() -> Document:
 
     doc.add_page_break()
 
-    # 1. Basic information — table (same layout as BloomTime sample)
+    # 1. Basic information
     add_heading(doc, '1. Basic information', 1)
 
     tech_list = (
