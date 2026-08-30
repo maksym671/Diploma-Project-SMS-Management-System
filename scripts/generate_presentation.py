@@ -473,8 +473,8 @@ def slide_problem(prs):
     )
     note_bar(slide, FOOTER_Y - 0.98, [
         ('Result: ', {'size': 12.5, 'bold': True, 'color': WHITE}),
-        ('one auditable, role-aware platform now managing 25 students, 8 courses, '
-         '87 enrollment records — 51 of them active — and 87 grades in production.',
+        ('25 students, 8 courses, 51 active enrolments and a 3.70 mean mark '
+         '— the same four KPI tiles as the live dashboard.',
          {'size': 12.5, 'color': RGBColor(0xD6, 0xDF, 0xEC)}),
     ])
     return slide
@@ -694,8 +694,8 @@ def slide_features(prs):
          'Administrators see the institution; teachers see only their courses. '
          'Decorators guard the route, querysets filter again — a guessed URL returns nothing.'),
         ('i18n & Quality', PINK,
-         '312 strings, English ⇄ Polish, locale-aware dates. 111 automated tests and '
-         'four CI gates (tests, migrations, deploy check, collectstatic) on every push.'),
+         '312 strings, English ⇄ Polish, locale-aware dates. 111 automated tests; '
+         'GitHub Actions runs a live smoke job against thesms.me.'),
     ]
     cw = (CONTENT_W - 2 * 0.22) / 3
     ch = 2.24
@@ -787,7 +787,7 @@ def slide_deployment(prs):
     ])
 
     tiles = [('25', 'students', ACCENT), ('8', 'courses', VIOLET),
-             ('87', 'enrollment records', TEAL), ('87', 'grades', AMBER),
+             ('51', 'enrollments', TEAL), ('3.70', 'avg. grade', AMBER),
              ('€0', 'monthly cost', GREEN)]
     tw = (CONTENT_W - 4 * 0.2) / 5
     for i, (value, label, color) in enumerate(tiles):
@@ -799,9 +799,9 @@ def slide_deployment(prs):
     panel(slide, MARGIN, py, pw, 2.72, 'Delivered', [
         ('Live on Render + Neon —', 'HTTPS, HSTS, managed PostgreSQL'),
         ('Six-model schema —', 'constraints and an audit trail in the database'),
-        ('Role isolation —', 'admins and teachers see strictly their own data'),
+        ('Role isolation —', 'teachers see their courses; admins see the institution'),
         ('Bilingual interface —', '312 strings, locale-aware dates and numbers'),
-        ('111 tests, four CI gates —', 'green on every push, then build.sh deploys'),
+        ('111 tests + live smoke —', 'suite locally; Actions hits the deployed site'),
     ], accent=GREEN, size=11.6, gap=8)
     panel(slide, MARGIN + pw + 0.28, py, pw, 2.72, 'Future work', [
         ('Student portal —', 'a third role with read-only access to own results'),
