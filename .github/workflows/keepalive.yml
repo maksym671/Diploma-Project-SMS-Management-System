@@ -2,11 +2,8 @@ name: Keep Render Awake
 
 on:
   schedule:
-    # Not more often than this. GitHub bills a private repository in whole
-    # minutes per job, and the free allowance is 2000 a month: every five
-    # minutes would cost 8640 and take CI down with it when the allowance ran
-    # out. What actually keeps both the service and its database warm is
-    # Render polling /healthz/, which runs a statement; this is the backup.
+    # Backup ping. Render's own healthCheckPath on /healthz/ is what
+    # actually keeps the service and the database warm.
     - cron: "*/30 * * * *"
   workflow_dispatch:
 

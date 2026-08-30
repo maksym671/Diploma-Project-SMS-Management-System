@@ -57,14 +57,7 @@ def visible_courses(user):
 
 
 def render_form(request, template, context):
-    """Re-render a form page after a failed submission.
-
-    Turbo discards a 200 response to a form submission — "Form responses must
-    redirect to another location" — so an invalid form sent back with 200
-    leaves the visitor staring at an unchanged page with no error on it.
-    422 is the status Turbo renders, and it is the honest one for input that
-    was well-formed but did not validate.
-    """
+    """Re-render a form. POST uses 422 so Turbo shows the errors."""
     status = 422 if request.method == 'POST' else 200
     return render(request, template, context, status=status)
 

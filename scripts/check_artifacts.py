@@ -1,9 +1,4 @@
-"""Check the deck and the documentation against the repository they describe.
-
-The slides quote counts — tests, templates, lines, translatable strings — that
-drift the moment the project moves on. This recomputes each one and fails if a
-built artefact still claims the old number, so "the presentation is finished"
-survives the next commit.
+"""Fail if the slides or docs quote a count the repository no longer has.
 
     ./pptx_env/bin/python scripts/check_artifacts.py
 """
@@ -63,8 +58,6 @@ def main():
     for key, value in measured.items():
         print(f'  {key:12} {value}')
 
-    # A claim is stale when an artefact quotes a count near the real one but
-    # not equal to it — "96 tests" once the suite runs 111.
     patterns = {
         'tests': (r'(\d+)\s+(?:automated\s+)?tests', measured['tests']),
         'templates': (r'Django Templates · (\d+) files', measured['templates']),

@@ -1,21 +1,11 @@
-"""Request instrumentation.
-
-The application renders every page in single-digit milliseconds locally while
-the deployed site answered in over a second, and guessing at the difference
-wasted a round of work. This measures it at the source instead: how long the
-server spent, and how much of that was spent waiting on the database.
-"""
+"""Server-Timing header: app time, database time, statement count."""
 import time
 
 from django.db import connection
 
 
 class _DatabaseTimer:
-    """Times every statement through Django's execute_wrapper hook.
-
-    connection.queries only fills when DEBUG is on, which is exactly when the
-    numbers do not matter. This works on the deployed site.
-    """
+    """Time SQL via execute_wrapper so it works with DEBUG=False."""
 
     def __init__(self):
         self.seconds = 0.0
@@ -31,12 +21,7 @@ class _DatabaseTimer:
 
 
 class ServerTimingMiddleware:
-    """Report server time and database time in a Server-Timing header.
-
-    Browsers show these in the network panel beside the network cost, so a
-    slow page can be attributed without a profiler on the box. Only durations
-    and a statement count are reported — no query text and no data.
-    """
+    """Add Server-Timing: app / db durations and how many statements ran."""
 
     def __init__(self, get_response):
         self.get_response = get_response

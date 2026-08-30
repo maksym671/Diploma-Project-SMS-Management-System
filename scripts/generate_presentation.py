@@ -1,8 +1,4 @@
-"""Builds the diploma defence deck for the Student Management System.
-
-Every figure quoted on the slides comes from the repository itself: 6 models,
-6 migrations, 111 tests, 312 translatable strings, and the demo dataset that
-ships with the deployment.
+"""Build Maksym_Shpak_Diploma_Presentation.pptx.
 
     pptx_env/bin/python scripts/generate_presentation.py
 """
@@ -179,8 +175,7 @@ def footer(slide, dark=False, logo=False):
     logo_y = FOOTER_Y - 0.02
     if logo:
         add_logo(slide, LOGO, MARGIN, logo_y, h=logo_h)
-        # Crest sits in the top ~80%; "VIZJA UNIVERSITY" is the lower band.
-        # Keep the URL on that wordmark line, not floating next to the lions.
+        # Align the URL with "VIZJA UNIVERSITY" under the crest.
         wordmark_mid = logo_y + logo_h * 0.877
         link_h = 0.26
         link_y = wordmark_mid - link_h / 2
