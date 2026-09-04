@@ -53,6 +53,23 @@ def role_required(allowed_roles):
 
 The schema comprises six core models: User, Student, Course, Enrollment, Grade, Attendance. Enrolment links students and courses (many-to-many with status). A Grade is one weighted component of an enrolment (coursework, midterm, final exam or retake); Enrollment.final_grade is their weighted mean on the 2.0–5.0 scale with letter mapping, and assigned_by records which teacher last saved the mark. Attendance is unique per (enrolment, date). Foreign keys and unique constraints protect referential integrity at the database level.
 
+**Where the integrity lives (core/models.py):**
+
+```python
+class Enrollment(models.Model):
+    class Meta:
+        unique_together = ['student', 'course']
+
+class Attendance(models.Model):
+    date = models.DateField(default=timezone.now)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES,
+                              default='present')
+    class Meta:
+        unique_together = ['enrollment', 'date']
+```
+
+Both rules are declared in the schema rather than checked in a view, so no path can break them: not the bulk marking screen, not the single-record form, not the Django admin and not a direct SQL insert. A student cannot be enrolled on the same course twice, and a class cannot be marked twice for the same day.
+
 ## 2.3 Dashboard Analytics and REST JSON Endpoint
 
 The HTML dashboard aggregates KPIs (students, courses, enrolments, average grade) and chart series (grade distribution, enrolments per course). The page itself is server-rendered: both the tiles and the chart series arrive in the HTML, so no request is needed before the dashboard is readable. Endpoint GET /api/dashboard/ exposes the same figures as JSON for external clients. Both call one function, dashboard_metrics(), which applies the role scoping, so the two views of the data cannot drift apart.
@@ -67,6 +84,19 @@ The application has no public registration. An administrator creates teacher acc
 
 Configuration is driven by environment variables: SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASE_URL, DJANGO_ADMIN_PASSWORD. When DEBUG=False the application enforces HTTPS redirects, secure cookies, HSTS, and refuses insecure default SECRET_KEY values. DJANGO_ADMIN_PASSWORD replaces the published demo password on the admin account at deploy time, so that password is not left on the public internet. WhiteNoise serves hashed/compressed static files. This allows the same codebase to run locally on SQLite and on a hosted PostgreSQL instance without code changes. The public service is https://thesms.me (Render backup: https://diploma-project-sms-management-system.onrender.com). A live demonstration uses the teacher account prof.martinez / demo1234; a second teacher, prof.chen / demo1234, shows that each lecturer sees only their own courses.
 
+**The deployment refuses to start insecurely (sms_project/settings.py):**
+
+```python
+if not DEBUG:
+    if SECRET_KEY.startswith('django-insecure'):
+        raise ValueError(
+            'SECRET_KEY must be set via environment variable in '
+            'production (DEBUG=False).'
+        )
+```
+
+The development key that ships in the repository cannot reach production: with DEBUG off the process raises on startup rather than serving requests signed with a published secret. The same block enables HTTPS redirection, HSTS and secure cookies, so the hardened configuration is one decision rather than a checklist someone has to remember.
+
 ## 2.6 Internationalisation (English / Polish)
 
 The interface is bilingual. Templates, model choices, flash messages and CSV headers go through Django i18n. The language switch keeps the current page and stores the choice in the django_language cookie, which LocaleMiddleware reads on every request. The compiled Polish catalogue (django.mo) is committed so the deploy image does not depend on gettext. LocalizationTests guard that English and Polish pages actually differ, and TranslationCatalogueTests fail on any fuzzy or untranslated entry, because msgfmt drops fuzzy messages and they would ship as English.
@@ -76,6 +106,22 @@ The interface is bilingual. Templates, model choices, flash messages and CSV hea
 Attendance is the highest-volume operation in the system: a lecturer records a status for every student in a group after every class. Marking students one at a time would mean a separate form submission per student, so the Mark Class screen loads the whole roster for a chosen course and date and saves it in a single POST. Quick actions set the entire group to present, absent or late before individual corrections. The view iterates the submitted statuses and uses update_or_create per enrolment, so re-marking the same class corrects the existing rows instead of duplicating them. "Not marked" is treated as a deliberate state rather than a missing one: choosing it removes the stored record, so the screen keeps telling the truth about that date.
 
 Correctness does not rest on the interface. Attendance carries a unique constraint on (enrollment, date) in the schema, so a second record for the same student on the same day cannot be created by any path — the bulk screen, the single-record form, the Django admin or a direct SQL insert. A teacher may only load rosters for courses they teach, enforced by the same queryset scoping as the rest of the application. BulkAttendanceTests cover the group save, a repeated save against the unique rule, clearing a record, the pre-selected roster, active enrolments only, an unparsable date falling back to today, and a teacher trying to read or mark a colleague's course.
+
+**A whole roster in one request (core/views.py):**
+
+```python
+for enrollment in enrollments:
+    choice = request.POST.get(f'status_{enrollment.pk}')
+    if choice in {'present', 'absent', 'late'}:
+        Attendance.objects.update_or_create(
+            enrollment=enrollment, date=selected_date,
+            defaults={'status': choice},
+        )
+    elif choice == 'none' and enrollment.pk in existing:
+        existing[enrollment.pk].delete()
+```
+
+update_or_create is what makes a second marking of the same class a correction instead of a collision with the unique rule above. The final branch treats "not marked" as a deliberate answer rather than a missing one: it removes the stored row, so the screen keeps telling the truth about that date.
 
 # 3. Screenshots, visualizations, etc.
 

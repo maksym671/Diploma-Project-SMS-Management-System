@@ -7,11 +7,18 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_CELL_VERTICAL_ALIGNMENT
 from docx.oxml.ns import qn
+from docx.enum.style import WD_STYLE_TYPE
 from docx.shared import Pt, Cm
 
 
 ROOT = Path(__file__).resolve().parent.parent
 SHOTS = ROOT / 'docs' / 'screenshots'
+
+# The university supplies the form this document has to take: A4, 2.5 cm
+# margins, its own heading sizes and its own theme font. Building on the file
+# itself inherits all of that, so the layout cannot drift from what the faculty
+# expects — only the words below are ours.
+TEMPLATE = ROOT / 'diploma_project_template.docx'
 
 OUT_PATHS = [
     ROOT / 'docs' / 'SMS_Diploma_Documentation_Shpak_Maksym.docx',
@@ -20,25 +27,20 @@ OUT_PATHS = [
 
 
 def set_normal_style(doc: Document) -> None:
-    style = doc.styles['Normal']
-    style.font.name = 'Times New Roman'
-    style.font.size = Pt(12)
-    pf = style.paragraph_format
+    """Spacing only — the typeface and size come from the university template."""
+    pf = doc.styles['Normal'].paragraph_format
     pf.space_after = Pt(8)
     pf.line_spacing = 1.15
 
 
 def add_heading(doc: Document, text: str, level: int = 1) -> None:
-    h = doc.add_heading(text, level=level)
-    for run in h.runs:
-        run.font.name = 'Times New Roman'
+    doc.add_heading(text, level=level)
 
 
 def add_para(doc: Document, text: str, bold: bool = False) -> None:
     p = doc.add_paragraph()
     run = p.add_run(text)
     run.bold = bold
-    run.font.name = 'Times New Roman'
     run.font.size = Pt(12)
 
 
@@ -57,15 +59,11 @@ def add_figure(doc: Document, filename: str, caption: str) -> None:
     _set_run_font(run, size=Pt(10))
 
 
-def _set_run_font(run, *, bold: bool = False, size: Pt = Pt(12)) -> None:
+def _set_run_font(run, *, bold: bool = False, size: Pt = None) -> None:
+    """Weight and size only; the family is whatever the template specifies."""
     run.bold = bold
-    run.font.name = 'Times New Roman'
-    run.font.size = size
-    r = run._element
-    rPr = r.get_or_add_rPr()
-    rFonts = rPr.get_or_add_rFonts()
-    rFonts.set(qn('w:ascii'), 'Times New Roman')
-    rFonts.set(qn('w:hAnsi'), 'Times New Roman')
+    if size is not None:
+        run.font.size = size
 
 
 def _set_cell_width(cell, width_dxa: int) -> None:
@@ -118,37 +116,99 @@ def add_basic_info_table(doc: Document, rows: list[tuple[str, str]]) -> None:
     doc.add_paragraph()
 
 
+def blank_document_from_template() -> Document:
+    """The template with its instructions removed, keeping everything else.
+
+    Page size, margins, styles and theme survive because they live outside the
+    body; the body itself is emptied so the faculty's guidance notes do not end
+    up in the submitted document.
+    """
+    doc = Document(str(TEMPLATE))
+    body = doc.element.body
+    for child in list(body.iterchildren()):
+        # sectPr carries the page setup and must stay.
+        if not child.tag.endswith('}sectPr'):
+            body.remove(child)
+    return doc
+
+
+def add_code(doc: Document, code: str) -> None:
+    """A short verbatim fragment, set in a monospaced face.
+
+    The faculty asks a web-application project to attach and discuss code, and
+    proportional type makes indentation unreadable. Every fragment here is
+    copied from the repository, trimmed only of surrounding lines.
+    """
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(0.6)
+    pf.space_after = Pt(10)
+    pf.line_spacing = 1.0
+    run = p.add_run(code)
+    run.font.name = 'Consolas'
+    run.font.size = Pt(9.5)
+    rPr = run._element.get_or_add_rPr()
+    rFonts = rPr.get_or_add_rFonts()
+    for attribute in ('w:ascii', 'w:hAnsi', 'w:cs'):
+        rFonts.set(qn(attribute), 'Consolas')
+
+
+def add_bullet(doc: Document, text: str) -> None:
+    """A list item that survives a template without a bullet style.
+
+    The faculty template ships List Paragraph but no List Bullet and no
+    numbering definition to hang bullets on, so rather than inventing one the
+    item is marked with a dash and indented — which is what it looks like in
+    Word either way.
+    """
+    if any(style.name == 'List Bullet' for style in doc.styles):
+        doc.add_paragraph(text, style='List Bullet')
+        return
+    p = doc.add_paragraph()
+    p.paragraph_format.left_indent = Cm(0.75)
+    p.paragraph_format.space_after = Pt(2)
+    p.add_run(f'\u2014\u2002{text}')
+
+
+def ensure_subheading_style(doc: Document) -> None:
+    """The template defines only Heading 1; section 2 needs a level below it.
+
+    Derived from the template's own heading so the subsections keep its
+    typeface and colour instead of introducing a second look.
+    """
+    if any(style.name == 'Heading 2' for style in doc.styles):
+        return
+    style = doc.styles.add_style('Heading 2', WD_STYLE_TYPE.PARAGRAPH)
+    style.base_style = doc.styles['Heading 1']
+    style.font.size = Pt(13)
+    style.font.bold = True
+
+
 def build() -> Document:
-    doc = Document()
+    doc = blank_document_from_template()
     set_normal_style(doc)
+    ensure_subheading_style(doc)
 
-    for section in doc.sections:
-        section.top_margin = Cm(2)
-        section.bottom_margin = Cm(2)
-        section.left_margin = Cm(2.5)
-        section.right_margin = Cm(1.5)
-
-    # Title page
+    # Title page, worded as the template words it.
     for line in [
-        'School of Computer Science & Technologies',
-        'Field of study: Computer Science',
+        'BRANCH OF STUDY: COMPUTER SCIENCE',
         '',
         'Maksym Shpak',
+        'full-time course',
+        'index number 45567',
         '',
         'Design and Implementation of a Web-Based Student Management System '
         'for Educational Institutions',
         '',
-        'Documentation for the diploma project',
-        'prepared under the direction of',
-        'Marcin Kacprowicz',
+        'Documentation for the diploma project prepared under the supervision '
+        'of Marcin Kacprowicz',
         '',
         '',
-        'Warsaw, 2026 r.',
+        'Warsaw, 2026',
     ]:
         p = doc.add_paragraph(line)
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         for run in p.runs:
-            run.font.name = 'Times New Roman'
             run.font.size = Pt(14 if 'Design and Implementation' in line else 12)
             if 'Design and Implementation' in line or line == 'Maksym Shpak':
                 run.bold = True
@@ -179,7 +239,7 @@ def build() -> Document:
             'for Educational Institutions — Student Management System (SMS)',
         ),
         (
-            'Purpose of the project',
+            'Project goal',
             'The project addresses a recurring problem in small and medium educational '
             'units: academic records for students, courses, grades and attendance are still '
             'often kept in spreadsheets or fragmented paper files. This leads to duplicated '
@@ -205,7 +265,7 @@ def build() -> Document:
             'https://diploma-project-sms-management-system.onrender.com).',
         ),
         (
-            'Competitor analysis',
+            'Competitor product analysis',
             'Microsoft Excel / Google Sheets: easy to start, but no relational integrity, '
             'no role-based permissions, and high risk of accidental edits. '
             'Moodle / Canvas: powerful LMS platforms with many modules, but heavy to deploy '
@@ -223,7 +283,8 @@ def build() -> Document:
             tech_list,
         ),
         (
-            'Description of the technology stack and justification of selected technologies',
+            'Description of the technological stack and justification of selected '
+            'technologies',
             'The stack follows a classic three-tier architecture: Browser (HTML/CSS/JS) → '
             'Django views & forms (business logic, authentication, RBAC) → Relational database. '
             'Django was selected because it provides batteries-included authentication, CSRF '
@@ -254,8 +315,8 @@ def build() -> Document:
         'Students are not users — they have no login. This prevents privilege '
         'escalation while keeping URLs simple.',
     )
-    add_para(doc, 'Code snippet (decorator, simplified):', bold=True)
-    add_para(
+    add_para(doc, 'The route guard (core/decorators.py, simplified):', bold=True)
+    add_code(
         doc,
         "def role_required(allowed_roles):\n"
         "    def decorator(view_func):\n"
@@ -265,6 +326,13 @@ def build() -> Document:
         "            return view_func(request, *args, **kwargs)\n"
         "        return wrapper\n"
         "    return decorator",
+    )
+    add_para(
+        doc,
+        'The decorator answers "may this role open this URL"; it does not answer '
+        '"whose rows are these". That second question is settled separately, by the '
+        'queryset the view builds, so forgetting one guard cannot silently expose '
+        'another lecturer\'s data.',
     )
 
     add_heading(doc, '2.2 Relational Academic Schema', 2)
@@ -277,6 +345,29 @@ def build() -> Document:
         'with letter mapping, and assigned_by records which teacher last saved the mark. '
         'Attendance is unique per (enrolment, date). Foreign keys and unique constraints '
         'protect referential integrity at the database level.',
+    )
+
+    add_para(doc, 'Where the integrity lives (core/models.py):', bold=True)
+    add_code(
+        doc,
+        "class Enrollment(models.Model):\n"
+        "    class Meta:\n"
+        "        unique_together = ['student', 'course']\n"
+        "\n"
+        "class Attendance(models.Model):\n"
+        "    date = models.DateField(default=timezone.now)\n"
+        "    status = models.CharField(max_length=10, choices=STATUS_CHOICES,\n"
+        "                              default='present')\n"
+        "    class Meta:\n"
+        "        unique_together = ['enrollment', 'date']",
+    )
+    add_para(
+        doc,
+        'Both rules are declared in the schema rather than checked in a view, so '
+        'no path can break them: not the bulk marking screen, not the single-record '
+        'form, not the Django admin and not a direct SQL insert. A student cannot be '
+        'enrolled on the same course twice, and a class cannot be marked twice for '
+        'the same day.',
     )
 
     add_heading(doc, '2.3 Dashboard Analytics and REST JSON Endpoint', 2)
@@ -325,6 +416,25 @@ def build() -> Document:
         'teacher, prof.chen / demo1234, shows that each lecturer sees only their own courses.',
     )
 
+    add_para(doc, 'The deployment refuses to start insecurely (sms_project/settings.py):', bold=True)
+    add_code(
+        doc,
+        "if not DEBUG:\n"
+        "    if SECRET_KEY.startswith('django-insecure'):\n"
+        "        raise ValueError(\n"
+        "            'SECRET_KEY must be set via environment variable in '\n"
+        "            'production (DEBUG=False).'\n"
+        "        )",
+    )
+    add_para(
+        doc,
+        'The development key that ships in the repository cannot reach production: '
+        'with DEBUG off the process raises on startup rather than serving requests '
+        'signed with a published secret. The same block enables HTTPS redirection, '
+        'HSTS and secure cookies, so the hardened configuration is one decision '
+        'rather than a checklist someone has to remember.',
+    )
+
     add_heading(doc, '2.6 Internationalisation (English / Polish)', 2)
     add_para(
         doc,
@@ -363,6 +473,28 @@ def build() -> Document:
         'repeated save against the unique rule, clearing a record, the pre-selected '
         'roster, active enrolments only, an unparsable date falling back to today, and '
         'a teacher trying to read or mark a colleague\'s course.',
+    )
+
+    add_para(doc, 'A whole roster in one request (core/views.py):', bold=True)
+    add_code(
+        doc,
+        "for enrollment in enrollments:\n"
+        "    choice = request.POST.get(f'status_{enrollment.pk}')\n"
+        "    if choice in {'present', 'absent', 'late'}:\n"
+        "        Attendance.objects.update_or_create(\n"
+        "            enrollment=enrollment, date=selected_date,\n"
+        "            defaults={'status': choice},\n"
+        "        )\n"
+        "    elif choice == 'none' and enrollment.pk in existing:\n"
+        "        existing[enrollment.pk].delete()",
+    )
+    add_para(
+        doc,
+        'update_or_create is what makes a second marking of the same class a '
+        'correction instead of a collision with the unique rule above. The final '
+        'branch treats "not marked" as a deliberate answer rather than a missing '
+        'one: it removes the stored row, so the screen keeps telling the truth '
+        'about that date.',
     )
 
     # 3. Screenshots
@@ -427,7 +559,7 @@ def build() -> Document:
         'Automated test suite (111 tests) covering models, auth, API and CRUD',
         'Deployment-ready settings (Gunicorn, WhiteNoise, Postgres via DATABASE_URL)',
     ]:
-        doc.add_paragraph(item, style='List Bullet')
+        add_bullet(doc, item)
 
     add_para(
         doc,
@@ -445,7 +577,7 @@ def build() -> Document:
         'Two-factor login (TOTP) for administrator accounts',
         'Timetabling with room and slot conflict detection',
     ]:
-        doc.add_paragraph(item, style='List Bullet')
+        add_bullet(doc, item)
 
     # 5. Bibliography
     add_heading(doc, '5. Bibliography / Resources', 1)
