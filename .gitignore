@@ -31,12 +31,9 @@ staticfiles/
 # MacOS
 .DS_Store
 
-# IDEs and local agent settings
+# IDEs
 .vscode/
 .idea/
-.codegraph/
-.cursor/
-.claude/
 
 # Personal defence notes — stay on the laptop
 docs/defense-prep.md
